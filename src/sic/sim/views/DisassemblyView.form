@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="sic.sim.views.DisassemblyView">
+  <grid id="27dc6" binding="mainPanel" default-binding="true" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="bevel-lowered" title="Disassembly"/>
+    <children>
+      <grid id="645a3" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="25e7d" class="javax.swing.JButton" binding="btnUp">
+            <constraints/>
+            <properties>
+              <text value="&lt;"/>
+            </properties>
+          </component>
+          <component id="5bf9" class="javax.swing.JTextField" binding="txtLoc">
+            <constraints/>
+            <properties>
+              <columns value="5"/>
+              <text value="00000"/>
+            </properties>
+          </component>
+          <component id="89665" class="javax.swing.JButton" binding="btnDn">
+            <constraints/>
+            <properties>
+              <text value="&gt;"/>
+            </properties>
+          </component>
+          <component id="21a72" class="javax.swing.JButton" binding="btnPC">
+            <constraints/>
+            <properties>
+              <text value="PC"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <component id="ab16e" class="javax.swing.JTable" binding="tabDis" custom-create="true">
+        <constraints border-constraint="Center"/>
+        <properties/>
+      </component>
+    </children>
+  </grid>
+</form>

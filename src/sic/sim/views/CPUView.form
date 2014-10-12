@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="sic.sim.views.CPUView">
+  <grid id="27dc6" binding="mainPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="404" height="198"/>
+    </constraints>
+    <properties>
+      <enabled value="true"/>
+    </properties>
+    <border type="bevel-lowered" title="CPU"/>
+    <children>
+      <grid id="ec7a2" layout-manager="GridBagLayout">
+        <constraints border-constraint="Center"/>
+        <properties>
+          <alignmentX value="0.5"/>
+          <autoscrolls value="false"/>
+          <enabled value="true"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="e5b6f" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <labelFor value="997b7"/>
+              <text value="X"/>
+            </properties>
+          </component>
+          <component id="997b7" class="javax.swing.JTextField" binding="regX">
+            <constraints>
+              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <columns value="8"/>
+              <text value="000002"/>
+            </properties>
+          </component>
+          <component id="f610c" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <labelFor value="ae472"/>
+              <text value="L"/>
+            </properties>
+          </component>
+          <component id="ae472" class="javax.swing.JTextField" binding="regL">
+            <constraints>
+              <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <columns value="8"/>
+              <text value="000003"/>
+            </properties>
+          </component>
+          <component id="5265f" class="javax.swing.JTextField" binding="regS">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value="000004"/>
+            </properties>
+          </component>
+          <component id="d6fe1" class="javax.swing.JTextField" binding="regA">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <columns value="8"/>
+              <text value="000001"/>
+            </properties>
+          </component>
+          <component id="6fe2b" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <labelFor value="5265f"/>
+              <text value="S"/>
+            </properties>
+          </component>
+          <component id="d516b" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <labelFor value="d6fe1"/>
+              <text value="A"/>
+            </properties>
+          </component>
+          <component id="ced0c" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <labelFor value="6fdfb"/>
+              <text value="T"/>
+            </properties>
+          </component>
+          <component id="6fdfb" class="javax.swing.JTextField" binding="regT">
+            <constraints>
+              <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value="000005"/>
+            </properties>
+          </component>
+          <component id="e47ec" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <labelFor value="ff133"/>
+              <text value="B"/>
+            </properties>
+          </component>
+          <component id="ff133" class="javax.swing.JTextField" binding="regB">
+            <constraints>
+              <grid row="1" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value="000006"/>
+            </properties>
+          </component>
+          <component id="f60fc" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <labelFor value="95701"/>
+              <text value="SW"/>
+            </properties>
+          </component>
+          <component id="95701" class="javax.swing.JTextField" binding="regSW">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value="000007"/>
+            </properties>
+          </component>
+          <component id="bfa79" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <labelFor value="4ad54"/>
+              <text value="F"/>
+            </properties>
+          </component>
+          <component id="4ad54" class="javax.swing.JTextField" binding="regF">
+            <constraints>
+              <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <columns value="8"/>
+              <text value="000000000008"/>
+            </properties>
+          </component>
+          <component id="454dc" class="javax.swing.JTextField" binding="regFF">
+            <constraints>
+              <grid row="2" column="4" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value="0.0"/>
+            </properties>
+          </component>
+          <component id="44866" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <labelFor value="5bfe9"/>
+              <text value="PC"/>
+            </properties>
+          </component>
+          <component id="5bfe9" class="javax.swing.JTextField" binding="regPC">
+            <constraints>
+              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value="000009"/>
+            </properties>
+          </component>
+          <component id="c4985" class="javax.swing.JTextField" binding="txtInstruction">
+            <constraints>
+              <grid row="3" column="2" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value="LDA 0"/>
+            </properties>
+          </component>
+          <component id="381f1" class="javax.swing.JButton" binding="btnStartStop">
+            <constraints>
+              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value="&amp;Start"/>
+            </properties>
+          </component>
+          <component id="2030f" class="javax.swing.JButton" binding="btnStep">
+            <constraints>
+              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value="S&amp;tep"/>
+            </properties>
+          </component>
+          <component id="13c99" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+            <constraints>
+              <grid row="4" column="2" row-span="2" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties/>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

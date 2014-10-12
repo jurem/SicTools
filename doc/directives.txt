@@ -1,0 +1,18 @@
+Supported directives
+
+name    START   abs_expr
+        END     expr
+
+name    CSECT
+        USE     name
+
+        ORG     abs_expr
+        LTORG
+
+
+        BASE    expr
+        NOBASE
+
+name    EQU     expr
+
+        RESx    abs_expr

@@ -1,0 +1,51 @@
+MSB vs. LSB
+  * p.5: ... words are addressed by the location of their lowest numbered byte
+  * p.47: prog 2.2: "LDA three" and storage directive "three WORD 3" ... seems as MSB
+  * What is lowest numbered byte? Is this LSB?
+  * Decision: We use MSB!
+
+Register numbers
+  * p.5: PC=8, SW=9 due to compatibility with XE
+  * Why is number 7 unused?
+  * Number 9=10001b does not fit into 4 bits, e.g., in instructions ADDR, ...
+  * Better would be PC=7, SW=8
+
+Multiple sections with the same name
+  * Is this allowed?
+  * No. Since, the CSECT format is: <section_name> CSECT and labels are unique.
+  * However, the assembler could easily be extended to support section reentry.
+  * Decision: by the book, no section reentry.
+
+Addressing resolution
+  * p.59
+  * first try PC-relative, then base-relative
+  * if neither is applicable programmer must use format 4 (extended)
+  * So when direct/absolute addressing can be used? Only for absolute symbols?
+  * Can we after PC-rel and base-rel have failed use direct? See also next point.
+
+Direct/absolute addressing in format 3 and SIC format
+  * Renders the code unrelocatable.
+  * In particular, it is unrelocatable only in the range of 12 bit displacement.
+  * Should we use this mode?
+
+Immediate with negative operands
+  * e.g., LDA #-1
+  * use of direct/absolute addressing
+  * however in simple and indirect operand gives the absolute address, thus it is unsigned
+  * can in the case of immediate addressing the operand be signed.
+  * Decision: the assembler treats immediate as signed, all other as unsigned
+
+Directive ORG value
+  * p.73: "value is a constant or an expression involving constants and previously defined symbols"
+  * Can we use forward reference? At least to absolute symbols. Yes?
+  * Thus, expressions consists of constants and symbols (absolute or (relative) previously defined)
+
+Directive ORG and length of code?
+  * How does one calculate code length if it contains ORG:
+    * so there is a large non-assembled gap, or
+    * there ORG address is before start address (we have negative code length)
+  * See also p. 74 for a discussion on ORG (without parameter) used for resetting to the previous value.
+  * Decision:
+    * At the end of every section we implicitly issue ORG (reset the locctr).
+    * Then we calculate the length.
+    * Consequently, we ignore all the "ORG address" parts.
