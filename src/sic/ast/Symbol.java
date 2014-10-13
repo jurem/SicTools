@@ -1,6 +1,5 @@
 package sic.ast;
 
-import com.sun.istack.internal.NotNull;
 import sic.asm.AsmError;
 import sic.asm.Location;
 import sic.ast.expression.Expr;

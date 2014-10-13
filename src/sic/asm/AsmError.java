@@ -1,7 +1,5 @@
 package sic.asm;
 
-import com.sun.istack.internal.NotNull;
-
 /**
  * Syntax errors.
  *
