@@ -17,6 +17,7 @@ public class Executor {
     private int speedkHz = 10;
     public final Breakpoints breakpoints;
     public ActionListener onBreakpoint;
+    private boolean isRunningB;
 
     public Executor(Machine machine) {
         this.machine = machine;
@@ -37,18 +38,25 @@ public class Executor {
     }
 
     public void start() {
+    	isRunningB = true;
         if (timer != null) return;
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 for (int i = 0; i < speedkHz; i++) {
+                    int oldPC = machine.registers.getPC();
                     machine.execute();
                     if (breakpoints.has(machine.registers.getPC())) {
                         stop();
                         if (onBreakpoint != null) onBreakpoint.actionPerformed(null);
                         break;
                     }
+                    if (oldPC == machine.registers.getPC()) {
+                        stop();
+                        break;
+                    }    
+                    oldPC = machine.registers.getPC();
                 }
             }
         }, 0, 1);
@@ -65,7 +73,11 @@ public class Executor {
     }
 
     public boolean isRunning() {
-        return timer != null;
+    	if (timer == null && isRunningB) {
+    		isRunningB = false;
+    		return true;
+    	}
+    	return isRunningB;
     }
 
 }
