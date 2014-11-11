@@ -56,7 +56,6 @@ public class Executor {
                         stop();
                         break;
                     }    
-                    oldPC = machine.registers.getPC();
                 }
             }
         }, 0, 1);
