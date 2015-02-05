@@ -14,10 +14,12 @@ import sic.sim.views.DisassemblyView;
 import sic.sim.views.MemoryView;
 
 import javax.swing.*;
+import javax.swing.filechooser.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import javax.swing.filechooser.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * TODO: write a short description
@@ -25,7 +27,7 @@ import javax.swing.filechooser.*;
  * @author jure
  */
 public class MainView {
-    private Executor executor;
+    private final Executor executor;
 
     private JFrame mainFrame;
     // core views
@@ -36,7 +38,7 @@ public class MainView {
     private Screen screen;
 
 
-    public MainView(Executor executor, Disassembler disassembler) {
+    public MainView(final Executor executor, Disassembler disassembler) {
         this.executor = executor;
 
         cpuView = new CPUView(executor, disassembler);
@@ -60,6 +62,19 @@ public class MainView {
         mainFrame.setVisible(true);
 
         screen = new Screen(executor);
+
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            public void run() {
+                if (mainFrame.isVisible() && executor.hasChanged()) {
+                    cpuView.updateView();
+                    disassemblyView.updateView();
+                    memoryView.updateView();
+                    screen.updateView();
+                }
+            }
+        };
+        timer.schedule(timerTask, 0, 50);
     }
 
     public void updateView() {

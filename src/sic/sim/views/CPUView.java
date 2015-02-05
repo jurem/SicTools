@@ -118,14 +118,6 @@ public class CPUView {
                 updateView();
             }
         });
-
-        Timer timer = new Timer();
-        TimerTask timerTask = new TimerTask() {
-            public void run() {
-                if (mainPanel.isVisible() && executor.isRunning()) updateView();
-            }
-        };
-        timer.schedule(timerTask, 0, 50);
         updateView();
     }
 

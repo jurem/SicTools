@@ -85,13 +85,6 @@ public class MemoryView {
                 updateView();
             }
         };
-        Timer timer = new Timer();
-        TimerTask timerTask = new TimerTask() {
-            public void run() {
-                if (mainPanel.isVisible()) updateView();
-            }
-        };
-        timer.schedule(timerTask, 0, 50);
     }
 
     public void updateView() {
