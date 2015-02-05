@@ -225,25 +225,24 @@ public class DisassemblyView {
         for (int row = 0; row < tabDis.getRowCount(); row++) {
             if (loc > SICXE.MAX_ADDR) clearDisLine(row);
             else {
-                if (selectPC && loc == machine.registers.getPC()) tabDis.setRowSelectionInterval(row, row);
+                if (selectPC && loc == machine.registers.getPC()) {
+                    tabDis.setRowSelectionInterval(row, row);
+                    followPC = false;
+                }
                 Command cmd = disassembler.disassembleSafe(loc);
                 updateDisLine(row, loc, cmd);
                 loc += cmd.size();
             }
         }
-/*        if (selRow == -1) {
-            tabDis.getSelectionModel().clearSelection();
-            if (followPC) {
-                disGo(machine.getPC());
-                return;
-            }
-        } else tabDis.getSelectionModel().setSelectionInterval(selRow, selRow);*/
+        if (followPC) {
+            disassembler.gotoPC();
+            updateDis(true, false);
+        }
         txtLoc.setText(Conversion.addrToHex(disassembler.location()));
-        //tabDis.requestFocus();
     }
 
-    public void updateView() {
-        updateDis(false, false);
+    public void updateView(boolean selectPC, boolean followPC) {
+        updateDis(selectPC, followPC);
     }
 
     void disMove(int count) {

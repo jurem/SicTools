@@ -66,12 +66,7 @@ public class MainView {
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             public void run() {
-                if (mainFrame.isVisible() && executor.hasChanged()) {
-                    cpuView.updateView();
-                    disassemblyView.updateView();
-                    memoryView.updateView();
-                    screen.updateView();
-                }
+                if (mainFrame.isVisible() && executor.hasChanged()) updateView();
             }
         };
         timer.schedule(timerTask, 0, 50);
@@ -79,7 +74,7 @@ public class MainView {
 
     public void updateView() {
         cpuView.updateView();
-        disassemblyView.updateView();
+        disassemblyView.updateView(!executor.isRunning(), !executor.isRunning());
         memoryView.updateView();
     }
 
