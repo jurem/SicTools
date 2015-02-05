@@ -39,15 +39,6 @@ public class Screen {
     public Screen(final Executor executor) {
         this.memory = executor.getMachine().memory;
         this.view = createView();
-
-        Timer timer = new Timer();
-        TimerTask timerTask = new TimerTask() {
-            public void run() {
-                if (view.isVisible() && executor.isRunning()) updateView();
-            }
-        };
-        timer.schedule(timerTask, 0, 50);
-
         setScreen(ADDRESS, COLS, ROWS, FONTSIZE);
     }
 

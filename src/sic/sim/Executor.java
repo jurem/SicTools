@@ -23,7 +23,7 @@ public class Executor {
     public Executor(final Machine machine) {
         this.machine = machine;
         this.breakpoints = new Breakpoints();
-        setSpeed(10);
+        setSpeed(100);
     }
 
     public Machine getMachine() {

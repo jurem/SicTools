@@ -16,6 +16,12 @@ public class Machine {
     public final Memory memory;
     public final Devices devices;
 
+    // ************ Statistics
+
+    private int instructionCount;
+
+    // ************ Constructor
+
     public Machine() {
         this.registers = new Registers();
         this.memory = new Memory(MAX_ADDRESS+1);
@@ -23,6 +29,10 @@ public class Machine {
     }
 
     // ************ getters/setters
+
+    public int getInstructionCount() {
+        return instructionCount;
+    }
 
     // ********** Execution *********************
 
@@ -169,6 +179,7 @@ public class Machine {
     }
 
     public void execute() {
+        instructionCount++;
         // fetch first byte
         int opcode = fetch();
         // try format 1
