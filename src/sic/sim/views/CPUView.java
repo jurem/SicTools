@@ -162,8 +162,7 @@ public class CPUView {
         //
         Command cmd = disassembler.disassemble(registers.getPC());
         txtInstruction.setText(cmd == null ? "" : cmd.toString());
-        //
-        lblInfo.setText("<html>" + cmd.explain() + "</html>");
+        lblInfo.setText(cmd == null ? "" : "<html>" + cmd.explain() + "</html>");
     }
 
     {
