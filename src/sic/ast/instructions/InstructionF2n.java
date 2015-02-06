@@ -1,6 +1,7 @@
 package sic.ast.instructions;
 
 import sic.asm.Location;
+import sic.common.Conversion;
 import sic.common.Mnemonic;
 
 /**
@@ -25,6 +26,12 @@ public class InstructionF2n extends InstructionF2Base {
     @Override
     public void emitRawCode(byte[] data, int loc) {
         emitRawCode(data, loc, number, 0);
+    }
+
+    @Override
+    public String explain() {
+        return "<b>Hex:</b> " + Conversion.byteToHex(mnemonic.opcode) + " " + Conversion.byteToHex(number << 4) + "<br>" +
+                "<b>Bin:</b> " + Conversion.byteToBin(mnemonic.opcode) + " " + Conversion.byteToBin(number << 4);
     }
 
 }

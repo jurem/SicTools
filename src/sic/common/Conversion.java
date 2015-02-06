@@ -87,11 +87,16 @@ public class Conversion {
         return b.toString();
     }
 
+    // ************ sic -> bin conversion
+
+    public static String byteToBin(int value) {
+        String s = Integer.toBinaryString(value & 0xFF);
+        while (s.length() % 8 != 0) s = "0" + s;
+        return s;
+    }
+
 
     // ************ initalized data to string
-
-
-
 
     // initalized data to 1,2,3 (byte)
     public static String dataToByte(byte[] data) {

@@ -12,8 +12,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * TODO: write a short description
@@ -42,8 +40,8 @@ public class CPUView {
     private JTextField txtInstruction;
     private JButton btnStep;
     private JButton btnStartStop;
-    private JTextField textField1;
     public JPanel mainPanel;
+    private JLabel lblInfo;
 
     public CPUView(final Executor executor, final Disassembler disassembler) {
         this.executor = executor;
@@ -164,6 +162,8 @@ public class CPUView {
         //
         Command cmd = disassembler.disassemble(registers.getPC());
         txtInstruction.setText(cmd == null ? "" : cmd.toString());
+        //
+        lblInfo.setText("<html>" + cmd.explain() + "</html>");
     }
 
     {
@@ -367,7 +367,6 @@ public class CPUView {
         gbc.gridy = 5;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel1.add(btnStep, gbc);
-        textField1 = new JTextField();
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 4;
@@ -375,7 +374,6 @@ public class CPUView {
         gbc.gridheight = 2;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.BOTH;
-        panel1.add(textField1, gbc);
         label1.setLabelFor(regX);
         label2.setLabelFor(regL);
         label3.setLabelFor(regS);
@@ -393,4 +391,5 @@ public class CPUView {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

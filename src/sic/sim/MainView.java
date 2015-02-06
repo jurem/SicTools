@@ -14,9 +14,12 @@ import sic.sim.views.DisassemblyView;
 import sic.sim.views.MemoryView;
 
 import javax.swing.*;
-import javax.swing.filechooser.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -76,6 +79,7 @@ public class MainView {
         cpuView.updateView();
         disassemblyView.updateView(!executor.isRunning(), !executor.isRunning());
         memoryView.updateView();
+        screen.updateView();
     }
 
     private JMenuBar createMenuBar() {

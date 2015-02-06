@@ -70,4 +70,10 @@ public abstract class InstructionF34Base extends Instruction {
         throw new AsmError(loc, "Cannot address symbol '%s'", symbol);
     }
 
+    @Override
+    public String explain() {
+        String nixbpe = "<b>Bits nixbpe:</b> " + flags;
+        return super.explain() + "<br>" + nixbpe;
+    }
+
 }

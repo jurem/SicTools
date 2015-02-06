@@ -46,7 +46,7 @@ public class Flags {
             (isIndexed()      ? "x" : "-") +
             (isBaseRelative() ? "b" : "-") +
             (isPCRelative()   ? "p" : "-") +
-            (isExtended()     ? "n" : "-");
+            (isExtended()     ? "e" : "-");
     }
 
     public String operandToString(String operand) {

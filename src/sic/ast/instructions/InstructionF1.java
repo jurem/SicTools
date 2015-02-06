@@ -29,4 +29,8 @@ public class InstructionF1 extends Instruction {
         data[loc] = (byte)mnemonic.opcode;
     }
 
+    @Override
+    public String explain() {
+        return Integer.toBinaryString(mnemonic.opcode);
+    }
 }

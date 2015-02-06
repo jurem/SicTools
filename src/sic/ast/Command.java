@@ -2,8 +2,8 @@ package sic.ast;
 
 import sic.asm.AsmError;
 import sic.asm.Location;
-import sic.common.Mnemonic;
 import sic.common.Conversion;
+import sic.common.Mnemonic;
 
 /**
  * TODO: write a short description
@@ -108,6 +108,24 @@ public abstract class Command extends Node {
     public boolean emitText(StringBuilder buf) {
         if (size() > 0) buf.append(Conversion.bytesToHex(emitRawCode()));
         return false;
+    }
+
+    /**
+     * Generates hex and bin representation. Used in instruction info window.
+     * @return explanation
+     */
+    public String explain() {
+        byte[] code = new byte[size()];
+        emitRawCode(code, 0);
+        String hs = "<b>Hex:</b> ";
+        String bs = "<b>Bin:</b> ";
+        for (int i = 0; i < size(); i++) {
+            hs += Conversion.byteToHex(code[i]) + " ";
+            bs += Conversion.byteToBin(code[i]) + " ";
+            if (i == 0 && size() == 4) bs += "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+        }
+        String opcode = "<b>Opcode:</b> " + Conversion.byteToHex(code[0] & 0xFC);
+        return hs + "<br>" + bs + "<br>" + opcode;
     }
 
 }
