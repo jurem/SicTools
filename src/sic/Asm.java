@@ -3,7 +3,6 @@ package sic;
 import sic.asm.Assembler;
 import sic.asm.ErrorCatcher;
 import sic.asm.Options;
-import sic.asm.visitors.WriteErrors;
 import sic.ast.Program;
 import sic.common.Mnemonics;
 import sic.common.Utils;
@@ -99,7 +98,7 @@ public class Asm {
         ErrorCatcher errorCatcher = assembler.errorCatcher;
         Program program = assembler.assemble(input);
         if (errorCatcher.count() > 0) {
-            new WriteErrors(program, errorCatcher).visitCommands();
+            //new WriteErrors(program, errorCatcher).visitCommands();
             errorCatcher.print();
             return;
         }

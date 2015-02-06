@@ -187,6 +187,13 @@ public class OperandParser {
             symbol = "*";
         } else
             throw new AsmError(parser.loc(), "Invalid character '%c", parser.peek());
+        // check for indexed addressing (only if simple)
+        if (parser.skipIfIndexed()) {
+            if (flags.isSimple())
+                flags.setIndexed();
+            else
+                throw new AsmError(parser.loc(), "Indexed addressing not supported here");
+        }
         return new InstructionF4m(loc, label, mnemonic, flags, operand, symbol);    }
 
     private Command parseD(Location loc, String label, Mnemonic mnemonic) throws AsmError {

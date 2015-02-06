@@ -60,7 +60,7 @@ public abstract class InstructionF34Base extends Instruction {
         } else {
             resolvedSymbol = program.section().symbols.get(symbol);
             if (resolvedSymbol == null)
-                throw new AsmError(loc, "Symbol '%s' not defined", symbol);
+                throw new AsmError(loc, "Undefined symbol '%s'", symbol);
             checkSymbol(program, resolvedSymbol);
             resolvedValue = resolvedSymbol.value();
         }

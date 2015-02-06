@@ -19,7 +19,7 @@ import java.awt.event.MouseEvent;
  *
  * @author jure
  */
-public class Screen {
+public class TextualScreen {
     public final int ADDRESS = 0xB800;
     public final int COLS = 80;
     public final int ROWS = 25;
@@ -34,7 +34,7 @@ public class Screen {
     private final JFrame view;
     private JTextArea txtScreen;
 
-    public Screen(final Executor executor) {
+    public TextualScreen(final Executor executor) {
         this.memory = executor.getMachine().memory;
         this.view = createView();
         setScreen(ADDRESS, COLS, ROWS, FONTSIZE);

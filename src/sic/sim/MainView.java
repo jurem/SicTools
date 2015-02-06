@@ -2,13 +2,13 @@ package sic.sim;
 
 import sic.asm.Assembler;
 import sic.asm.ErrorCatcher;
-import sic.asm.visitors.WriteErrors;
 import sic.ast.Program;
 import sic.common.GUI;
 import sic.common.Utils;
 import sic.disasm.Disassembler;
 import sic.loader.Loader;
-import sic.sim.addons.Screen;
+import sic.sim.addons.GraphicalScreen;
+import sic.sim.addons.TextualScreen;
 import sic.sim.views.CPUView;
 import sic.sim.views.DisassemblyView;
 import sic.sim.views.MemoryView;
@@ -38,7 +38,8 @@ public class MainView {
     private DisassemblyView disassemblyView;
     private MemoryView memoryView;
     // addon views
-    private Screen screen;
+    private TextualScreen textScreen;
+    private GraphicalScreen graphScreen;
 
 
     public MainView(final Executor executor, Disassembler disassembler) {
@@ -64,12 +65,17 @@ public class MainView {
         mainFrame.setLocation(0, 0);
         mainFrame.setVisible(true);
 
-        screen = new Screen(executor);
+        textScreen = new TextualScreen(executor);
+        graphScreen = new GraphicalScreen(executor);
 
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             public void run() {
-                if (mainFrame.isVisible() && executor.hasChanged()) updateView();
+                if (mainFrame.isVisible() && executor.hasChanged()) {
+                    updateView();
+                }
+                textScreen.updateView();
+                graphScreen.updateView();
             }
         };
         timer.schedule(timerTask, 0, 50);
@@ -79,7 +85,6 @@ public class MainView {
         cpuView.updateView();
         disassemblyView.updateView(!executor.isRunning(), !executor.isRunning());
         memoryView.updateView();
-        screen.updateView();
     }
 
     private JMenuBar createMenuBar() {
@@ -151,10 +156,16 @@ public class MainView {
         mb.add(menu);
 
         menu = new JMenu("View");
-        GUI.addMenuItem(menu, "Screen", KeyEvent.VK_S, new ActionListener() {
+        GUI.addMenuItem(menu, "Textual screen", KeyEvent.VK_S, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                screen.toggleView();
+                textScreen.toggleView();
+            }
+        });
+        GUI.addMenuItem(menu, "Graphical screen", KeyEvent.VK_S, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                graphScreen.toggleView();
             }
         });
         mb.add(menu);
@@ -187,7 +198,6 @@ public class MainView {
         ErrorCatcher errorCatcher = assembler.errorCatcher;
         Program program = assembler.assemble(Utils.readFile(file));
         if (errorCatcher.count() > 0) {
-            new WriteErrors(program, errorCatcher).visitCommands();
             errorCatcher.print();
             return;
         }
@@ -219,7 +229,8 @@ public class MainView {
     private void showSettingsView() {
         JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
         tabs.addTab("General", null, createSettingsGeneralPane(), null);
-        tabs.addTab("Screen", null, screen.createSettingsPane(), null);
+        tabs.addTab("Textual screen", null, textScreen.createSettingsPane(), null);
+        tabs.addTab("Graphical screen", null, graphScreen.createSettingsPane(), null);
         GUI.showInJFrame("Settings", tabs, 0, 0);
     }
 

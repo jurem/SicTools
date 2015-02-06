@@ -11,6 +11,7 @@ import java.util.TimerTask;
  */
 // TODO: rename class
 public class Executor {
+    public static final int MaxSpeed = 100000000; // Hz
 
     public final Machine machine;
     private Timer timer;
@@ -35,7 +36,7 @@ public class Executor {
     }
 
     public void setSpeed(int Hz) {
-        if (Hz > 1000000) Hz = 10000000;
+        if (Hz > MaxSpeed) Hz = MaxSpeed;
         timerRepeat = (Hz + 100) / 100;
         timerPeriod = 1000 * timerRepeat / Hz;
     }
