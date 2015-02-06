@@ -341,6 +341,7 @@ public class CPUView {
         panel1.add(regPC, gbc);
         txtInstruction = new JTextField();
         txtInstruction.setText("LDA 0");
+        txtInstruction.putClientProperty("html.disable", Boolean.FALSE);
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 3;
@@ -366,13 +367,19 @@ public class CPUView {
         gbc.gridy = 5;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel1.add(btnStep, gbc);
+        lblInfo = new JLabel();
+        lblInfo.setFont(new Font("Courier", lblInfo.getFont().getStyle(), 12));
+        lblInfo.setText("");
+        lblInfo.setVerticalAlignment(1);
+        lblInfo.setVerticalTextPosition(0);
+        lblInfo.putClientProperty("html.disable", Boolean.FALSE);
         gbc = new GridBagConstraints();
-        gbc.gridx = 2;
+        gbc.gridx = 3;
         gbc.gridy = 4;
-        gbc.gridwidth = 4;
+        gbc.gridwidth = 3;
         gbc.gridheight = 2;
-        gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.BOTH;
+        panel1.add(lblInfo, gbc);
         label1.setLabelFor(regX);
         label2.setLabelFor(regL);
         label3.setLabelFor(regS);
@@ -390,5 +397,4 @@ public class CPUView {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
-
 }
