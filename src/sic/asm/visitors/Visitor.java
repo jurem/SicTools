@@ -37,7 +37,6 @@ public class Visitor {
         Class visitorClass = getClass();
         Class nodeClass = node.getClass();
         do {
-            visitorClass.
             try {
                 method = visitorClass.getDeclaredMethod("visit", new Class[]{nodeClass});
             } catch (NoSuchMethodException e) {}
