@@ -3,7 +3,6 @@ package sic.asm.visitors;
 import sic.asm.AsmError;
 import sic.asm.ErrorCatcher;
 import sic.ast.*;
-import sic.ast.Node;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,6 +37,7 @@ public class Visitor {
         Class visitorClass = getClass();
         Class nodeClass = node.getClass();
         do {
+            visitorClass.
             try {
                 method = visitorClass.getDeclaredMethod("visit", new Class[]{nodeClass});
             } catch (NoSuchMethodException e) {}

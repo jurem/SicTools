@@ -16,20 +16,22 @@ public class Symbols {
     private int maxLength;                          // max length of a symbol name
     private Map<String, Symbol> syms;               // symbol table
     private Map<String, Set<Symbol>> influences;    // which symbol influences which (used by expressions)
-    private Set<String> exported;                   // exported symbols
 
     public Symbols() {
         this.maxLength = 6;
         this.syms = new HashMap<String, Symbol>();
         this.influences = new HashMap<String, Set<Symbol>>();
-        this.exported = new HashSet<String>();
     }
 
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        for (Map.Entry<String, Symbol> e : syms.entrySet())
-            buf.append(e.getKey() + "=" + e.getValue().value() + ",");
+        for (Map.Entry<String, Symbol> e : syms.entrySet()) {
+            buf.append(e.getKey());
+            buf.append('=');
+            buf.append(e.getValue().value());
+            buf.append(',');
+        }
         return buf.toString();
     }
 

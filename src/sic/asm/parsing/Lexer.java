@@ -1,6 +1,6 @@
 package sic.asm.parsing;
 
-import sic.asm.*;
+import sic.asm.AsmError;
 import sic.common.Conversion;
 
 /**
@@ -56,7 +56,7 @@ public class Lexer extends Input {
         return comment;
     }
 
-    public String readIfLabel() throws AsmError {
+    public String readIfLabel() {
         if (col == 1 && isAlpha()) return readAlphanumeric();
         return null;
     }
@@ -77,7 +77,7 @@ public class Lexer extends Input {
          skipWhitespace();
     }
 
-    public boolean skipIfComma() throws AsmError {
+    public boolean skipIfComma() {
          skipWhitespace();
          boolean res = advanceIf(',');
          skipWhitespace();
@@ -106,7 +106,7 @@ public class Lexer extends Input {
         throw new AsmError(loc(), "Symbol expected");
     }
 
-    public String readIfSymbol() throws AsmError {
+    public String readIfSymbol() {
         return readAlphanumeric();
     }
 
@@ -114,9 +114,9 @@ public class Lexer extends Input {
       * Parse integer in any of the available formats.
       * Formats: standard, 0bBIN, 0oOCT, 0xHEX.
       * If minus sign is present it must be immediately followed by the number.
-      * @param lo
-      * @param hi
-      * @return
+      * @param lo ... lower limit
+      * @param hi ... upper limit
+      * @return parsed integer number
       * @throws sic.asm.AsmError
       */
     public int readInt(int lo, int hi) throws AsmError {

@@ -23,8 +23,10 @@ public class DirectiveEXTDEF extends Directive {
     public String operandToString() {
         StringBuilder buf = new StringBuilder();
         buf.append(names.get(0));
-        for (int i = 1; i < names.size(); i++)
-            buf.append("," + names.get(i));
+        for (int i = 1; i < names.size(); i++) {
+            buf.append(',');
+            buf.append(names.get(i));
+        }
         return buf.toString();
     }
 

@@ -1,10 +1,12 @@
 package sic.asm.parsing;
 
-import sic.asm.*;
 import sic.asm.AsmError;
-import sic.ast.Program;
+import sic.asm.ErrorCatcher;
+import sic.asm.Location;
+import sic.asm.Options;
 import sic.ast.Command;
 import sic.ast.Comment;
+import sic.ast.Program;
 import sic.common.Mnemonic;
 import sic.common.Mnemonics;
 

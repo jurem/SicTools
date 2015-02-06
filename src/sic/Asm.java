@@ -3,12 +3,15 @@ package sic;
 import sic.asm.Assembler;
 import sic.asm.ErrorCatcher;
 import sic.asm.Options;
+import sic.asm.visitors.WriteErrors;
 import sic.ast.Program;
 import sic.common.Mnemonics;
-import sic.asm.visitors.*;
 import sic.common.Utils;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 /**
  * Sic/XE assembler.
@@ -27,7 +30,7 @@ public class Asm {
     private Writer logwriter;
     private Writer objwriter;
 
-    public static void printHelp() {
+    static void printHelp() {
         System.out.print(
         "Sic/XE Assembler " + Version_Major + "." + Version_Minor + "\n" +
         "Usage: java sic.Asm options parameters\n" +
@@ -45,7 +48,7 @@ public class Asm {
         );
     }
 
-    public void processArgs(String[] args) {
+    void processArgs(String[] args) {
         if (args.length > 0) {
             if ("-help".equals(args[0]) || "-h".equals(args[0])) {
                 printHelp();
@@ -91,7 +94,7 @@ public class Asm {
         objwriter = Utils.createFileWriter(basename + ".obj");
     }
 
-    public void processSource() {
+    void processSource() {
         Assembler assembler = new Assembler();
         ErrorCatcher errorCatcher = assembler.errorCatcher;
         Program program = assembler.assemble(input);

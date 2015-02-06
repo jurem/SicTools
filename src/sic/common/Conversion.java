@@ -101,8 +101,10 @@ public class Conversion {
     // initalized data to 1,2,3 (byte)
     public static String dataToByte(byte[] data) {
         StringBuilder buf = new StringBuilder(3 * data.length);
-        for (int i = 0; i < data.length - 1; i++)
-            buf.append(Integer.toString(((int)data[i]) & 0xFF)   + ",");
+        for (int i = 0; i < data.length - 1; i++) {
+            buf.append(Integer.toString(((int) data[i]) & 0xFF));
+            buf.append(',');
+        }
         buf.append(Integer.toString(((int)data[data.length - 1]) & 0xFF));
         return buf.toString();
     }

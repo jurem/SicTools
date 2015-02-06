@@ -21,7 +21,8 @@ public class DataHex extends Data {
         buf.append("X'");
         buf.append(Conversion.bytesToHex(data, 0, data.length));
         buf.append('\'');
-        return buf.toString() + super.toString();
+        buf.append(super.toString());
+        return buf.toString();
     }
 
     @Override

@@ -1,8 +1,8 @@
 package sic.sim.views;
 
-import sic.sim.Colors;
 import sic.common.Conversion;
 import sic.common.SICXE;
+import sic.sim.Colors;
 import sic.sim.vm.Machine;
 import sic.sim.vm.Memory;
 
@@ -18,18 +18,18 @@ import java.awt.event.*;
 public class HexEdit extends JPanel implements FocusListener, MouseListener, KeyListener {
 
     // move offsets
-    public static final int MOVE_MEM_SMALL  = 0x10;
-    public static final int MOVE_MEM_MEDIUM = 0x100;
-    public static final int MOVE_MEM_LARGE  = 0x1000;
+    static final int MOVE_MEM_SMALL  = 0x10;
+    static final int MOVE_MEM_MEDIUM = 0x100;
+    static final int MOVE_MEM_LARGE  = 0x1000;
 
     // columns and rows
-    private final int COL_ADDR = 0;
-    private final int COL_HEX = 7;
-    private final int COL_HEX_LAST = 7 + 3*16 - 1;
-    private final int COL_CHR = 56;
-    private final int COL_CHR_LAST = 56 + 16 - 1;
-    private final int COL_LAST = 72;
-    private final int ROW_LAST = 16;
+    static final int COL_ADDR = 0;
+    static final int COL_HEX = 7;
+    static final int COL_HEX_LAST = 7 + 3*16 - 1;
+    static final int COL_CHR = 56;
+    static final int COL_CHR_LAST = 56 + 16 - 1;
+    static final int COL_LAST = 72;
+    static final int ROW_LAST = 16;
 
 
     private Machine machine;

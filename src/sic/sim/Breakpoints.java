@@ -9,7 +9,7 @@ import java.util.List;
 public class Breakpoints {
 
     // list of addresses of breakpoints
-    List<Integer> addrs;
+    private List<Integer> addrs;
 
     public boolean has(int addr) {
         return addrs.contains(addr);

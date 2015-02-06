@@ -14,12 +14,10 @@ import java.io.Writer;
 public class WriteSections extends WriteVisitor {
 
     private final int symLen;
-    private final int labLen;
 
     public WriteSections(Program program, ErrorCatcher errorCatcher, Writer writer) {
         super(program, errorCatcher, writer);
         this.symLen = program.maxSymbolLength();
-        this.labLen = program.maxLabelLength();
     }
 
     public void visit(Program program) {

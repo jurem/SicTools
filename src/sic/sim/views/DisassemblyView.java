@@ -1,11 +1,11 @@
 package sic.sim.views;
 
 import sic.ast.Command;
-import sic.sim.Colors;
 import sic.common.Conversion;
 import sic.common.SICXE;
 import sic.disasm.Disassembler;
 import sic.sim.Breakpoints;
+import sic.sim.Colors;
 import sic.sim.Executor;
 import sic.sim.vm.Machine;
 
@@ -14,6 +14,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.URL;
 
 
 class CellRenderer extends DefaultTableCellRenderer {
@@ -36,9 +37,8 @@ class BreakpointIconCellRenderer extends CellRenderer {
     private ImageIcon icon;
 
     public BreakpointIconCellRenderer() {
-        try {
-            icon = new ImageIcon(getClass().getResource("/img/rbp.png"));
-        } catch (Exception e) {}
+        URL url = getClass().getResource("/img/rbp.png");
+        if (url != null) icon = new ImageIcon(url);
     }
 
     public Component getTableCellRendererComponent(JTable table, Object value,
