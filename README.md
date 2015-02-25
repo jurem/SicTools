@@ -33,7 +33,7 @@ Installation
 
 Download or clone source code and run make.
 
-    git clone git://github.com/jurem/SicTools.git
+    git clone https://github.com/jurem/SicTools.git
     cd SicTools
     make jar
 
