@@ -49,3 +49,7 @@ To run assembler
     java -cp out/make/sictools.jar sic.Asm source.asm
 
 where source.asm is the file to be compiled.
+
+To get assembler help
+
+    java -cp out/make/sictools.jar sic.Asm -help
