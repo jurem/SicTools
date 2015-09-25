@@ -3,7 +3,7 @@ Tools for SIC/XE hypothetical computer from the Leland Beck's book System Softwa
   * Assembler
   * Simulator
 
-Assembler supports all instructions and directives desribed in the book. This includes load/store instructions, arithmetic instructions, jumps etc. And directives START, END, ORG, LTORG, BASE, NOBASE, CSECT, USE, EQU, RESB, RESW, EXTDEF, EXTREF. Some features:
+Assembler supports all instructions and directives described in the book. This includes load/store instructions, arithmetic instructions, jumps etc. And directives START, END, ORG, LTORG, BASE, NOBASE, CSECT, USE, EQU, RESB, RESW, EXTDEF, EXTREF. Some features:
   * immediate addressing, indirect addressing, simple addressing
   * PC-relative addressing, base addressing (BASE and NOBASE directive), indexed addressing
   * standard directives START, END, ORG
