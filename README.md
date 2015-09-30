@@ -28,6 +28,8 @@ Simulator is user-friendly GUI based application that loads asm or obj files. Fe
   * automatic execution with set speed (from 1 Hz to 1 MHz)
   * and more
 
+See also http://jurem.github.io/SicTools/ for the main page as well as https://github.com/jurem/SicDemos for several examples.
+
 Installation
 ------------
 
