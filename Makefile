@@ -14,7 +14,7 @@ sim:
 
 
 manifest:
-	echo "Manifest-Version: 1.0\nClass-Path: .\nMain-Class: sic.Sim"  >"$(OUT)/MANIFEST.MF"
+	printf "Manifest-Version: 1.0\nClass-Path: .\nMain-Class: sic.Sim"  >"$(OUT)/MANIFEST.MF"
 
 jar: outdir asm sim manifest
 	cd "$(OUT)"; jar cfm sictools.jar MANIFEST.MF *
