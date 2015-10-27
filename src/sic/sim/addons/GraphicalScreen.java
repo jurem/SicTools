@@ -2,6 +2,7 @@ package sic.sim.addons;
 
 import sic.common.Conversion;
 import sic.common.GUI;
+import sic.common.SICXE;
 import sic.sim.Executor;
 import sic.sim.vm.Memory;
 
@@ -79,6 +80,8 @@ public class GraphicalScreen {
     }
 
     void setScreen(int addr, int cols, int rows, int pixelSize) {
+        int maxaddr = SICXE.MASK_ADDR - cols * rows;
+        if (addr > maxaddr) addr = maxaddr;
         this.address = addr;
         this.rows = rows;
         this.cols = cols;
@@ -131,7 +134,7 @@ public class GraphicalScreen {
             public void actionPerformed(ActionEvent actionEvent) {
                 int addr, cols, rows, pixs;
                 try {
-                    addr = Conversion.hexToInt(txtAddr.getText());
+                    addr = SICXE.intToAddr(Conversion.hexToInt(txtAddr.getText()));
                     cols  = Integer.parseInt(txtCols.getText());
                     rows = Integer.parseInt(txtRows.getText());
                     pixs = Integer.parseInt(txtFontSize.getText());

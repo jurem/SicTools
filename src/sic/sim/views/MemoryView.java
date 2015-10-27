@@ -1,6 +1,7 @@
 package sic.sim.views;
 
 import sic.common.Conversion;
+import sic.common.SICXE;
 import sic.sim.Executor;
 
 import javax.swing.*;
@@ -72,7 +73,7 @@ public class MemoryView {
         });
         txtLocation.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                hex.setStartAddress(Conversion.hexToInt(txtLocation.getText()));
+                hex.setStartAddress(SICXE.intToAddr(Conversion.hexToInt(txtLocation.getText())));
                 hex.requestFocus();
                 updateView();
             }

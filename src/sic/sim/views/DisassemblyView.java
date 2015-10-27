@@ -128,7 +128,7 @@ public class DisassemblyView {
         txtLoc.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                disassembler.setLocation(Conversion.hexToInt(txtLoc.getText()));
+                disassembler.setLocation(SICXE.intToAddr(Conversion.hexToInt(txtLoc.getText())));
                 updateDis(true, false);
             }
         });
@@ -141,7 +141,7 @@ public class DisassemblyView {
                         int col = tabDis.columnAtPoint(evt.getPoint());
                         if (col != 0) return;  // only first column
                         // get address from first column
-                        int addr = Conversion.hexToInt((String) tabDis.getValueAt(row, 1));
+                        int addr = SICXE.intToAddr(Conversion.hexToInt((String) tabDis.getValueAt(row, 1)));
                         breakpoints.toggleBreakpoint(addr);
                         updateBreakpoint(row, breakpoints.has(addr));
                     } catch (Exception e) {
@@ -184,7 +184,7 @@ public class DisassemblyView {
                 if (row < 0) return;
                 String str = (String) tabDis.getValueAt(row, 1);
                 if ("".equals(str)) return;
-                int addr = Conversion.hexToInt(str);
+                int addr = SICXE.intToAddr(Conversion.hexToInt(str));
                 breakpoints.toggleBreakpoint(addr);
                 updateBreakpoint(row, breakpoints.has(addr));
             }
