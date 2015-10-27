@@ -105,6 +105,7 @@ public class GraphicalScreen {
                 int red = ((color >> 4) & 3) * amp;
                 int green = ((color >> 2) & 3) * amp;
                 int blue = (color & 3) * amp;
+                System.out.println(amp);
                 g.setColor(new Color(red, green, blue));
                 g.fillRect(j * pixelSize, i * pixelSize, pixelSize, pixelSize);
         }

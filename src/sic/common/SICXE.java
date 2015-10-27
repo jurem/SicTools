@@ -130,6 +130,11 @@ public class SICXE {
         return MIN_SDISP <= val && val <= MAX_SDISP;
     }
 
+    public static boolean isCdisp(int val) {
+        // combined displacement: signed and unsigned
+        return MIN_SDISP <= val && val <= MAX_DISP;
+    }
+
     // ************ floats
 
     public static long floatToBits(double value) {
