@@ -20,22 +20,6 @@ public class Conversion {
         return hexToInt(text, 0);
     }
 
-/*    public static int hexToAddr(String text) {
-        try {
-            return SICXE.intToAddr(Integer.parseInt(text, 16));
-        } catch (NumberFormatException e) {
-            return 0;
-        }
-    }
-
-    public static int hexToWord(String text) {
-        try {
-            return SICXE.intToWord(Integer.parseInt(text, 16));
-        } catch (NumberFormatException e) {
-            return 0;
-        }
-    }*/
-
     public static String addrToHex(int value) {
         return String.format("%05X", value & 0xFFFFF);
     }
