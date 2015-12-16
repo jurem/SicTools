@@ -91,11 +91,11 @@ public class MainView {
         JMenuBar mb = new JMenuBar();
 
         // SicSim
-        JMenu menu = new JMenu("SicSim");
+        JMenu menu = new JMenu("SicTools");
         GUI.addMenuItem(menu, "About", KeyEvent.VK_A, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JOptionPane.showMessageDialog(mainFrame, "SIC assembler and simulator 1.0 (beta)\n\n(C) 2011-2014, Jurij Mihelič (jurij.mihelic@fri.uni-lj.si)\n\nContributors\nTomaž Dobravec (tomaz.dobravec@fri.uni-lj.si)");
+                JOptionPane.showMessageDialog(mainFrame, "SicTools: SIC/XE assembler and simulator 1.1\n\n(C) 2011-2015, Jurij Mihelič (jurij.mihelic@fri.uni-lj.si)\n\nContributors\nTomaž Dobravec (tomaz.dobravec@fri.uni-lj.si)");
             }
         });
         menu.addSeparator();

@@ -55,7 +55,8 @@ public class TextualScreen {
         this.cols = cols;
         txtScreen.setRows(rows);
         txtScreen.setColumns(cols);
-        txtScreen.setFont(new java.awt.Font("Courier New", java.awt.Font.BOLD, fontSize)); // NOI18N
+//        txtScreen.setFont(new java.awt.Font("Courier New", java.awt.Font.BOLD, fontSize));
+        txtScreen.setFont(new Font("monospaced", Font.BOLD, fontSize));
         updateView();
         view.pack();
     }
