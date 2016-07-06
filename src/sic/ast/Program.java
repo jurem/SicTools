@@ -53,6 +53,8 @@ public class Program extends Node {
 
     public void setStart(int addr) {
         this.start = addr;
+        // automatically also set first instruction
+        setFirst(addr);
     }
 
     public boolean isRelocatable() {
