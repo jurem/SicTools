@@ -3,6 +3,7 @@ package sic.link.visitors;
 import sic.link.LinkerError;
 import sic.link.section.*;
 
+import java.util.ListIterator;
 import java.util.Map;
 
 /*
@@ -11,13 +12,17 @@ import java.util.Map;
  */
 public class SecondPassVisitor extends SectionVisitor {
 
+    private static final String PHASE = "second pass";
+
     private Map<String, ExtDef> esTable;
+    private Map<String, Section> csTable;
 
     private Section currSection = null;
 
 
-    public SecondPassVisitor(Map<String, ExtDef> esTable) {
+    public SecondPassVisitor(Map<String, ExtDef> esTable, Map<String, Section> csTable) {
         this.esTable = esTable;
+        this.csTable = csTable;
     }
 
     @Override
@@ -27,8 +32,17 @@ public class SecondPassVisitor extends SectionVisitor {
 
         //visit all mRecords
         if (section.getmRecords() != null) {
-            for (MRecord mRecord : section.getmRecords())
+            ListIterator<MRecord> iter = section.getmRecords().listIterator();
+
+            while (iter.hasNext()) {
+                MRecord mRecord = iter.next();
                 mRecord.accept(this);
+
+                // remove the m record if it is marked to be deleted
+                if (mRecord.getDelete())
+                    iter.remove();
+            }
+
         }
 
     }
@@ -40,10 +54,10 @@ public class SecondPassVisitor extends SectionVisitor {
             ExtDef symbol = esTable.get(mRecord.getSymbol());
             if (symbol == null) {
                 // TODO add an option flag that can deal with this
-                throw new LinkerError(mRecord.getSymbol() + " is not defined in any section ", mRecord.getLocation() );
+                throw new LinkerError(PHASE, mRecord.getSymbol() + " is not defined in any section ", mRecord.getLocation() );
             }
 
-            long fixAddress = mRecord.getStart();
+            long fixAddress = mRecord.getStart() + currSection.getStart();
 
             // find the Trecord that has to be fixed
             TRecord fixRecord = null;
@@ -58,7 +72,7 @@ public class SecondPassVisitor extends SectionVisitor {
 
             // throw an error if record was not found
             if (fixRecord == null)
-                throw new LinkerError("Address " + fixAddress + " is not present in any T Record", mRecord.getLocation());
+                throw new LinkerError(PHASE, "Address " + fixAddress + " is not present in any T Record", mRecord.getLocation());
 
             // each byte is 2 chars
             int start = (int)(fixAddress - fixRecord.getStartAddr()) * 2;

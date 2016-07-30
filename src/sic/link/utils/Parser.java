@@ -1,5 +1,6 @@
-package sic.link;
+package sic.link.utils;
 
+import sic.link.LinkerError;
 import sic.link.section.*;
 
 import java.io.*;
@@ -12,6 +13,8 @@ import java.util.List;
  * parse() returns a list of Sections in the input file
  */
 public class Parser {
+    private static final String PHASE = "parser";
+
     private String input;
     private int row;
 
@@ -19,7 +22,7 @@ public class Parser {
         this.input = input;
     }
 
-    public List<Section> parse() throws LinkerError{
+    public List<Section> parse() throws LinkerError {
 
         List<Section> sects = new ArrayList<>();
 
@@ -48,7 +51,7 @@ public class Parser {
                         if (h.length() == 18) {
                             try {
 
-                                String name = h.substring(0, 6);
+                                String name = h.substring(0, 6).replace(" ", "");
                                 long start = Long.decode("0x" + h.substring(6, 12));
                                 long length = Long.decode("0x" + h.substring(12, 18));
 
@@ -56,17 +59,17 @@ public class Parser {
                                 currSect.setLocation(new Location(input, row));
 
                             } catch (NumberFormatException nfe) {
-                                throw new LinkerError("Wrong H record format",  new Location(input, row));
+                                throw new LinkerError(PHASE, "Wrong H record format",  new Location(input, row));
                             }
 
                         } else {
-                            throw new LinkerError("H record has incorrect length", new Location(input, row));
+                            throw new LinkerError(PHASE, "H record has incorrect length", new Location(input, row));
                         }
 
                         c = (char) reader.read();
                         break;
                     case 'E':
-                        if (currSect == null) throw new LinkerError("Missing H record", new Location(input, row));
+                        if (currSect == null) throw new LinkerError(PHASE, "Missing H record", new Location(input, row));
                         String e = reader.readLine();
                         row++;
                         System.out.println("reading E record: " + e);
@@ -86,7 +89,7 @@ public class Parser {
                         break;
                     case 'T':
                         if (currSect == null) {
-                            if (currSect == null) throw new LinkerError("Missing H record", new Location(input, row));
+                            if (currSect == null) throw new LinkerError(PHASE, "Missing H record", new Location(input, row));
                         }
 
                         String t = reader.readLine();
@@ -106,7 +109,7 @@ public class Parser {
                         c = (char) reader.read();
                         break;
                     case 'M':
-                        if (currSect == null) throw new LinkerError("Missing H record", new Location(input, row));
+                        if (currSect == null) throw new LinkerError(PHASE, "Missing H record", new Location(input, row));
 
                         String m = reader.readLine();
                         row++;
@@ -121,7 +124,7 @@ public class Parser {
                         // if adding/substracting an ext symbol
                         if (m.length() > 8) {
                             direction = m.charAt(8) == '+';
-                            symbol = m.substring(9);
+                            symbol = m.substring(9).replace(" ", "");
                         }
 
                         MRecord mRecord = new MRecord(mStart, (int) mLength, direction, symbol);
@@ -132,14 +135,14 @@ public class Parser {
                         c = (char) reader.read();
                         break;
                     case 'R':
-                        if (currSect == null) throw new LinkerError("Missing H record", new Location(input, row));
+                        if (currSect == null) throw new LinkerError(PHASE, "Missing H record", new Location(input, row));
 
                         String r = reader.readLine();
                         row++;
                         System.out.println("reading R record: " + r);
 
                         for (int i=0; i<r.length(); i+=6) {
-                            String sym = r.substring(i, i+6);
+                            String sym = r.substring(i, i+6).replace(" ", "");
 
                             ExtRef extRef = new ExtRef(sym);
                             extRef.setLocation(new Location(input, row));
@@ -149,7 +152,7 @@ public class Parser {
                         c = (char) reader.read();
                         break;
                     case 'D':
-                        if (currSect == null) throw new LinkerError("Missing H record", new Location(input, row));
+                        if (currSect == null) throw new LinkerError(PHASE, "Missing H record", new Location(input, row));
 
                         String d = reader.readLine();
                         row++;
@@ -162,7 +165,7 @@ public class Parser {
                                 // jump over the space
                                 i++;
                             }
-                            String sym = d.substring(i, i+6);
+                            String sym = d.substring(i, i+6).replace(" ", "");
                             sym = sym.replace(" ", ""); // remove whitespace in variable name
 
                             long symAddr = Long.decode("0x" + d.substring(i+6, i+12));
@@ -174,7 +177,7 @@ public class Parser {
                         c = (char) reader.read();
                         break;
                     default:
-                        throw new LinkerError("Error reading .obj file", new Location(input, row));
+                        throw new LinkerError(PHASE, "Unexpected character while reading object file", new Location(input, row));
                 }
             }
 
@@ -185,9 +188,9 @@ public class Parser {
             return sects;
 
         } catch (FileNotFoundException e) {
-            throw new LinkerError("File not found" + input);
+            throw new LinkerError(PHASE, "File not found" + input);
         } catch (IOException e) {
-            throw new LinkerError("IO exception while reading the file " + input + ".");
+            throw new LinkerError(PHASE, "IO exception while reading the file " + input + ".");
         }
     }
 

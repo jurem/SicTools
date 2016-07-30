@@ -7,14 +7,19 @@ import sic.link.section.Location;
  */
 public class LinkerError extends Throwable {
 
+    // empty message
+    public LinkerError(Void v) {
+        super("");
+    }
+
     // just a String message
-    public LinkerError(String message) {
-        super(message);
+    public LinkerError(String phase, String message) {
+        super(phase + ": " + message);
     }
 
     // String message and location
-    public LinkerError(String message, Location location) {
-        super(message + " - " + location.toString());
+    public LinkerError(String phase, String message, Location location) {
+        super(phase + ": " + message + " - " + location.toString());
     }
 
 

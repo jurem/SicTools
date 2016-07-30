@@ -15,10 +15,11 @@ import java.util.*;
  *  note: in the book, TextRecord changing is done in second pass, in my implementation it was easier here
  */
 public class FirstPassVisitor extends SectionVisitor {
+    private static final String PHASE = "first pass";
 
     // tables
-    private Map<String, Section> csTable; // just to make sure we get each section once
-    public Map<String, ExtDef> esTable;   // will be used in the second pass
+    public Map<String, Section> csTable; // map list of all sections
+    public Map<String, ExtDef> esTable;   // map of all external symbols
 
     private long csAddr;
 
@@ -39,8 +40,11 @@ public class FirstPassVisitor extends SectionVisitor {
         // fill the CStable
         if (csTable.get(name) == null) {
             csTable.put(name, section);
+            // add a new extdef with section name -
+            // 'section names are automatically considered to be external symbols'
+            esTable.put(name, new ExtDef(name, 0, section.getStart()));
         } else {
-            throw new LinkerError("Duplicated section name: " + name + " at "
+            throw new LinkerError(PHASE, "Duplicated section name: " + name + " at "
                     + section.getLocation() + " and " + csTable.get(name).getLocation());
         }
 
@@ -52,17 +56,14 @@ public class FirstPassVisitor extends SectionVisitor {
         if (section.gettRecords() != null) {
 
             // sort TRecords by address (they might not be in order)
-            Collections.sort(section.gettRecords(), new Comparator<TRecord>() {
-                @Override
-                public int compare(TRecord o1, TRecord o2) {
+            Collections.sort(section.gettRecords(), (t1, t2) -> {
 
-                    if (o1.getStartAddr() < o2.getStartAddr())
-                        return -1;
-                    else if (o1.getStartAddr() > o2.getStartAddr())
-                        return 1;
-                    else
-                        return 0;
-                }
+                if (t1.getStartAddr() < t2.getStartAddr())
+                    return -1;
+                else if (t1.getStartAddr() > t2.getStartAddr())
+                    return 1;
+                else
+                    return 0;
             });
 
             // visit all T records
@@ -85,7 +86,7 @@ public class FirstPassVisitor extends SectionVisitor {
         if (esTable.get(name) == null) {
             esTable.put(name, extDef);
         } else {
-            throw new LinkerError("Duplicated external symbol definition '" +  name + "'", extDef.getLocation());
+            throw new LinkerError(PHASE, "Duplicated external symbol definition '" +  name + "'", extDef.getLocation());
         }
     }
 

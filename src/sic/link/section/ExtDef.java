@@ -20,6 +20,12 @@ public class ExtDef {
         this.csAddress = 0;
     }
 
+    public ExtDef(String name, long address, long csAddress) {
+        this.name = name;
+        this.address = address;
+        this.csAddress = csAddress;
+    }
+
     public String getName() {
         return name;
     }

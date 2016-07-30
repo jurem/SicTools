@@ -3,11 +3,10 @@ package sic.link;
 import sic.link.section.ExtDef;
 import sic.link.section.Section;
 import sic.link.section.Sections;
+import sic.link.utils.Parser;
 import sic.link.visitors.FirstPassVisitor;
 import sic.link.visitors.SecondPassVisitor;
 
-import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +24,10 @@ public class Linker {
     private Map<String, ExtDef> esTable;
 
     private List<String> inputs;
-    private List<String> options;
+    private Options options;
 
 
-    public Linker(List<String> inputs, List<String> options) {
+    public Linker(List<String> inputs, Options options) {
         this.inputs = inputs;
         this.options = options;
 
@@ -48,7 +47,14 @@ public class Linker {
             sections.addSections(p.parse());
         }
 
-        // note: any sorting of the sections should be done here
+        for (Section s : sections.getSections())
+                System.out.println(s.toString());
+
+        //TODO: add option to specify first section
+
+        // name the section from options
+        if (options.getOutputName() != null)
+            sections.setName(options.getOutputName().replace(".obj", ""));
 
 
         // External Symbol table - used in both visitors
@@ -59,12 +65,16 @@ public class Linker {
         firstPass.visit(sections);
 
         // second pass - modifies the text records according to the modification records
-        SecondPassVisitor secondPassVisitor = new SecondPassVisitor(esTable);
+        SecondPassVisitor secondPassVisitor = new SecondPassVisitor(esTable, csTable);
         secondPassVisitor.visit(sections);
 
+        // combine all of the sections into one
+        Section combined = sections.combine();
+
+        System.out.println("linked: ");
+        System.out.println(combined.toString());
 
 
-
-        return null;
+        return combined;
     }
 }
