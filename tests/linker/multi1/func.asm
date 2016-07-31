@@ -1,5 +1,4 @@
 func START 0
-	EXTDEF func
 	EXTREF ref1
 	EXTREF ref2
 	

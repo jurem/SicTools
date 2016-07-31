@@ -18,6 +18,7 @@ import java.util.Map;
  * link() performs the linking and returns the resulting Section
  */
 public class Linker {
+    private static final String PHASE = "linker";
 
     // control section table contains all the control sections
     private Map<String, Section> csTable;
@@ -35,27 +36,31 @@ public class Linker {
         esTable = new HashMap<>();
     }
 
-    public Section link() throws LinkerError{
-        //TODO add options
-
+    public Section link() throws LinkerError {
 
         // parse all the input files, add  into a Sections class
         Sections sections = new Sections();
 
         for (String input : inputs) {
-            Parser p =  new Parser(input);
+            Parser p =  new Parser(input, options);
             sections.addSections(p.parse());
         }
 
-        for (Section s : sections.getSections())
-                System.out.println(s.toString());
+        if (options.isVerbose())
+            for (Section s : sections.getSections())
+                    System.out.println(s.toString());
 
-        //TODO: add option to specify first section
+        if (options.getMain() != null)
+            sections.makeFirst(options.getMain());
+
 
         // name the section from options
-        if (options.getOutputName() != null)
-            sections.setName(options.getOutputName().replace(".obj", ""));
-
+        if (options.getOutputName() != null) {
+            String name = options.getOutputName().replace(".obj", "");
+            if (name.length() > 6)
+                name = name.substring(0,6);
+            sections.setName(name);
+        }
 
         // External Symbol table - used in both visitors
         Map<String, ExtDef> esTable = new HashMap<>();
@@ -71,9 +76,10 @@ public class Linker {
         // combine all of the sections into one
         Section combined = sections.combine();
 
-        System.out.println("linked: ");
-        System.out.println(combined.toString());
-
+        if (options.isVerbose()) {
+            System.out.println("linked: ");
+            System.out.println(combined);
+        }
 
         return combined;
     }

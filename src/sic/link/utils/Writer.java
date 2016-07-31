@@ -39,7 +39,8 @@ public class Writer {
             throw new LinkerError(PHASE, "Unable to write to " + options.getOutputPath());
         }
 
-        System.out.println("writing the linked section to " + options.getOutputPath());
+        if (options.isVerbose())
+            System.out.println("writing the result to " + options.getOutputPath());
 
         if (section.getName().length() > 6)
             section.setName(section.getName().substring(0,6));
@@ -56,7 +57,7 @@ public class Writer {
             for (TRecord t : section.gettRecords()) {
                 writer.print("T");
                 writer.printf("%06X", t.getStartAddr());
-                writer.printf("%06X", t.getLength());
+                writer.printf("%02X", t.getLength());
                 writer.print(t.getText());
                 writer.println();
             }
@@ -66,7 +67,7 @@ public class Writer {
             for (MRecord m : section.getmRecords()) {
                 writer.print("M");
                 writer.printf("%06X", m.getStart());
-                writer.printf("%06X", m.getLength());
+                writer.printf("%02X", m.getLength());
 
 
                 if (m.getSymbol() != null && !skipExt) {

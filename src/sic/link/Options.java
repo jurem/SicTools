@@ -15,6 +15,7 @@ public class Options {
     private String outputPath = null; // specifies the output path
     private boolean force = false;    // force linking even if not all ext symbols are in the files
     private String main = null;       // first section - otherwise the first in the first input file is used
+    private boolean verbose = false;
 
     /*
      * processes option flags
@@ -59,6 +60,12 @@ public class Options {
                             throw new LinkerError(PHASE, "Main section name not specified");
                         this.main = args[i];
                         processedArgs += 2;
+                        break;
+
+                    case "-v":
+                        // verbose mode
+                        this.verbose = true;
+                        processedArgs++;
                         break;
 
                     case "-h":
@@ -125,5 +132,13 @@ public class Options {
 
     public void setMain(String main) {
         this.main = main;
+    }
+
+    public boolean isVerbose() {
+        return verbose;
+    }
+
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
     }
 }

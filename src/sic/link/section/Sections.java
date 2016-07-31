@@ -1,5 +1,7 @@
 package sic.link.section;
 
+import sic.link.LinkerError;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,6 +51,22 @@ public class Sections {
             else
                 return 0;
         });
+    }
+
+    public void makeFirst(String name) throws LinkerError {
+        Section first = null;
+        for (Section s : sections)
+            if (s.getName().equals(name)) {
+                first = s;
+                break;
+            }
+
+        if (first == null)
+            throw new LinkerError("options", "specified main section " + name + " does not exist");
+        else {
+            sections.remove(first);
+            sections.add(0, first);
+        }
     }
 
    /*

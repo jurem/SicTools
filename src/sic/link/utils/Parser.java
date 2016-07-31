@@ -1,6 +1,7 @@
 package sic.link.utils;
 
 import sic.link.LinkerError;
+import sic.link.Options;
 import sic.link.section.*;
 
 import java.io.*;
@@ -17,9 +18,11 @@ public class Parser {
 
     private String input;
     private int row;
+    private Options options;
 
-    public Parser(String input) {
+    public Parser(String input, Options options) {
         this.input = input;
+        this.options = options;
     }
 
     public List<Section> parse() throws LinkerError {
@@ -46,7 +49,8 @@ public class Parser {
                         // start a new section
                         String h = reader.readLine();
                         row++;
-                        System.out.println("reading H record: " + h);
+                        if (options.isVerbose())
+                            System.out.println("reading H record: " + h);
 
                         if (h.length() == 18) {
                             try {
@@ -72,7 +76,8 @@ public class Parser {
                         if (currSect == null) throw new LinkerError(PHASE, "Missing H record", new Location(input, row));
                         String e = reader.readLine();
                         row++;
-                        System.out.println("reading E record: " + e);
+                        if (options.isVerbose())
+                            System.out.println("reading E record: " + e);
 
                         long startAddr = Long.decode("0x" + e);
 
@@ -94,7 +99,8 @@ public class Parser {
 
                         String t = reader.readLine();
                         row++;
-                        System.out.println("reading T record: " + t);
+                        if (options.isVerbose())
+                            System.out.println("reading T record: " + t);
 
 
                         long tStart = Long.decode("0x" + t.substring(0,6));
@@ -113,7 +119,8 @@ public class Parser {
 
                         String m = reader.readLine();
                         row++;
-                        System.out.println("reading M record: " + m);
+                        if (options.isVerbose())
+                            System.out.println("reading M record: " + m);
 
                         long mStart = Long.decode("0x" + m.substring(0,6));
                         long mLength = Long.decode("0x" + m.substring(6,8)); // number of hex chars, not bytes
@@ -139,7 +146,9 @@ public class Parser {
 
                         String r = reader.readLine();
                         row++;
-                        System.out.println("reading R record: " + r);
+
+                        if (options.isVerbose())
+                            System.out.println("reading R record: " + r);
 
                         for (int i=0; i<r.length(); i+=6) {
                             String sym = r.substring(i, i+6).replace(" ", "");
@@ -156,7 +165,9 @@ public class Parser {
 
                         String d = reader.readLine();
                         row++;
-                        System.out.println("reading D record: " + d);
+
+                        if (options.isVerbose())
+                            System.out.println("reading D record: " + d);
 
                         //TODO: check if there should be spaces between symbols
 
