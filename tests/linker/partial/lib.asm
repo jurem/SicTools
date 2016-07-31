@@ -1,0 +1,6 @@
+lib START 0
+	EXTDEF a
+	EXTDEF b
+a WORD 170
+b WORD 170
+	END lib

@@ -2,9 +2,7 @@ package sic.link.section;
 
 import sic.link.LinkerError;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /*
  * A list of sections in a class
@@ -71,9 +69,8 @@ public class Sections {
 
    /*
     * combines all sections into one
-    * if section include external defs or refs they will be removed
     */
-    public Section combine() {
+    public Section combine(boolean keep) {
         if (sections == null || sections.size() == 0)
             return null;
 
@@ -84,16 +81,59 @@ public class Sections {
         long start = sections.get(0).getStart();
         List<TRecord> tRecords = new ArrayList<>();
         List<MRecord> mRecords = new ArrayList<>();
+        List<ExtDef> extDefs = new ArrayList<>();
+        List<ExtRef> extRefs = new ArrayList<>();
 
         for (Section s : sections) {
             tRecords.addAll(s.gettRecords());
             mRecords.addAll(s.getmRecords());
+            if (keep)
+                extDefs.addAll(s.getExtDefs());
+            extRefs.addAll(s.getExtRefs());
         }
         Section last = sections.get(sections.size()-1);
         long length = last.getStart() + last.getLength() - start;
 
-        Section combined = new Section(name, start, length, tRecords, mRecords, null, null, new ERecord(start));
+        Section combined = new Section(name, start, length, tRecords, mRecords, extRefs, extDefs, new ERecord(start));
 
         return combined;
+    }
+
+    /*
+     * cleans out unneccessary ExtRefs
+     */
+
+    public void clean(boolean force) {
+        if (force) {
+            // remove some of them
+            for (Section s : sections) {
+                if (s.getmRecords().size() == 0) {
+                    // remove all
+                    s.setExtRefs(new ArrayList<>());
+                } else {
+                    // add remaining mRecord symbols to a Set
+                    Set<String> remaining = new HashSet<>();
+                    for (MRecord m : s.getmRecords()) {
+                        if (m.getSymbol() != null)
+                            remaining.add(m.getSymbol());
+                    }
+
+                    // remove a ref if it's not in the Set
+                    ListIterator<ExtRef> iter = s.getExtRefs().listIterator();
+                    while (iter.hasNext()) {
+                        ExtRef r = iter.next();
+                        if (!remaining.contains(r.getName()))
+                            iter.remove();
+                    }
+                }
+
+            }
+
+        }
+        else {
+            // remove all of them
+            for (Section s : sections)
+                s.setExtRefs(new ArrayList<>());
+        }
     }
 }

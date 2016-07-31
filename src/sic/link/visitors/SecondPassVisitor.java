@@ -1,6 +1,7 @@
 package sic.link.visitors;
 
 import sic.link.LinkerError;
+import sic.link.Options;
 import sic.link.section.*;
 
 import java.util.ListIterator;
@@ -18,11 +19,13 @@ public class SecondPassVisitor extends SectionVisitor {
     private Map<String, Section> csTable;
 
     private Section currSection = null;
+    private Options options;
 
 
-    public SecondPassVisitor(Map<String, ExtDef> esTable, Map<String, Section> csTable) {
+    public SecondPassVisitor(Map<String, ExtDef> esTable, Map<String, Section> csTable, Options options) {
         this.esTable = esTable;
         this.csTable = csTable;
+        this.options = options;
     }
 
     @Override
@@ -53,8 +56,10 @@ public class SecondPassVisitor extends SectionVisitor {
 
             ExtDef symbol = esTable.get(mRecord.getSymbol());
             if (symbol == null) {
-                // TODO add an option flag that can deal with this
-                throw new LinkerError(PHASE, mRecord.getSymbol() + " is not defined in any section ", mRecord.getLocation() );
+                if (options.isForce())
+                    return;
+                else
+                    throw new LinkerError(PHASE, mRecord.getSymbol() + " is not defined in any section ", mRecord.getLocation() );
             }
 
             long fixAddress = mRecord.getStart() + currSection.getStart();
@@ -100,9 +105,9 @@ public class SecondPassVisitor extends SectionVisitor {
 
             mRecord.setDelete(true);
 
-        } else {
-            // this is a regular M record - not for external symbols
         }
+        // else this is a regular M record - not for external symbols, ignore
+
 
     }
 }

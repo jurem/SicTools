@@ -11,6 +11,7 @@ public class ExtDef {
     private String name;
     private long address;
     private long csAddress;
+    private boolean delete = false;
 
     private Location location;
 
@@ -56,6 +57,14 @@ public class ExtDef {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public boolean isDelete() {
+        return delete;
+    }
+
+    public void setDelete(boolean delete) {
+        this.delete = delete;
     }
 
     @Override

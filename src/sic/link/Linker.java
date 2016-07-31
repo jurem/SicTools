@@ -70,11 +70,14 @@ public class Linker {
         firstPass.visit(sections);
 
         // second pass - modifies the text records according to the modification records
-        SecondPassVisitor secondPassVisitor = new SecondPassVisitor(esTable, csTable);
+        SecondPassVisitor secondPassVisitor = new SecondPassVisitor(esTable, csTable, options);
         secondPassVisitor.visit(sections);
 
+        // clean out used R records
+        sections.clean(options.isForce());
+
         // combine all of the sections into one
-        Section combined = sections.combine();
+        Section combined = sections.combine(options.isKeep());
 
         if (options.isVerbose()) {
             System.out.println("linked: ");

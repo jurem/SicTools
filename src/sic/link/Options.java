@@ -15,7 +15,8 @@ public class Options {
     private String outputPath = null; // specifies the output path
     private boolean force = false;    // force linking even if not all ext symbols are in the files
     private String main = null;       // first section - otherwise the first in the first input file is used
-    private boolean verbose = false;
+    private boolean verbose = false;  // displays debugging messages during linking
+    private boolean keep = false;     // keep the D records in the file - to allow further linking
 
     /*
      * processes option flags
@@ -53,6 +54,12 @@ public class Options {
                         processedArgs++;
                         break;
 
+                    case "-k":
+                        // keeps D records in the output file
+                        this.keep = true;
+                        processedArgs++;
+                        break;
+
                     case "-m":
                         // specifies the first (main) section
                         i++;
@@ -84,13 +91,14 @@ public class Options {
 
                         System.out.println();
                         System.out.println("Linker options:");
-                        System.out.println("-h : shows this help");
                         System.out.println("-o <path to a file> : specifies the output file");
                         System.out.println("-m <section name> : specifies the main/starting section");
-                        //TODO: System.out.println("-f : forces linking even if not all symbols are resolved");
-
-                        System.out.println("TODO: write more help here");
-
+                        System.out.println();
+                        System.out.println("-f : force linking even if not all references can be resolved");
+                        System.out.println("-k : keep D records in the output file");
+                        System.out.println("-v : display debugging messages during linking");
+                        System.out.println("-h : shows this help");
+                        
                         throw new LinkerError(null); // throw error to end execution
 
                 }
@@ -140,5 +148,13 @@ public class Options {
 
     public void setVerbose(boolean verbose) {
         this.verbose = verbose;
+    }
+
+    public boolean isKeep() {
+        return keep;
+    }
+
+    public void setKeep(boolean keep) {
+        this.keep = keep;
     }
 }

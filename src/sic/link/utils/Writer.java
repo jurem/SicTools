@@ -18,8 +18,6 @@ public class Writer {
     private Options options;
     private Section section;
 
-    private boolean skipExt = true;
-
     public Writer (Section section, Options options) {
         this.options = options;
         this.section = section;
@@ -70,7 +68,7 @@ public class Writer {
                 writer.printf("%02X", m.getLength());
 
 
-                if (m.getSymbol() != null && !skipExt) {
+                if (m.getSymbol() != null) {
                     if (m.isPositive())
                         writer.print("+");
                     else
@@ -81,23 +79,22 @@ public class Writer {
                 writer.println();
             }
 
-        // if forced, we keep some of the references & definitions
-        if (!skipExt) {
-            if (section.getExtDefs() != null)
-                for (ExtDef d : section.getExtDefs()){
-                    writer.print("D");
-                    writer.printf("%6s", d.getName());
-                    writer.printf("%06X", d.getCsAddress() + d.getAddress()); // TODO: check this
-                    writer.println(" ");
-                }
+        // in some cases we keep some references or definitions
+        if (section.getExtDefs() != null)
+            for (ExtDef d : section.getExtDefs()){
+                writer.print("D");
+                writer.printf("%-6s", d.getName());
+                writer.printf("%06X", d.getCsAddress() + d.getAddress()); // TODO: check this
+                writer.println(" ");
+            }
 
-            if (section.getExtRefs() != null)
-                for (ExtRef r : section.getExtRefs()){
-                    writer.print("D");
-                    writer.printf("%6s", r.getName());
-                    writer.println();
-                }
-        }
+        if (section.getExtRefs() != null)
+            for (ExtRef r : section.getExtRefs()){
+                writer.print("R");
+                writer.printf("%-6s", r.getName());
+                writer.println();
+            }
+
 
         if (section.geteRecord() != null) {
             writer.print("E");
@@ -114,13 +111,5 @@ public class Writer {
 
     public void setSection(Section section) {
         this.section = section;
-    }
-
-    public boolean isSkipExt() {
-        return skipExt;
-    }
-
-    public void setSkipExt(boolean skipExt) {
-        this.skipExt = skipExt;
     }
 }
