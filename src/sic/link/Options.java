@@ -17,6 +17,7 @@ public class Options {
     private String main = null;       // first section - otherwise the first in the first input file is used
     private boolean verbose = false;  // displays debugging messages during linking
     private boolean keep = false;     // keep the D records in the file - to allow further linking
+    private boolean absolute = false; // allow absolute sections if they are not overlaping
 
     /*
      * processes option flags
@@ -46,7 +47,6 @@ public class Options {
 
                         processedArgs += 2;
                         break;
-
 
                     case "-f":
                         // forces linking even if not all external symbols are present
@@ -98,7 +98,7 @@ public class Options {
                         System.out.println("-k : keep D records in the output file");
                         System.out.println("-v : display debugging messages during linking");
                         System.out.println("-h : shows this help");
-                        
+
                         throw new LinkerError(null); // throw error to end execution
 
                 }

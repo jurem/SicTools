@@ -1,11 +1,13 @@
 package sic.link.utils;
 
+import sic.link.Linker;
 import sic.link.LinkerError;
 import sic.link.Options;
 import sic.link.section.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /*
@@ -58,6 +60,9 @@ public class Parser {
                                 String name = h.substring(0, 6).replace(" ", "");
                                 long start = Long.decode("0x" + h.substring(6, 12));
                                 long length = Long.decode("0x" + h.substring(12, 18));
+
+                                if (start != 0)
+                                    throw new LinkerError(PHASE, "The section " + name + " is not relative.", new Location(input, row));
 
                                 currSect = new Section(name, start, length);
                                 currSect.setLocation(new Location(input, row));

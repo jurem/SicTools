@@ -11,7 +11,6 @@ import sic.link.section.*;
 import sic.link.utils.Parser;
 import sic.link.utils.Writer;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -20,118 +19,125 @@ public class LinkerTest {
 
     @Test
     public void testEmpty() {
-        System.out.println("running tests from " + System.getProperty("user.dir"));
+        System.out.println("running testEmpty");
 
         List<String> inputs = new ArrayList<>();
         Linker test = new Linker(inputs, new Options());
         try {
             Assert.assertNull("Linking empty inputs should return null", test.link());
         } catch (LinkerError le) {
-            Assert.fail("LinkerError: " + le.getMessage());
+            // Linking empty inputs should throw a LinkerError
+            System.out.println("LinkerError: " + le.getMessage());
         }
     }
 
      @Test
      public void testOne1() {
-            List<String> inputs = new ArrayList<>();
-            inputs.add("tests/linker/one1/file.obj");
-            Options options = new Options();
-            options.setOutputName("out.obj");
-            options.setOutputPath("tests/linker/one1/out.obj");
+        System.out.println("running testOne1");
 
-            Linker test = new Linker(inputs, options);
-            try {
-                Section out = test.link();
+        List<String> inputs = new ArrayList<>();
+        inputs.add("tests/linker/one1/file.obj");
+        Options options = new Options();
+        options.setOutputName("out.obj");
+        options.setOutputPath("tests/linker/one1/out.obj");
 
-                testSection(out, "out", 0, 0xE + 0xF + 0x6);
+        Linker test = new Linker(inputs, options);
+        try {
+        Section out = test.link();
 
-                List<TRecord> tRecords = new ArrayList<>();
+        testSection(out, "out", 0, 0xE + 0xF + 0x6);
 
-                String a = "0000E";
-                String b = String.format("%05X", 0xE + 0x3);
-                tRecords.add(new TRecord(0x0, 0xE, "031" + a + "1900050F1" + b + "3F2FFD"));
+        List<TRecord> tRecords = new ArrayList<>();
 
-                tRecords.add(new TRecord(0xE, 0xF, "000001000001000001000001000001"));
+        String a = "0000E";
+        String b = String.format("%05X", 0xE + 0x3);
+        tRecords.add(new TRecord(0x0, 0xE, "031" + a + "1900050F1" + b + "3F2FFD"));
 
-                tRecords.add(new TRecord(0xE + 0xF, 0x6, "000001000001"));
+        tRecords.add(new TRecord(0xE, 0xF, "000001000001000001000001000001"));
 
-                testTrecords(out, tRecords.size(), tRecords);
-                testMrecords(out, 0, new ArrayList<>());
-                testExtDefs(out, 0, new ArrayList<>());
-                testExtRefs(out, 0, new ArrayList<>());
+        tRecords.add(new TRecord(0xE + 0xF, 0x6, "000001000001"));
 
-                if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
-                    Assert.fail("wrong E record message");
+        testTrecords(out, tRecords.size(), tRecords);
+        testMrecords(out, 0, new ArrayList<>());
+        testExtDefs(out, 0, new ArrayList<>());
+        testExtRefs(out, 0, new ArrayList<>());
 
-                testWriterParser(out, options);
+        if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
+        Assert.fail("wrong E record message");
 
-            } catch (LinkerError le) {
-                Assert.fail("LinkerError: " + le.getMessage());
-            }
+        testWriterParser(out, options);
+
+        } catch (LinkerError le) {
+        Assert.fail("LinkerError: " + le.getMessage());
+        }
      }
 
     @Test
     public void testMulti1() {
-            List<String> inputs = new ArrayList<>();
-            inputs.add("tests/linker/multi1/func.obj");
-            inputs.add("tests/linker/multi1/main.obj");
-            Options options = new Options();
-            options.setOutputName("out_multiple.obj");
-            options.setOutputPath("tests/linker/one1/out.obj");
-            options.setMain("main");
+        System.out.println("running testMulti1");
 
-            Linker test = new Linker(inputs, options);
-            try {
-                Section out = test.link();
+        List<String> inputs = new ArrayList<>();
+        inputs.add("tests/linker/multi1/func.obj");
+        inputs.add("tests/linker/multi1/main.obj");
+        Options options = new Options();
+        options.setOutputName("out_multiple.obj");
+        options.setOutputPath("tests/linker/one1/out.obj");
+        options.setMain("main");
 
-                testSection(out, "out_mu", 0, 0x7 + 0x12 + 0x1F + 0x9 + 0x6);
+        Linker test = new Linker(inputs, options);
+        try {
+            Section out = test.link();
 
-                List<TRecord> tRecords = new ArrayList<>();
+            testSection(out, "out_mu", 0, 0x7 + 0x12 + 0x1F + 0x9 + 0x6);
 
-                String func = "00007";
-                tRecords.add(new TRecord(
-                        0x0,
-                        0x7,
-                        "4B1" + func + "3F2FFD"
-                ));
+            List<TRecord> tRecords = new ArrayList<>();
 
-                String ref1 = String.format("%05X", 0x7 + 0x12 + 0x1C);
-                String ref2 = String.format("%05X", 0x7 + 0x12);
-                tRecords.add(new TRecord(
-                        0x7,
-                        0x12,
-                        "031" + ref1 + "1900050F1" + ref1 + "4B1" + ref2 + "4F0000"
-                ));
+            String func = "00007";
+            tRecords.add(new TRecord(
+                    0x0,
+                    0x7,
+                    "4B1" + func + "3F2FFD"
+            ));
 
-                String data1 = String.format("%05X", 0x7 + 0x12 + 0x1F + 0x9);
-                String data2 = String.format("%05X", 0x7 + 0x12 + 0x1F + 0x9 + 0x3);
-                tRecords.add(new TRecord(0x7 + 0x12,
-                        0x1F,
-                        "031" + data1 + "1900050F1" + data1 + "031" + data2 + "1900030F1" + data2 +"0F20034F0000000001"
-                ));
+            String ref1 = String.format("%05X", 0x7 + 0x12 + 0x1C);
+            String ref2 = String.format("%05X", 0x7 + 0x12);
+            tRecords.add(new TRecord(
+                    0x7,
+                    0x12,
+                    "031" + ref1 + "1900050F1" + ref1 + "4B1" + ref2 + "4F0000"
+            ));
 
-                tRecords.add(new TRecord(0x7 + 0x12 + 0x1F,
-                        0x9,
-                        "1B00001B00004F0000"
-                ));
+            String data1 = String.format("%05X", 0x7 + 0x12 + 0x1F + 0x9);
+            String data2 = String.format("%05X", 0x7 + 0x12 + 0x1F + 0x9 + 0x3);
+            tRecords.add(new TRecord(0x7 + 0x12,
+                    0x1F,
+                    "031" + data1 + "1900050F1" + data1 + "031" + data2 + "1900030F1" + data2 +"0F20034F0000000001"
+            ));
 
-                testTrecords(out, tRecords.size(), tRecords);
-                testMrecords(out, 0, new ArrayList<>());
-                testExtDefs(out, 0, new ArrayList<>());
-                testExtRefs(out, 0, new ArrayList<>());
+            tRecords.add(new TRecord(0x7 + 0x12 + 0x1F,
+                    0x9,
+                    "1B00001B00004F0000"
+            ));
 
-                if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
-                    Assert.fail("wrong E record message");
+            testTrecords(out, tRecords.size(), tRecords);
+            testMrecords(out, 0, new ArrayList<>());
+            testExtDefs(out, 0, new ArrayList<>());
+            testExtRefs(out, 0, new ArrayList<>());
 
-                testWriterParser(out, options);
+            if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
+                Assert.fail("wrong E record message");
 
-            } catch (LinkerError le) {
-                Assert.fail("LinkerError: " + le.getMessage());
-            }
+            testWriterParser(out, options);
+
+        } catch (LinkerError le) {
+            Assert.fail("LinkerError: " + le.getMessage());
+        }
     }
 
     @Test
     public void testDemoStack() {
+        System.out.println("running testDemoStack");
+
         List<String> inputs = new ArrayList<>();
         inputs.add("tests/linker/stack/main.obj");
         inputs.add("tests/linker/stack/stack.obj");
@@ -194,6 +200,8 @@ public class LinkerTest {
 
     @Test
     public void testPartial1() {
+        System.out.println("running testPartial1");
+
         List<String> inputs = new ArrayList<>();
         inputs.add("tests/linker/partial/main.obj");
         inputs.add("tests/linker/partial/lib.obj");
@@ -246,6 +254,8 @@ public class LinkerTest {
 
     @Test
     public void testPartial2() {
+        System.out.println("running testPartial2");
+
         List<String> inputs = new ArrayList<>();
         inputs.add("tests/linker/partial/main.obj");
         inputs.add("tests/linker/partial/lib.obj");
@@ -301,19 +311,65 @@ public class LinkerTest {
         }
     }
 
+    @Test
+    public void testFactorial() {
+        System.out.println("running testFactorial");
+
+        // Link -o outfac.obj main.obj fact.obj print.obj stack.obj ending.obj
+        List<String> inputs = new ArrayList<>();
+        inputs.add("tests/linker/factorial/main.obj");
+        inputs.add("tests/linker/factorial/fact.obj");
+        inputs.add("tests/linker/factorial/print.obj");
+        inputs.add("tests/linker/factorial/stack.obj");
+        inputs.add("tests/linker/factorial/ending.obj");
+        Options options = new Options();
+        options.setOutputName("outfac.obj");
+        options.setOutputPath("tests/linker/factorial/outfac.obj");
+
+        Linker test = new Linker(inputs, options);
+        try {
+            Section out = test.link();
+
+            //TODO: write a test
+
+            if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
+                Assert.fail("wrong E record message");
+
+            testWriterParser(out, options);
+
+        } catch (LinkerError le) {
+            Assert.fail("LinkerError: " + le.getMessage());
+        }
+    }
+
+    @Test
+    public void testAbsolute() {
+        System.out.println("running testAbsolute");
+
+        List<String> inputs = new ArrayList<>();
+        inputs.add("tests/linker/absolute/main.obj");
+        inputs.add("tests/linker/absolute/abs.obj");
+        Options options = new Options();
+        options.setOutputName("absfail.obj");
+        options.setOutputPath("tests/linker/absolute/absfail.obj");
+
+        Linker test = new Linker(inputs, options);
+        try {
+            Section out = test.link();
+
+        } catch (LinkerError linkerError) {
+            // Linking absolute sections should throw a LinkerError
+            System.out.println("LinkerError: " +  linkerError.getMessage());
+        }
+    }
+
 
     // private functions for testing
-
+    // -----------------------------------------------------------------
     private void testSection(Section section, String name, long start, long length) {
-        if (!section.getName().equals(name))
-            Assert.fail("Section not named correctly: '" + section.getName() + "' vs '" + name + "'");
-
-        if (section.getStart() != start)
-            Assert.fail("Section start not correct");
-
-        if (section.getLength() != length)
-            Assert.fail("Section start not correct");
-
+        Assert.assertEquals("Section start test", start, section.getStart());
+        Assert.assertEquals("Section length test", length, section.getLength());
+        Assert.assertEquals("Section name test", name, section.getName());
     }
 
     private void testTrecords(Section section, int count, List<TRecord> list) {
@@ -322,26 +378,20 @@ public class LinkerTest {
                 Assert.fail("Section has T records");
             }
         } else {
-            if (section.gettRecords().size() != list.size()) {
-                Assert.fail("Section doesn't have the correct number of T records");
-                return;
-            }
+            Assert.assertEquals("T record count test", list.size(), section.gettRecords().size());
 
-            ListIterator<TRecord> i1 = section.gettRecords().listIterator();
-            ListIterator<TRecord> i2 = list.listIterator();
+
+            ListIterator<TRecord> i1 = list.listIterator();
+            ListIterator<TRecord> i2 = section.gettRecords().listIterator();
             int i=0;
 
             while (i1.hasNext() && i2.hasNext()) {
                 TRecord t1 = i1.next();
                 TRecord t2 = i2.next();
 
-                if (t1.getStartAddr() != t2.getStartAddr())
-                    Assert.fail(i + "th T record start is different");
-                if (t1.getLength() != t2.getLength())
-                    Assert.fail(i + "th T record length is different");
-                if (!(t1.getText().equals(t2.getText())))
-                    Assert.fail(i + "th T record text is different");
-
+                Assert.assertEquals(i + "th T record start test",t1.getStartAddr(), t2.getStartAddr());
+                Assert.assertEquals(i + "th T record length test",t1.getLength(), t2.getLength());
+                Assert.assertEquals(i + "th T record text test",t1.getText(), t2.getText());
                 i++;
             }
         }
@@ -354,26 +404,20 @@ public class LinkerTest {
                 Assert.fail("Section still has M records");
             }
         } else {
-            if (section.getmRecords().size() != list.size()) {
-                Assert.fail("Section doesn't have the correct number of M records");
-                return;
-            }
+            Assert.assertEquals("M record count test", list.size(), section.getmRecords().size());
 
-            ListIterator<MRecord> i1 = section.getmRecords().listIterator();
-            ListIterator<MRecord> i2 = list.listIterator();
+            ListIterator<MRecord> i1 = list.listIterator();
+            ListIterator<MRecord> i2  = section.getmRecords().listIterator();
+
             int i=0;
 
             while (i1.hasNext() && i2.hasNext()) {
                 MRecord m1 = i1.next();
                 MRecord m2 = i2.next();
 
-                if (m1.getStart() != m2.getStart())
-                    Assert.fail(i +"th M record start is different");
-                if (m1.getLength() != m2.getLength())
-                    Assert.fail(i + "th M record length is different");
-                if (!(m1.getSymbol().equals(m2.getSymbol())))
-                    Assert.fail(i + "th M record symbol is different");
-
+                Assert.assertEquals(i + "th M record start test",m1.getStart(), m2.getStart());
+                Assert.assertEquals(i + "th M record length test",m1.getLength(), m2.getLength());
+                Assert.assertEquals(i + "th M record symbol test",m1.getSymbol(), m2.getSymbol());
                 i++;
             }
         }
@@ -386,24 +430,20 @@ public class LinkerTest {
                 Assert.fail("Section still has D records");
             }
         } else {
-            if (section.getExtDefs().size() != list.size()) {
-                Assert.fail("Section doesn't have the correct number of D records");
-                return;
-            }
+            Assert.assertEquals("D record count test", list.size(), section.getExtDefs().size());
 
-            ListIterator<ExtDef> i1 = section.getExtDefs().listIterator();
-            ListIterator<ExtDef> i2 = list.listIterator();
+
+            ListIterator<ExtDef> i1 = list.listIterator();
+            ListIterator<ExtDef> i2 = section.getExtDefs().listIterator();
             int i=0;
 
             while (i1.hasNext() && i2.hasNext()) {
                 ExtDef d1 = i1.next();
                 ExtDef d2 = i2.next();
 
-                if (d1.getAddress() + d1.getCsAddress() != d2.getAddress() + d2.getCsAddress())
-                    Assert.fail(i + "th D record address is different");
-                if (!(d1.getName().equals(d2.getName())))
-                    Assert.fail(i + "th D record name is different");
-
+                Assert.assertEquals(i + "th D record address test",
+                        d1.getAddress() + d1.getCsAddress(), d2.getAddress() + d2.getCsAddress());
+                Assert.assertEquals(i + "th D record name test",d1.getName(), d2.getName());
                 i++;
             }
         }
@@ -416,22 +456,17 @@ public class LinkerTest {
                 Assert.fail("Section still has R records");
             }
         } else {
-            if (section.getExtRefs().size() != list.size()) {
-                Assert.fail("Section doesn't have the correct number of R records");
-                return;
-            }
+            Assert.assertEquals("R record count test", list.size(), section.getExtRefs().size());
 
-            ListIterator<ExtRef> i1 = section.getExtRefs().listIterator();
-            ListIterator<ExtRef> i2 = list.listIterator();
+            ListIterator<ExtRef> i1 = list.listIterator();
+            ListIterator<ExtRef> i2 = section.getExtRefs().listIterator();
             int i=0;
 
             while (i1.hasNext() && i2.hasNext()) {
                 ExtRef r1 = i1.next();
                 ExtRef r2 = i2.next();
 
-                if (!(r1.getName().equals(r2.getName())))
-                    Assert.fail(i + "th R record name is different");
-
+                Assert.assertEquals(i + "th R record name test",r1.getName(), r2.getName());
                 i++;
             }
         }
@@ -464,8 +499,7 @@ public class LinkerTest {
             testExtRefs(newSection, section.getExtRefs() == null ? 0 : section.getExtRefs().size(), section.getExtRefs());
 
             if (newSection.geteRecord() != null && section.geteRecord() != null) {
-                if (newSection.geteRecord().getStartAddr() != section.geteRecord().getStartAddr())
-                    Assert.fail("E records not the same");
+                Assert.assertEquals("E records should be the same", section.geteRecord().getStartAddr(), newSection.geteRecord().getStartAddr());
             } else if (!(newSection.geteRecord() == null && section.geteRecord() == null))
                 Assert.fail("E records not the same");
 

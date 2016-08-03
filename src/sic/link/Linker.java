@@ -1,5 +1,6 @@
 package sic.link;
 
+import sic.Link;
 import sic.link.section.ExtDef;
 import sic.link.section.Section;
 import sic.link.section.Sections;
@@ -22,7 +23,6 @@ public class Linker {
 
     // control section table contains all the control sections
     private Map<String, Section> csTable;
-    private Map<String, ExtDef> esTable;
 
     private List<String> inputs;
     private Options options;
@@ -33,7 +33,6 @@ public class Linker {
         this.options = options;
 
         csTable = new HashMap<>();
-        esTable = new HashMap<>();
     }
 
     public Section link() throws LinkerError {
@@ -45,6 +44,9 @@ public class Linker {
             Parser p =  new Parser(input, options);
             sections.addSections(p.parse());
         }
+
+        if (sections.getSections().size() == 0)
+            throw new LinkerError(PHASE, "No sections found in given input files.");
 
         if (options.isVerbose())
             for (Section s : sections.getSections())
