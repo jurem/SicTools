@@ -4,6 +4,7 @@ import sic.link.LinkerError;
 import sic.link.Options;
 import sic.link.section.*;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
@@ -23,7 +24,7 @@ public class Writer {
         this.section = section;
     }
 
-    public void write() throws LinkerError {
+    public File write() throws LinkerError {
         PrintWriter writer;
 
         if (options.getOutputPath() == null) {
@@ -102,7 +103,9 @@ public class Writer {
             writer.println();
         }
 
+        writer.flush();
         writer.close();
+        return new File(options.getOutputPath());
     }
 
     public Section getSection() {

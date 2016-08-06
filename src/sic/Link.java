@@ -1,21 +1,19 @@
 package sic;
 
-import sic.link.Linker;
-import sic.link.LinkerError;
-import sic.link.Options;
+import sic.link.*;
 import sic.link.section.Section;
 import sic.link.utils.Writer;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /*
  * SIC/XE Linker
  *
  */
 public class Link {
-
-    private String output = null;
 
     public static void main(String[] args) {
         try {
@@ -26,18 +24,23 @@ public class Link {
             // get the input files
             List<String> inputs = processInputs(args, processedArgs);
 
-            Linker linker = new Linker(inputs, options);
-            Section linkedSection = linker.link();
-
-            Writer writer = new Writer(linkedSection, options);
-            writer.write();
+            if (options.isGraphical())
+                LinkerGui.gui(options, inputs, new LinkerGui.GuiLinkListener());
+            else
+                link(options, inputs);
 
         } catch (LinkerError le) {
             System.err.println(le.getMessage());
         }
     }
 
+    public static File link(Options options, List<String> inputs) throws LinkerError {
+        Linker linker = new Linker(inputs, options);
+        Section linkedSection = linker.link();
 
+        Writer writer = new Writer(linkedSection, options);
+        return writer.write();
+    }
 
     private static List<String> processInputs(String[] args, int start) {
         List<String> inputs = new ArrayList<>();

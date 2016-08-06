@@ -6,6 +6,9 @@ import sic.ast.Program;
 import sic.common.GUI;
 import sic.common.Utils;
 import sic.disasm.Disassembler;
+import sic.link.LinkListener;
+import sic.link.LinkerGui;
+import sic.link.Options;
 import sic.loader.Loader;
 import sic.sim.addons.GraphicalScreen;
 import sic.sim.addons.TextualScreen;
@@ -128,6 +131,24 @@ public class MainView {
             public void actionPerformed(ActionEvent actionEvent) {
                 File file = GUI.openFileDialog(mainFrame, new FileNameExtensionFilter("Sic object files", "obj"));
                 if (file != null) loadObj(file);
+            }
+        });
+        GUI.addMenuItem(menu, "Link & load objs", KeyEvent.VK_M, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+
+                LinkerGui.gui(null, null, new LinkListener() {
+                    @Override
+                    public void onLinked(File f, String message) {
+                        if (f != null)
+                            loadObj(f);
+                        else {
+                            LinkerGui.showError(message);
+                        }
+                    }
+                });
+
             }
         });
         menu.addSeparator();

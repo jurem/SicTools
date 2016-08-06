@@ -17,7 +17,7 @@ public class Options {
     private String main = null;       // first section - otherwise the first in the first input file is used
     private boolean verbose = false;  // displays debugging messages during linking
     private boolean keep = false;     // keep the D records in the file - to allow further linking
-    private boolean absolute = false; // allow absolute sections if they are not overlaping
+    private boolean graphical = false;      // open the gui
 
     /*
      * processes option flags
@@ -72,6 +72,12 @@ public class Options {
                     case "-v":
                         // verbose mode
                         this.verbose = true;
+                        processedArgs++;
+                        break;
+
+                    case "-g":
+                        // graphical mode
+                        this.graphical = true;
                         processedArgs++;
                         break;
 
@@ -156,5 +162,27 @@ public class Options {
 
     public void setKeep(boolean keep) {
         this.keep = keep;
+    }
+
+    public boolean isGraphical() {
+        return graphical;
+    }
+
+    public void setGraphical(boolean graphical) {
+        this.graphical = graphical;
+    }
+
+    public String describeOptions() {
+        StringBuilder builder = new StringBuilder();
+        if (main != null)
+            builder.append(" -m " + main);
+        if (force)
+            builder.append(" -f");
+        if (verbose)
+            builder.append(" -v");
+        if (keep)
+            builder.append(" -k");
+
+        return builder.toString();
     }
 }
