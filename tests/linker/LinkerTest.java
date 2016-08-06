@@ -19,7 +19,7 @@ public class LinkerTest {
 
     @Test
     public void testEmpty() {
-        System.out.println("running testEmpty");
+        System.out.println("running testEmpty, expecting a LinkerError");
 
         List<String> inputs = new ArrayList<>();
         Linker test = new Linker(inputs, new Options());
@@ -330,7 +330,80 @@ public class LinkerTest {
         try {
             Section out = test.link();
 
-            //TODO: write a test
+            testSection(out, "outfac", 0, 0xF3 + 0x103 + 0x123 + 0x27 + 0x3);
+
+            List<TRecord> tRecords = new ArrayList<>();
+
+            // main.obj
+            String end = String.format("%05X", 0xF3 + 0x103 + 0x123 + 0x27);
+            String fact = String.format("%05X", 0xF3);
+            String print = String.format("%05X", 0xF3 + 0x103);
+            String result = String.format("%05X", 0xF3 + 0x3A);
+            String stinit = String.format("%05X", 0xF3 + 0x103 + 0x123);
+            tRecords.add(new TRecord(
+                    0, 0x1E,
+                    "011" + end + "4B1" + stinit + "0100010F1" + result + "03201E1900010F201829000A33200F"
+            ));
+
+            tRecords.add(new TRecord(
+                    0x1E, 0x15,
+                    "4B1" + fact + "031" + result + "4B1" + print + "3F2FDB3F2FFD000000"
+            ));
+
+            // fact.obj
+            String pop = String.format("%05X", 0xF3 + 0x103 + 0x123 + 0x15);
+            String push = String.format("%05X", 0xF3 + 0x103 + 0x123 + 0x6);
+            tRecords.add(new TRecord(
+                    0xF3, 0x1D,
+                    "2900013320310F20341720344B1" + push + "03202D4B1" + push + "0320231D0001"
+            ));
+            tRecords.add(new TRecord(
+                    0xF3 + 0x1D, 0x1D,
+                    "4B2FE04B1" + pop + "0F20194B1" + pop + "23200C0F20090B200C4F00004F0000"
+            ));
+            tRecords.add(new TRecord(
+                    0xF3 + 0x3A, 0x3,
+                    "000001"
+            ));
+
+            // print.obj
+            tRecords.add(new TRecord(
+                    0xF3 + 0x103, 0x1E,
+                    "0F205D03205A1F20512900003B200C03204821000A0F20423F2FE803203C"
+            ));
+            tRecords.add(new TRecord(
+                    0xF3 + 0x103 + 0x1E, 0x1E,
+                    "25000A0F203629000033202103203327202A190030DD00011D003023201E"
+            ));
+            tRecords.add(new TRecord(
+                    0xF3 + 0x103 + 0x3C, 0x1E,
+                    "0F201E03201E1F20180F20183F2FD00100010F200901000ADD00014F0000"
+            ));
+            tRecords.add(new TRecord(
+                    0xF3 + 0x103 + 0x5A, 0x3,
+                    "000001"
+            ));
+
+            //stack.obj
+            tRecords.add(new TRecord(
+                    0xF3 + 0x103 + 0x123, 0x1E,
+                    "0F20214F00000E201B0320181900030F20124F000003200C1D00030F2006"
+            ));
+            tRecords.add(new TRecord(
+                    0xF3 + 0x103 + 0x123 + 0x1E, 0x6,
+                    "0220034F0000"
+            ));
+
+            // ending.obj
+            tRecords.add(new TRecord(
+                    0xF3 + 0x103 + 0x123 + 0x27, 0x3,
+                    "000011"
+            ));
+
+            testTrecords(out, tRecords.size(), tRecords);
+            testMrecords(out, 0, new ArrayList<>());
+            testExtDefs(out, 0, new ArrayList<>());
+            testExtRefs(out, 0, new ArrayList<>());
 
             if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
                 Assert.fail("wrong E record message");
@@ -344,7 +417,7 @@ public class LinkerTest {
 
     @Test
     public void testAbsolute() {
-        System.out.println("running testAbsolute");
+        System.out.println("running testAbsolute, expecting a LinkerError");
 
         List<String> inputs = new ArrayList<>();
         inputs.add("tests/linker/absolute/main.obj");
