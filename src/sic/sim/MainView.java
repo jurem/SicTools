@@ -6,9 +6,8 @@ import sic.ast.Program;
 import sic.common.GUI;
 import sic.common.Utils;
 import sic.disasm.Disassembler;
-import sic.link.LinkListener;
-import sic.link.LinkerGui;
-import sic.link.Options;
+import sic.link.gui.LinkListener;
+import sic.link.gui.LinkerGui;
 import sic.loader.Loader;
 import sic.sim.addons.GraphicalScreen;
 import sic.sim.addons.TextualScreen;
@@ -141,9 +140,10 @@ public class MainView {
                 LinkerGui.gui(null, null, new LinkListener() {
                     @Override
                     public void onLinked(File f, String message) {
-                        if (f != null)
+                        if (f != null) {
                             loadObj(f);
-                        else {
+                            updateView();
+                        } else {
                             LinkerGui.showError(message);
                         }
                     }

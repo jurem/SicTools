@@ -1,6 +1,7 @@
 package sic;
 
 import sic.link.*;
+import sic.link.gui.LinkerGui;
 import sic.link.section.Section;
 import sic.link.utils.Writer;
 

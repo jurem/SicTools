@@ -36,10 +36,10 @@ public class LinkerTest {
         System.out.println("running testOne1");
 
         List<String> inputs = new ArrayList<>();
-        inputs.add("tests/linker/one1/file.obj");
+        inputs.add("tests/linker/one/file.obj");
         Options options = new Options();
         options.setOutputName("out.obj");
-        options.setOutputPath("tests/linker/one1/out.obj");
+        options.setOutputPath("tests/linker/one/out.obj");
 
         Linker test = new Linker(inputs, options);
         try {
@@ -77,11 +77,11 @@ public class LinkerTest {
         System.out.println("running testMulti1");
 
         List<String> inputs = new ArrayList<>();
-        inputs.add("tests/linker/multi1/func.obj");
-        inputs.add("tests/linker/multi1/main.obj");
+        inputs.add("tests/linker/multi/func.obj");
+        inputs.add("tests/linker/multi/main.obj");
         Options options = new Options();
         options.setOutputName("out_multiple.obj");
-        options.setOutputPath("tests/linker/one1/out.obj");
+        options.setOutputPath("tests/linker/multi/out.obj");
         options.setMain("main");
 
         Linker test = new Linker(inputs, options);

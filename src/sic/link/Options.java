@@ -103,6 +103,8 @@ public class Options {
                         System.out.println("-f : force linking even if not all references can be resolved");
                         System.out.println("-k : keep D records in the output file");
                         System.out.println("-v : display debugging messages during linking");
+                        System.out.println("-g : displays a graphical interface");
+                        System.out.println();
                         System.out.println("-h : shows this help");
 
                         throw new LinkerError(null); // throw error to end execution

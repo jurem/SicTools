@@ -1,4 +1,4 @@
-package sic.link;
+package sic.link.gui;
 
 import java.io.File;
 
