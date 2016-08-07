@@ -56,10 +56,12 @@ public class SecondPassVisitor extends SectionVisitor {
 
             ExtDef symbol = esTable.get(mRecord.getSymbol());
             if (symbol == null) {
-                if (options.isForce())
+                if (options.isForce()) {
+                    if (options.isVerbose()) System.out.println(mRecord.getSymbol() + " is not defined in any section, allowing because -force option is set");
                     return;
-                else
-                    throw new LinkerError(PHASE, mRecord.getSymbol() + " is not defined in any section ", mRecord.getLocation() );
+                } else {
+                    throw new LinkerError(PHASE, mRecord.getSymbol() + " is not defined in any section ", mRecord.getLocation());
+                }
             }
 
             long fixAddress = mRecord.getStart() + currSection.getStart();
@@ -102,6 +104,8 @@ public class SecondPassVisitor extends SectionVisitor {
             String correctedString = String.format("%0" + mRecord.getLength() + "X",corrected);
             text = text.substring(0,start) + correctedString + text.substring(start + mRecord.getLength());
             fixRecord.setText(text);
+
+            if (options.isVerbose()) System.out.println("fixing " + mRecord.getLength() + " half-bytes from " + fixBytes + " to " + correctedString + "   symbol=" + symbol.getName());
 
             mRecord.setDelete(true);
 

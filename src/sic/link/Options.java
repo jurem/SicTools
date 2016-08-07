@@ -31,6 +31,7 @@ public class Options {
             if (arg.startsWith("-")) {
                 switch (arg) {
                     case "-o":
+                    case "-out":
                         //specifies the output file
                         i++;
                         if (i == args.length)
@@ -49,18 +50,21 @@ public class Options {
                         break;
 
                     case "-f":
+                    case "-force":
                         // forces linking even if not all external symbols are present
                         this.force = true;
                         processedArgs++;
                         break;
 
                     case "-k":
+                    case "-keep":
                         // keeps D records in the output file
                         this.keep = true;
                         processedArgs++;
                         break;
 
                     case "-m":
+                    case "-main":
                         // specifies the first (main) section
                         i++;
                         if (i == args.length)
@@ -70,19 +74,21 @@ public class Options {
                         break;
 
                     case "-v":
+                    case "-verbose":
                         // verbose mode
                         this.verbose = true;
                         processedArgs++;
                         break;
 
                     case "-g":
+                    case "-gui":
                         // graphical mode
                         this.graphical = true;
                         processedArgs++;
                         break;
 
                     case "-h":
-                    case "help":
+                    case "-help":
                     default:
                         // display help end exit
                         System.out.println("SIC/XE Linker");

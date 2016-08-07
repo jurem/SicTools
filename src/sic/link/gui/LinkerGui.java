@@ -24,8 +24,8 @@ public class LinkerGui {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // central scrollpane
-        DefaultListModel<String> model = new DefaultListModel();
-        JList list = new JList(model);
+        DefaultListModel<String> model = new DefaultListModel<>();
+        JList<String> list = new JList<>(model);
         JScrollPane scrollPane = new JScrollPane(list);
 
         //top name input
@@ -324,24 +324,35 @@ public class LinkerGui {
     public static void showHelp() {
         String nl = System.lineSeparator();
         StringBuilder text = new StringBuilder();
-        text.append("Linker for SIC/XE Hypothetical computer" + nl);
-        text.append(nl);
-        text.append("Links the given relative obj files into one, and resolves dependencies between them using the R and D records." + nl);
-        text.append("The resulting file can be loaded and executed using the SicTools simulator." +nl);
-        text.append(nl);
-        text.append("Usage:" + nl);
-        text.append("Add the assembled obj files to the list using the 'Add .obj' button." + nl);
-        text.append("Move them in the desired order using the Up/Down/Remove buttons on the right." + nl);
-        text.append("Specify the output file using the input at the top." + nl);
-        text.append("Specify any other options by ticking the checkboxes on the bottom right." + nl);
-
-
-        text.append(nl);
-        text.append("Options: "+nl);
-        text.append(" - Force : forces linking even if some references were not resolved. The file needs to be linked further."+nl);
-        text.append(" - Keep : keeps the external symbol definitions in the obj file."+nl);
-        text.append(" - Main : specifies the main/starting section."+nl);
-        text.append(" - Verbose : displays debugging information to the standard output."+nl);
+        text.append("Linker for SIC/XE Hypothetical computer")
+                .append(nl)
+                .append(nl)
+                .append("Links the given relative obj files into one, and resolves references between them them using the R and D records.")
+                .append(nl)
+                .append("The resulting file with resolved  can be loaded and executed using the SicTools simulator.")
+                .append(nl)
+                .append(nl)
+                .append("Usage:")
+                .append(nl)
+                .append("Add the assembled obj files to the list using the 'Add .obj' button.")
+                .append(nl)
+                .append("Move them in the desired order using the Up/Down/Remove buttons on the right.")
+                .append(nl)
+                .append("Specify the output file using the input at the top.")
+                .append(nl)
+                .append("Specify any other options by ticking the checkboxes on the bottom right.")
+                .append(nl)
+                .append(nl)
+                .append("Options: ")
+                .append(nl)
+                .append(" - Force : forces linking even if some references were not resolved. The file needs to be linked further.")
+                .append(nl)
+                .append(" - Keep : keeps the external symbol definitions in the obj file.")
+                .append(nl)
+                .append(" - Main : specifies the main/starting section.")
+                .append(nl)
+                .append(" - Verbose : displays debugging information to the standard output.")
+                .append(nl);
 
 
         JOptionPane optionPane = new JOptionPane(text.toString(), JOptionPane.PLAIN_MESSAGE);
