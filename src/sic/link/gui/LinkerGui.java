@@ -39,7 +39,7 @@ public class LinkerGui {
                 fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
                 fc.setFileFilter(new FileNameExtensionFilter("Sic object files", "obj"));
 
-                if (fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+                if (fc.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
                     File f = fc.getSelectedFile();
                     if (f.exists())
                         showWarning("Output file already exists and will be overwritten!");
@@ -282,7 +282,7 @@ public class LinkerGui {
         frame.add(new JPanel(), BorderLayout.WEST);
 
 
-        frame.setSize(960, 640);
+        frame.setSize(960, 480);
         frame.setVisible(true);
 
     }
@@ -329,18 +329,20 @@ public class LinkerGui {
                 .append(nl)
                 .append("Links the given relative obj files into one, and resolves references between them them using the R and D records.")
                 .append(nl)
-                .append("The resulting file with resolved  can be loaded and executed using the SicTools simulator.")
+                .append("The resulting file with resolved references can be loaded and executed using the SicTools simulator.")
                 .append(nl)
                 .append(nl)
                 .append("Usage:")
                 .append(nl)
-                .append("Add the assembled obj files to the list using the 'Add .obj' button.")
+                .append("1. Specify the output file using the input field at the top.")
                 .append(nl)
-                .append("Move them in the desired order using the Up/Down/Remove buttons on the right.")
+                .append("2. Add the assembled obj files to the list using the 'Add .obj' button at the bottom.")
                 .append(nl)
-                .append("Specify the output file using the input at the top.")
+                .append("3. Move them in the desired order using the Up/Down/Remove buttons on the right.")
                 .append(nl)
-                .append("Specify any other options by ticking the checkboxes on the bottom right.")
+                .append("4. Specify any other options by ticking the checkboxes on the bottom right.")
+                .append(nl)
+                .append("5. Start the linking process by pressing the 'Link' button at the bottom.")
                 .append(nl)
                 .append(nl)
                 .append("Options: ")
@@ -349,7 +351,7 @@ public class LinkerGui {
                 .append(nl)
                 .append(" - Keep : keeps the external symbol definitions in the obj file.")
                 .append(nl)
-                .append(" - Main : specifies the main/starting section.")
+                .append(" - Main : specifies the main/starting section. When this option is selected an input field for the section name will be shown.")
                 .append(nl)
                 .append(" - Verbose : displays debugging information to the standard output.")
                 .append(nl);

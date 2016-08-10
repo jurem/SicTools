@@ -19,9 +19,26 @@ public class Options {
     private boolean keep = false;     // keep the D records in the file - to allow further linking
     private boolean graphical = false;      // open the gui
 
+    public Options(){}
+
+    public Options(String output, boolean force, String main, boolean verbose, boolean keep) throws LinkerError {
+        this.force = force;
+        this.main = main;
+        this.verbose = verbose;
+        this.keep = keep;
+
+        File file = new File(output);
+
+        if (file.isDirectory() || file.getParentFile() != null && !file.getParentFile().exists())
+            throw new LinkerError(PHASE, output + " is not a valid output file");
+
+        this.outputName = file.getName();
+        this.outputPath = file.getAbsolutePath();
+    }
+
     /*
-     * processes option flags
-     */
+         * processes option flags
+         */
     public int processFlags(String[] args) throws LinkerError {
         int processedArgs = 0;
 
@@ -35,7 +52,7 @@ public class Options {
                         //specifies the output file
                         i++;
                         if (i == args.length)
-                            throw new LinkerError(PHASE, "Output file name not specified");
+                            throw new LinkerError(PHASE, "Output file name not specified. Use -h option for help.");
                         String output = args[i];
 
                         File file = new File(output);
@@ -68,7 +85,7 @@ public class Options {
                         // specifies the first (main) section
                         i++;
                         if (i == args.length)
-                            throw new LinkerError(PHASE, "Main section name not specified");
+                            throw new LinkerError(PHASE, "Main section name not specified. Use -h option for help.");
                         this.main = args[i];
                         processedArgs += 2;
                         break;
