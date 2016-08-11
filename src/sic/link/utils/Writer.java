@@ -81,20 +81,21 @@ public class Writer {
             }
 
         // in some cases we keep some references or definitions
-        if (section.getExtDefs() != null && section.getExtDefs().size() > 0)
+        if (section.getExtDefs() != null && section.getExtDefs().size() > 0) {
             writer.print("D");
             int count = 0;
-            for (ExtDef d : section.getExtDefs()){
+            for (ExtDef d : section.getExtDefs()) {
                 writer.printf("%-6s", d.getName());
-                writer.printf("%06X", d.getCsAddress() + d.getAddress()); // TODO: check this
+                writer.printf("%06X", d.getCsAddress() + d.getAddress());
                 writer.print(" ");
                 count++;
-                if (count%6 == 0 && count < section.getExtDefs().size()) {
+                if (count % 6 == 0 && count < section.getExtDefs().size()) {
                     writer.println();
                     writer.print("D");
                 }
             }
             writer.println();
+        }
 
         if (section.getExtRefs() != null)
             for (ExtRef r : section.getExtRefs()){

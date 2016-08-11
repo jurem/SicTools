@@ -37,12 +37,19 @@ public class Linker {
     }
 
     public Section link() throws LinkerError {
+        Sections sections = parse();
 
-        // parse all the input files, add  into a Sections class
+        Section combined = passAndCombine(sections);
+
+        return combined;
+    }
+
+    public Sections parse() throws LinkerError {
+        // parse all the input files, add into a Sections class
         Sections sections = new Sections();
 
         for (String input : inputs) {
-            Parser p =  new Parser(input, options);
+            Parser p = new Parser(input, options);
             sections.addSections(p.parse());
         }
 
@@ -61,11 +68,15 @@ public class Linker {
         if (options.getOutputName() != null) {
             String name = options.getOutputName().replace(".obj", "");
             if (name.length() > 6)
-                name = name.substring(0,6);
+                name = name.substring(0, 6);
             sections.setName(name);
             log("setting output section name to " + sections.getName());
         }
 
+        return sections;
+    }
+
+    public Section passAndCombine(Sections sections) throws LinkerError {
         // External Symbol table - used in both visitors
         Map<String, ExtDef> esTable = new HashMap<>();
 
@@ -97,6 +108,15 @@ public class Linker {
 
         return combined;
     }
+
+
+
+
+
+
+
+
+
 
     private void log(String str) {
         if (options.isVerbose()) {

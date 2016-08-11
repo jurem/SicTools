@@ -192,8 +192,13 @@ public class Parser {
                         }
                         c = (char) reader.read();
                         break;
+                    case '\n':
+                        c = (char) reader.read();
+                        row++;
+                        break;
+
                     default:
-                        throw new LinkerError(PHASE, "Unexpected character while reading object file", new Location(input, row));
+                        throw new LinkerError(PHASE, "Unexpected character '" + c + "' while reading object file", new Location(input, row));
                 }
             }
 
