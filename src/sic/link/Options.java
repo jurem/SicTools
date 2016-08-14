@@ -17,7 +17,8 @@ public class Options {
     private String main = null;       // first section - otherwise the first in the first input file is used
     private boolean verbose = false;  // displays debugging messages during linking
     private boolean keep = false;     // keep the D records in the file - to allow further linking
-    private boolean graphical = false;      // open the gui
+    private boolean graphical = false;      // open the ui
+    private boolean interactive = false;    // allow changing sections during linking
 
     public Options(){}
 
@@ -98,9 +99,16 @@ public class Options {
                         break;
 
                     case "-g":
-                    case "-gui":
+                    case "-ui":
                         // graphical mode
                         this.graphical = true;
+                        processedArgs++;
+                        break;
+
+                    case "-i":
+                    case "-interactive":
+                        // graphical mode
+                        this.interactive = true;
                         processedArgs++;
                         break;
 
@@ -195,6 +203,14 @@ public class Options {
 
     public void setGraphical(boolean graphical) {
         this.graphical = graphical;
+    }
+
+    public boolean isInteractive() {
+        return interactive;
+    }
+
+    public void setInteractive(boolean interactive) {
+        this.interactive = interactive;
     }
 
     public String describeOptions() {

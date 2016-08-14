@@ -10,18 +10,116 @@ import java.util.*;
 public class Sections {
 
     private List<Section> sections;
+    private Map<String, Section> map;
     private String name;
 
     public Sections () {
         this.sections = new ArrayList<>();
+        this.map = new HashMap<>();
     }
 
-    public void addSection(Section section) {
+    public void addSection(Section section) throws LinkerError {
+
+        if (map.get(section.getName()) != null)
+            throw new LinkerError("sections", "Duplicated section name: " + section.getName(), section.getLocation());
+        map.put(section.getName(), section);
+
         sections.add(section);
     }
 
-    public void addSections(List<Section> sectionList) {
-        this.sections.addAll(sectionList);
+    public void addSections(List<Section> sectionList) throws LinkerError {
+        for (Section s : sectionList)
+            addSection(s);
+    }
+
+    public void rename(String oldName, String newname) throws LinkerError {
+        Section renamed = map.get(oldName);
+        Section used = map.get(newname);
+        if (renamed == null) {
+            // old section is not in the map
+            throw new LinkerError("rename section", oldName + " not found");
+        } else if (used != null) {
+            // new name is already used
+            throw new LinkerError("rename section", newname + " is already in use");
+        } else {
+            map.remove(oldName);
+            sections.remove(renamed);
+
+            renamed.setName(newname);
+
+            addSection(renamed);
+        }
+    }
+
+    public void renameSymbol(String sectionName, String oldName, String newName) throws LinkerError{
+        Section s = map.get(sectionName);
+
+        if (s == null)
+            throw new LinkerError("remove section", sectionName + " not found");
+        else {
+            ExtDef symD = null;
+            ExtRef symR = null;
+            for (ExtDef d : s.getExtDefs())
+                if (d.getName().equals(oldName))
+                    symD = d;
+
+            for (ExtRef r : s.getExtRefs())
+                if (r.getName().equals(oldName))
+                    symR = r;
+
+            if (symD == null && symR == null)
+                throw new LinkerError("rename symbol", oldName + " not found");
+            else {
+                if (symD != null)
+                    symD.setName(newName);
+
+                if (symR != null)
+                    symR.setName(newName);
+            }
+        }
+    }
+
+    public void remove(String sectionName) throws LinkerError {
+        Section s = map.get(sectionName);
+
+        if (s == null)
+            throw new LinkerError("remove section", sectionName + " not found");
+        else {
+            map.remove(sectionName);
+            sections.remove(s);
+        }
+    }
+
+    public void removeSymbol(String sectionName, String symbolName) throws LinkerError {
+        Section s = map.get(sectionName);
+
+        if (s == null)
+            throw new LinkerError("remove section", sectionName + " not found");
+        else {
+
+            boolean removed = false;
+
+            ListIterator<ExtDef> iterDef = s.getExtDefs().listIterator();
+            while(iterDef.hasNext()) {
+                ExtDef d = iterDef.next();
+                if (d.getName().equals(symbolName)) {
+                    iterDef.remove();
+                    removed = true;
+                }
+            }
+
+            ListIterator<ExtRef> iterRef = s.getExtRefs().listIterator();
+            while(iterRef.hasNext()) {
+                ExtRef r = iterRef.next();
+                if (r.getName().equals(symbolName)) {
+                    iterRef.remove();
+                    removed = true;
+                }
+            }
+
+            if (!removed)
+                throw new LinkerError("remove symbol", symbolName + " not found");
+        }
     }
 
     public List<Section> getSections() {
@@ -40,6 +138,10 @@ public class Sections {
         this.name = name;
     }
 
+    public Section getSection(String name) {
+        return map.get(name);
+    }
+
     public void sort() {
         Collections.sort(sections, (s1, s2) -> {
             if (s1.getStart() < s2.getStart())
@@ -52,18 +154,28 @@ public class Sections {
     }
 
     public void makeFirst(String name) throws LinkerError {
-        Section first = null;
+        try {
+            move(name, 0);
+        } catch (LinkerError le) {
+            throw new LinkerError("options", "specified main section " + name + " does not exist");
+        }
+    }
+
+    public void move(String name, int position) throws LinkerError {
+        Section section = null;
         for (Section s : sections)
             if (s.getName().equals(name)) {
-                first = s;
+                section = s;
                 break;
             }
 
-        if (first == null)
-            throw new LinkerError("options", "specified main section " + name + " does not exist");
+        if (section == null)
+            throw new LinkerError("move section", name + " not found");
+        else if (position >= sections.size() || position < 0)
+            throw new LinkerError("move section", "position " + position + " is out of bounds");
         else {
-            sections.remove(first);
-            sections.add(0, first);
+            sections.remove(section);
+            sections.add(position, section);
         }
     }
 

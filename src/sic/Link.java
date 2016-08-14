@@ -1,8 +1,10 @@
 package sic;
 
 import sic.link.*;
-import sic.link.gui.LinkerGui;
+import sic.link.ui.LinkerCli;
+import sic.link.ui.LinkerGui;
 import sic.link.section.Section;
+import sic.link.section.Sections;
 import sic.link.utils.Writer;
 
 import java.io.File;
@@ -37,10 +39,24 @@ public class Link {
 
     public static File link(Options options, List<String> inputs) throws LinkerError {
         Linker linker = new Linker(inputs, options);
-        Section linkedSection = linker.link();
 
-        Writer writer = new Writer(linkedSection, options);
-        return writer.write();
+        if (options.isInteractive()) {
+            Sections sections = linker.parse();
+
+            sections = LinkerCli.interactiveReorder(sections);
+
+            Section linkedSection = linker.passAndCombine(sections);
+
+            Writer writer = new Writer(linkedSection, options);
+            return writer.write();
+
+        } else {
+            Section linkedSection = linker.link();
+
+            Writer writer = new Writer(linkedSection, options);
+            return writer.write();
+        }
+
     }
 
     private static List<String> processInputs(String[] args, int start) {
