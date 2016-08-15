@@ -42,12 +42,9 @@ public class Sections {
             // new name is already used
             throw new LinkerError("rename section", newname + " is already in use");
         } else {
-            map.remove(oldName);
-            sections.remove(renamed);
-
             renamed.setName(newname);
-
-            addSection(renamed);
+            map.remove(oldName);
+            map.put(newname, renamed);
         }
     }
 
@@ -75,6 +72,12 @@ public class Sections {
 
                 if (symR != null)
                     symR.setName(newName);
+
+                for (MRecord m : s.getmRecords()) {
+                    if (m.getSymbol().equals(oldName)) {
+                        m.setSymbol(newName);
+                    }
+                }
             }
         }
     }

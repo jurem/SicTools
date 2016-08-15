@@ -1,10 +1,12 @@
 package sic;
 
 import sic.link.*;
+import sic.link.ui.LinkListener;
 import sic.link.ui.LinkerCli;
 import sic.link.ui.LinkerGui;
 import sic.link.section.Section;
 import sic.link.section.Sections;
+import sic.link.ui.SectionEditListener;
 import sic.link.utils.Writer;
 
 import java.io.File;
@@ -28,7 +30,16 @@ public class Link {
             List<String> inputs = processInputs(args, processedArgs);
 
             if (options.isGraphical())
-                LinkerGui.gui(options, inputs, new LinkerGui.GuiLinkListener());
+                LinkerGui.gui(options, inputs, new LinkListener() {
+                    @Override
+                    public void onLinked(File f, String message) {
+                        if (f != null) {
+                            LinkerGui.showSuccess(f.getAbsolutePath());
+                        } else {
+                            LinkerGui.showError(message);
+                        }
+                    }
+                });
             else
                 link(options, inputs);
 
@@ -43,7 +54,7 @@ public class Link {
         if (options.isInteractive()) {
             Sections sections = linker.parse();
 
-            sections = LinkerCli.interactiveReorder(sections);
+            sections = LinkerCli.sectionEdit(sections);
 
             Section linkedSection = linker.passAndCombine(sections);
 

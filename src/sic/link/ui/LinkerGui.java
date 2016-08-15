@@ -2,13 +2,17 @@ package sic.link.ui;
 
 
 import sic.Link;
+import sic.link.Linker;
 import sic.link.LinkerError;
 import sic.link.Options;
+import sic.link.section.*;
+import sic.link.utils.Writer;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -81,6 +85,9 @@ public class LinkerGui {
         JCheckBox verbose = new JCheckBox("Verbose");
         verbose.setToolTipText("Show debbuging information on standard output");
 
+        JCheckBox interactive = new JCheckBox("Interactive");
+        verbose.setToolTipText("Show debbuging information on standard output");
+
         JCheckBox main = new JCheckBox("Main");
         main.setToolTipText("If not specified, first section will be used");
         JTextField mainName = new JTextField(8);
@@ -100,9 +107,9 @@ public class LinkerGui {
         done.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Options opt = new Options();
+                final Options opt = new Options();
                 if (options != null)
-                    opt = options;
+                    opt.copyFrom(options);
 
                 String strName = name.getText();
 
@@ -119,6 +126,7 @@ public class LinkerGui {
 
                 opt.setForce(force.isSelected());
                 opt.setVerbose(verbose.isSelected());
+                opt.setInteractive(interactive.isSelected());
                 opt.setKeep(keep.isSelected());
                 if (main.isSelected()) {
                     if (mainName.getText().length() <= 0) {
@@ -128,22 +136,58 @@ public class LinkerGui {
                         opt.setMain(mainName.getText());
                     }
                 }
-                List<String> in = new ArrayList<String>();
+                final List<String> in = new ArrayList<String>();
                 for (int i=0; i<model.size(); i++)
                     in.add(model.get(i));
 
                 try {
-                    File file = Link.link(opt, in);
+                    final Linker linker = new Linker(in, opt);
 
-                    //notify the simulator
-                    if (listener != null)
-                        listener.onLinked(file, "0");
+                    if (opt.isInteractive()) {
+                        Sections sections = linker.parse();
 
-                    frame.dispose();
+                        new EditSectionGui(sections).sectionEdit(new SectionEditListener() {
+                            @Override
+                            public void onEdited(Sections sections, String message) {
+
+                                Section linkedSection = null;
+                                try {
+                                    linkedSection = linker.passAndCombine(sections);
+
+                                    Writer writer = new Writer(linkedSection, options);
+                                    File file = writer.write();
+
+                                    //notify the listener
+                                    if (listener != null)
+                                        listener.onLinked(file, "0");
+                                    frame.dispose();
+
+                                } catch (LinkerError linkerError) {
+                                    System.err.println(linkerError.getMessage());
+
+                                    //notify the listener
+                                    if (listener != null)
+                                        listener.onLinked(null, linkerError.getMessage());
+                                }
+                            }
+                        });
+                    } else {
+                        Section linkedSection = linker.link();
+
+                        Writer writer = new Writer(linkedSection, options);
+                        File file = writer.write();
+
+                        //notify the listener
+                        if (listener != null)
+                            listener.onLinked(file, "0");
+                        frame.dispose();
+                    }
+
+
                 } catch (LinkerError linkerError) {
                     System.err.println(linkerError.getMessage());
 
-                    //notify the simulator
+                    //notify the listener
                     if (listener != null)
                         listener.onLinked(null, linkerError.getMessage());
                 }
@@ -221,6 +265,8 @@ public class LinkerGui {
                 keep.setSelected(true);
             if (options.isVerbose())
                 verbose.setSelected(true);
+            if (options.isInteractive())
+                interactive.setSelected(true);
             if (options.getMain() != null) {
                 main.setSelected(true);
                 mainName.setText(options.getMain());
@@ -248,6 +294,7 @@ public class LinkerGui {
         optionsPanel.add(force);
         optionsPanel.add(keep);
         optionsPanel.add(verbose);
+        optionsPanel.add(interactive);
         optionsPanel.add(main);
         optionsPanel.add(mainName);
         main.addActionListener(new ActionListener() {
@@ -284,19 +331,6 @@ public class LinkerGui {
 
         frame.setSize(960, 480);
         frame.setVisible(true);
-
-    }
-
-    public static class GuiLinkListener implements LinkListener {
-
-        @Override
-        public void onLinked(File f, String message) {
-            if (f != null) {
-                showSuccess(f.getAbsolutePath());
-            } else {
-                showError(message);
-            }
-        }
 
     }
 
@@ -353,7 +387,7 @@ public class LinkerGui {
                 .append(nl)
                 .append(" - Main : specifies the main/starting section. When this option is selected an input field for the section name will be shown.")
                 .append(nl)
-                .append(" - Verbose : displays debugging information to the standard output.")
+                .append(" - Interactive : allows the sections and symbols to be edited before linking.")
                 .append(nl);
 
 

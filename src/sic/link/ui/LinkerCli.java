@@ -12,7 +12,7 @@ import java.util.*;
 public class LinkerCli {
 
 
-    public static Sections interactiveReorder(Sections sections) {
+    public static Sections sectionEdit(Sections sections) {
         System.out.println("SIC Linker Interactive Section Editor");
         System.out.println("Type 'help' for list of commands or 'done' to finish editing");
 
@@ -124,7 +124,9 @@ public class LinkerCli {
                             System.out.println("Please specify a valid section name");
                         else if (newName == null)
                             System.out.println("Please specify a new name for section " + oldName);
-                        else {
+                        else if (newName.length() > 6) {
+                            System.out.println("New section name should have 6 characters or less.");
+                        } else {
                             try {
                                 sections.rename(oldName, newName);
                             } catch (LinkerError linkerError) {
@@ -166,7 +168,9 @@ public class LinkerCli {
                             System.out.println("Please specify a valid symbol name");
                         else if (newName == null)
                             System.out.println("Please specify a new name for symbol " + symName);
-                        else {
+                        else if (newName.length() > 6) {
+                            System.out.println("New symbol name should have 6 characters or less.");
+                        } else {
                             try {
                                 sections.renameSymbol(secName, symName, newName);
                             } catch (LinkerError le) {

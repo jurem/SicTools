@@ -110,14 +110,6 @@ public class Linker {
     }
 
 
-
-
-
-
-
-
-
-
     private void log(String str) {
         if (options.isVerbose()) {
             System.out.println();

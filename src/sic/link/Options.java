@@ -226,4 +226,15 @@ public class Options {
 
         return builder.toString();
     }
+
+    public void copyFrom(Options o) {
+        this.outputName = o.getOutputName();
+        this.outputPath = o.getOutputPath();
+        this.force = o.isForce();
+        this.main = o.getMain();
+        this.verbose = o.isVerbose();
+        this.keep = o.isKeep();
+        this.graphical = o.isGraphical();
+        this.interactive = o.isInteractive();
+    }
 }
