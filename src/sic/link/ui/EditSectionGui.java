@@ -22,8 +22,8 @@ public class EditSectionGui {
 
     private Sections sections;
     private Section selectedSection = null;
-    private List<String> symbols;
-    private List<Boolean> symbolTypes;
+    private List<String> refs;
+    private List<String> defs;
     private String selectedSymbol = null;
     private boolean selectedDef = false;
 
@@ -32,9 +32,11 @@ public class EditSectionGui {
     private JPanel rightPanel;
     // their list modes
     DefaultListModel<String> sectionModel;
-    DefaultListModel<String> symbolModel;
+    DefaultListModel<String> refsModel;
+    DefaultListModel<String> defsModel;
     JList<String> sectionList;
-    JList<String> symbolList;
+    JList<String> defsList;
+    JList<String> refsList;
 
     // edit panels - one visible at a time
     private JPanel editSectionPanel;
@@ -68,7 +70,8 @@ public class EditSectionGui {
         leftPanel = new JPanel();
         rightPanel = new JPanel();
         sectionModel = new DefaultListModel<>();
-        symbolModel = new DefaultListModel<>();
+        refsModel = new DefaultListModel<>();
+        defsModel = new DefaultListModel<>();
 
         // edit panels
         editSectionPanel = new JPanel();
@@ -89,10 +92,11 @@ public class EditSectionGui {
         symApply = new JButton("Rename");
 
         sectionList = new JList<>(sectionModel);
-        symbolList = new JList<>(symbolModel);
+        refsList = new JList<>(refsModel);
+        defsList = new JList<>(defsModel);
 
         // final button
-        proceed = new JButton("Continue");
+        proceed = new JButton("Done");
 
 
 
@@ -101,8 +105,10 @@ public class EditSectionGui {
         leftPanel.add(new JScrollPane(sectionList));
 
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        rightPanel.add(new JLabel("Symbols"));
-        rightPanel.add(new JScrollPane(symbolList));
+        rightPanel.add(new JLabel("Definitions"));
+        rightPanel.add(new JScrollPane(defsList));
+        rightPanel.add(new JLabel("References"));
+        rightPanel.add(new JScrollPane(refsList));
 
         // fill edit section panel
         editSectionPanel.setLayout(new GridLayout(4,1));
@@ -160,21 +166,33 @@ public class EditSectionGui {
                 }
             }
         });
-        symbolList.addListSelectionListener(new ListSelectionListener() {
+        refsList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (symbolList.getSelectedIndex() != -1) {
+                if (refsList.getSelectedIndex() != -1) {
 
-                    selectedSymbol = symbols.get(symbolList.getSelectedIndex());
-                    selectedDef = symbolTypes.get(symbolList.getSelectedIndex());
+                    selectedSymbol = refs.get(refsList.getSelectedIndex());
+                    selectedDef = false;
 
                     editSymbolPanel.setVisible(true);
                     editSectionPanel.setVisible(false);
-                    if (selectedDef)
-                        symbolTitle.setText("Selected definition: " + selectedSymbol);
-                    else
-                        symbolTitle.setText("Selected reference: " + selectedSymbol);
+                    symbolTitle.setText("Selected reference: " + selectedSymbol);
+                    symName.setText(selectedSymbol);
+                }
+            }
+        });
 
+        defsList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (defsList.getSelectedIndex() != -1) {
+
+                    selectedSymbol = defs.get(defsList.getSelectedIndex());
+                    selectedDef = true;
+
+                    editSymbolPanel.setVisible(true);
+                    editSectionPanel.setVisible(false);
+                    symbolTitle.setText("Selected definition: " + selectedSymbol);
                     symName.setText(selectedSymbol);
                 }
             }
@@ -310,13 +328,16 @@ public class EditSectionGui {
         editPanel.add(editSectionPanel);
         editPanel.add(editSymbolPanel);
 
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.add(proceed);
+
         frame.add(new JPanel(), BorderLayout.NORTH);
         frame.add(scrollpanels, BorderLayout.CENTER);
         frame.add(new JPanel(), BorderLayout.WEST);
         frame.add(editPanel, BorderLayout.EAST);
-        frame.add(proceed, BorderLayout.SOUTH);
+        frame.add(bottomPanel, BorderLayout.SOUTH);
 
-        frame.setSize(800, 600);
+        frame.setSize(600, 400);
         frame.setVisible(true);
     }
 
@@ -330,19 +351,18 @@ public class EditSectionGui {
     }
 
     private void fillSymbols() {
-        symbolModel.clear();
-        symbols = new ArrayList<>();
-        symbolTypes = new ArrayList<>();
+        refsModel.clear();
+        defsModel.clear();
+        refs = new ArrayList<>();
+        defs = new ArrayList<>();
 
         for (ExtDef d : selectedSection.getExtDefs()) {
-            symbols.add(d.getName());
-            symbolTypes.add(true);
-            symbolModel.addElement(d.getName() + " (definition)");
+            defs.add(d.getName());
+            defsModel.addElement(d.getName());
         }
         for (ExtRef r : selectedSection.getExtRefs()) {
-            symbols.add(r.getName());
-            symbolTypes.add(false);
-            symbolModel.addElement(r.getName() + " (reference)");
+            refs.add(r.getName());
+            refsModel.addElement(r.getName());
 
         }
     }

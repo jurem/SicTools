@@ -17,8 +17,8 @@ public class Options {
     private String main = null;       // first section - otherwise the first in the first input file is used
     private boolean verbose = false;  // displays debugging messages during linking
     private boolean keep = false;     // keep the D records in the file - to allow further linking
-    private boolean graphical = false;      // open the ui
-    private boolean interactive = false;    // allow changing sections during linking
+    private boolean graphical = false;  // open the ui
+    private boolean editing = false;    // allow changing sections & symbols before linking
 
     public Options(){}
 
@@ -38,8 +38,8 @@ public class Options {
     }
 
     /*
-         * processes option flags
-         */
+     * processes option flags
+     */
     public int processFlags(String[] args) throws LinkerError {
         int processedArgs = 0;
 
@@ -105,10 +105,10 @@ public class Options {
                         processedArgs++;
                         break;
 
-                    case "-i":
-                    case "-interactive":
+                    case "-e":
+                    case "-edit":
                         // graphical mode
-                        this.interactive = true;
+                        this.editing = true;
                         processedArgs++;
                         break;
 
@@ -205,12 +205,12 @@ public class Options {
         this.graphical = graphical;
     }
 
-    public boolean isInteractive() {
-        return interactive;
+    public boolean isEditing() {
+        return editing;
     }
 
-    public void setInteractive(boolean interactive) {
-        this.interactive = interactive;
+    public void setEditing(boolean editing) {
+        this.editing = editing;
     }
 
     public String describeOptions() {
@@ -235,6 +235,6 @@ public class Options {
         this.verbose = o.isVerbose();
         this.keep = o.isKeep();
         this.graphical = o.isGraphical();
-        this.interactive = o.isInteractive();
+        this.editing = o.isEditing();
     }
 }

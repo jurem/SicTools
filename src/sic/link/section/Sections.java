@@ -55,13 +55,21 @@ public class Sections {
             throw new LinkerError("rename definition","section " + sectionName + " not found");
         else {
             ExtDef symD = null;
-            for (ExtDef d : s.getExtDefs())
+            boolean exists = false;
+
+            for (ExtDef d : s.getExtDefs()) {
                 if (d.getName().equals(oldName))
                     symD = d;
 
+                if (d.getName().equals(newName))
+                    exists = true;
+            }
+
             if (symD == null)
                 throw new LinkerError("rename definition", oldName + " not found");
-            else {
+            else if (exists) {
+                throw new LinkerError("rename definition", newName + " already exists");
+            } else {
                 if (symD != null)
                     symD.setName(newName);
 
@@ -89,11 +97,13 @@ public class Sections {
 
             if (symR == null)
                 throw new LinkerError("rename reference", oldName + " not found");
-            else if (exists) {
-                throw new LinkerError("rename reference", newName + " already exists");
-            } else {
-                if (symR != null)
-                    symR.setName(newName);
+            else {
+                if (symR != null) {
+                    if (exists)
+                        s.getExtRefs().remove(symR);
+                    else
+                        s.setName(newName);
+                }
 
                 for (MRecord m : s.getmRecords()) {
                     if (m.getSymbol().equals(oldName)) {

@@ -85,8 +85,8 @@ public class LinkerGui {
         JCheckBox verbose = new JCheckBox("Verbose");
         verbose.setToolTipText("Show debbuging information on standard output");
 
-        JCheckBox interactive = new JCheckBox("Interactive");
-        verbose.setToolTipText("Show debbuging information on standard output");
+        JCheckBox edit = new JCheckBox("Edit");
+        verbose.setToolTipText("Edit the sections and symbols before linking");
 
         JCheckBox main = new JCheckBox("Main");
         main.setToolTipText("If not specified, first section will be used");
@@ -126,7 +126,7 @@ public class LinkerGui {
 
                 opt.setForce(force.isSelected());
                 opt.setVerbose(verbose.isSelected());
-                opt.setInteractive(interactive.isSelected());
+                opt.setEditing(edit.isSelected());
                 opt.setKeep(keep.isSelected());
                 if (main.isSelected()) {
                     if (mainName.getText().length() <= 0) {
@@ -143,7 +143,7 @@ public class LinkerGui {
                 try {
                     final Linker linker = new Linker(in, opt);
 
-                    if (opt.isInteractive()) {
+                    if (opt.isEditing()) {
                         Sections sections = linker.parse();
 
                         new EditSectionGui(sections).sectionEdit(new SectionEditListener() {
@@ -265,8 +265,8 @@ public class LinkerGui {
                 keep.setSelected(true);
             if (options.isVerbose())
                 verbose.setSelected(true);
-            if (options.isInteractive())
-                interactive.setSelected(true);
+            if (options.isEditing())
+                edit.setSelected(true);
             if (options.getMain() != null) {
                 main.setSelected(true);
                 mainName.setText(options.getMain());
@@ -294,7 +294,7 @@ public class LinkerGui {
         optionsPanel.add(force);
         optionsPanel.add(keep);
         optionsPanel.add(verbose);
-        optionsPanel.add(interactive);
+        optionsPanel.add(edit);
         optionsPanel.add(main);
         optionsPanel.add(mainName);
         main.addActionListener(new ActionListener() {

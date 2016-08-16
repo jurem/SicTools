@@ -51,7 +51,7 @@ public class Link {
     public static File link(Options options, List<String> inputs) throws LinkerError {
         Linker linker = new Linker(inputs, options);
 
-        if (options.isInteractive()) {
+        if (options.isEditing()) {
             Sections sections = linker.parse();
 
             sections = LinkerCli.sectionEdit(sections);
