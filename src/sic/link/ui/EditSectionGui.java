@@ -55,6 +55,7 @@ public class EditSectionGui {
     JButton symApply;
 
     JButton proceed;
+    JButton help;
 
     public EditSectionGui(Sections sections) {
         this.sections = sections;
@@ -97,6 +98,7 @@ public class EditSectionGui {
 
         // final button
         proceed = new JButton("Done");
+        help = new JButton("Help");
 
 
 
@@ -319,6 +321,13 @@ public class EditSectionGui {
             }
         });
 
+        help.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showHelp();
+            }
+        });
+
         JPanel scrollpanels = new JPanel();
         scrollpanels.setLayout(new GridLayout(1, 2));
         scrollpanels.add(leftPanel);
@@ -330,6 +339,7 @@ public class EditSectionGui {
 
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(proceed);
+        bottomPanel.add(help);
 
         frame.add(new JPanel(), BorderLayout.NORTH);
         frame.add(scrollpanels, BorderLayout.CENTER);
@@ -365,5 +375,52 @@ public class EditSectionGui {
             refsModel.addElement(r.getName());
 
         }
+    }
+
+    public static void showHelp() {
+        String nl = System.lineSeparator();
+        StringBuilder text = new StringBuilder();
+        text.append("Section Editor for SIC/XE Linker")
+                .append(nl)
+                .append(nl)
+                .append("Rename, move or remove the sections and symbols before linking.")
+                .append(nl)
+                .append(nl)
+                .append("List on the left contains all the sections that were parsed from input files.")
+                .append(nl)
+                .append("Lists on the right contain external definitions and references for selected section.")
+                .append(nl)
+                .append("Panel on the right has the controls for changing the selected section or external symbol.")
+                .append(nl)
+                .append(nl)
+                .append("Editing a section:")
+                .append(nl)
+                .append("- Select the section that you want to edit.")
+                .append(nl)
+                .append("- Rename the section using the Name text field and then click the Rename button.")
+                .append(nl)
+                .append("- Change the section's position on the list by moving it with the Up/Down buttons on the right.")
+                .append(nl)
+                .append("- Remove the section from linking by clicking the Remove button.")
+                .append(nl)
+                .append(nl)
+                .append("Editing a symbol:")
+                .append(nl)
+                .append(" - Select the section that contains the symbol.")
+                .append(nl)
+                .append(" - Select the symbol from the References or Definitions panels.")
+                .append(nl)
+                .append(" - Rename the symbol using the Name text field and then click the Rename button.")
+                .append(nl)
+                .append(" - Remove the symbol from section by clicking the Remove button.")
+                .append(nl)
+                .append(nl)
+                .append("When you want to finish editing and proceed with linking, click the Done button")
+                .append(nl);
+
+        JOptionPane optionPane = new JOptionPane(text.toString(), JOptionPane.PLAIN_MESSAGE);
+        JDialog dialog = optionPane.createDialog("SIC Linker Help");
+        dialog.setAlwaysOnTop(true);
+        dialog.setVisible(true);
     }
 }
