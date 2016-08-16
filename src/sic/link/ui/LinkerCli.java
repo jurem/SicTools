@@ -64,10 +64,10 @@ public class LinkerCli {
 
                     // prints a list of all sections
                     case "list":
-                        System.out.println("    Name    Drecords Rrecords");
+                        System.out.println("     Name       Defs      Refs");
                         int i = 0;
                         for (Section s : sections.getSections()) {
-                            System.out.println(String.format("%2d) %-6s | %6d | %6d ", i, s.getName(), s.getExtDefs().size(), s.getExtRefs().size()));
+                            System.out.println(String.format("%2d)  %-6s |  %6d |  %6d |", i, s.getName(), s.getExtDefs().size(), s.getExtRefs().size()));
                             i++;
                         }
                         break;
@@ -84,20 +84,18 @@ public class LinkerCli {
                             System.out.println("Please specify a valid section name");
                         } else {
                             // display section info
-                            System.out.println(secInfo.getName());
                             System.out.println("External definitions:");
                             for (ExtDef d : secInfo.getExtDefs())
                                 System.out.println(String.format(" - %-6s at 0x%06X", d.getName(), d.getAddress()));
                             if (secInfo.getExtDefs().size() == 0)
-                                System.out.println(" - ");
+                                System.out.println(" no definitions ");
 
                             System.out.println("External references:");
                             for (ExtRef r : secInfo.getExtRefs())
                                 System.out.println(String.format(" - %-6s", r.getName()));
                             if (secInfo.getExtRefs().size() == 0)
-                                System.out.println(" - ");
+                                System.out.println(" no references ");
 
-                            System.out.println(secInfo.gettRecords().size() + " T records");
                         }
                         break;
 
@@ -137,11 +135,15 @@ public class LinkerCli {
                     } break;
 
                     // renames a symbol in a specified section
-                    // rename-sym <section name> <old name> <new name>
-                    case "rename-sym": {
+                    // rename-ref <section name> <old name> <new name>
+                    // rename-def <section name> <old name> <new name>
+                    case "rename-ref":
+                    case "rename-def": {
                         String secName = null;
                         String symName = null;
                         String newName = null;
+
+                        boolean def = args[0].equals("rename-def");
 
 
                         if (args.length > 1) {
@@ -172,7 +174,11 @@ public class LinkerCli {
                             System.out.println("New symbol name should have 6 characters or less.");
                         } else {
                             try {
-                                sections.renameSymbol(secName, symName, newName);
+                                if (def)
+                                    sections.renameDef(secName, symName, newName);
+                                else
+                                    sections.renameRef(secName, symName, newName);
+
                             } catch (LinkerError le) {
                                 System.out.println(le.getMessage());
                             }
@@ -202,9 +208,11 @@ public class LinkerCli {
 
                     } break;
 
-                    case "remove-sym": {
+                    case "remove-def":
+                    case "remove-ref": {
                         String secName = null;
                         String symName = null;
+                        boolean def = args[0].equals("remove-def");
 
                         if (args.length > 1) {
                             secName = args[1];
@@ -224,7 +232,11 @@ public class LinkerCli {
                             System.out.println("Please specify a valid symbol name");
                         } else {
                             try {
-                                sections.removeSymbol(secName, symName);
+                                if (def)
+                                    sections.removeDef(secName, symName);
+                                else
+                                    sections.removeRef(secName, symName);
+
                             } catch (LinkerError le) {
                                 System.out.println(le.getMessage());
                             }
@@ -280,8 +292,10 @@ public class LinkerCli {
                         System.out.println("  info <section> : prints detailed info about a section");
                         System.out.println("  rename <section> <new name>: renames a section");
                         System.out.println("  remove <section> : removes a section");
-                        System.out.println("  rename-sym <section> <symbol> <new name>: renames a symbol in the section");
-                        System.out.println("  remove-sym <section> <symbol> : removes a symbol in the section");
+                        System.out.println("  rename-def <section> <symbol> <new name>: renames a definition in the section");
+                        System.out.println("  rename-ref <section> <symbol> <new name>: renames a reference in the section");
+                        System.out.println("  remove-def <section> <symbol> : removes a definition in the section");
+                        System.out.println("  remove-ref <section> <symbol> : removes a reference in the section");
                         System.out.println("  move <section> <position>: moves section to specified position");
 
                         System.out.println();

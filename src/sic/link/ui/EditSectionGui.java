@@ -23,7 +23,9 @@ public class EditSectionGui {
     private Sections sections;
     private Section selectedSection = null;
     private List<String> symbols;
+    private List<Boolean> symbolTypes;
     private String selectedSymbol = null;
+    private boolean selectedDef = false;
 
     // left and right panels - for section list and symbol list
     private JPanel leftPanel;
@@ -164,10 +166,15 @@ public class EditSectionGui {
                 if (symbolList.getSelectedIndex() != -1) {
 
                     selectedSymbol = symbols.get(symbolList.getSelectedIndex());
+                    selectedDef = symbolTypes.get(symbolList.getSelectedIndex());
 
                     editSymbolPanel.setVisible(true);
                     editSectionPanel.setVisible(false);
-                    symbolTitle.setText("Selected symbol: " + selectedSymbol);
+                    if (selectedDef)
+                        symbolTitle.setText("Selected definition: " + selectedSymbol);
+                    else
+                        symbolTitle.setText("Selected reference: " + selectedSymbol);
+
                     symName.setText(selectedSymbol);
                 }
             }
@@ -229,10 +236,18 @@ public class EditSectionGui {
                     LinkerGui.showError("Please enter a name that has 6 or less characters.");
                 } else if (!selectedSymbol.equals(symName.getText())) {
                     try {
-                        sections.renameSymbol(selectedSection.getName(), selectedSymbol, symName.getText());
+                        if (selectedDef)
+                            sections.renameDef(selectedSection.getName(), selectedSymbol, symName.getText());
+                        else
+                            sections.renameRef(selectedSection.getName(), selectedSymbol, symName.getText());
+
                         fillSymbols();
                         selectedSymbol = symName.getText();
-                        symbolTitle.setText("Selected symbol: " + selectedSymbol);
+                        if (selectedDef)
+                            symbolTitle.setText("Selected definition: " + selectedSymbol);
+                        else
+                            symbolTitle.setText("Selected reference: " + selectedSymbol);
+
                     } catch (LinkerError linkerError) {
                         LinkerGui.showError(linkerError.getMessage());
                     }
@@ -263,7 +278,11 @@ public class EditSectionGui {
                 int dialogResult = JOptionPane.showConfirmDialog (null, "Would you like to remove symbol " + selectedSymbol + " from section " + selectedSection.getName() + "?","Confirmation", JOptionPane.YES_NO_OPTION);
                 if(dialogResult == JOptionPane.YES_OPTION){
                     try {
-                        sections.removeSymbol(selectedSection.getName(), selectedSymbol);
+                        if (selectedDef)
+                            sections.removeDef(selectedSection.getName(), selectedSymbol);
+                        else
+                            sections.removeRef(selectedSection.getName(), selectedSymbol);
+
                         fillSymbols();
                         editSymbolPanel.setVisible(false);
                     } catch (LinkerError linkerError) {
@@ -313,27 +332,18 @@ public class EditSectionGui {
     private void fillSymbols() {
         symbolModel.clear();
         symbols = new ArrayList<>();
-        Map<String, boolean[]> map = new HashMap<>();
+        symbolTypes = new ArrayList<>();
 
         for (ExtDef d : selectedSection.getExtDefs()) {
-            map.putIfAbsent(d.getName(), new boolean[2]);
-            map.get(d.getName())[0] = true;
+            symbols.add(d.getName());
+            symbolTypes.add(true);
+            symbolModel.addElement(d.getName() + " (definition)");
         }
         for (ExtRef r : selectedSection.getExtRefs()) {
-            map.putIfAbsent(r.getName(), new boolean[2]);
-            map.get(r.getName())[1] = true;
-        }
+            symbols.add(r.getName());
+            symbolTypes.add(false);
+            symbolModel.addElement(r.getName() + " (reference)");
 
-        for (String name : map.keySet()) {
-            boolean[] type = map.get(name);
-            if (type[0] && type[1]) {
-                symbolModel.addElement(name + " (definition & reference)");
-            } else if (type[0]) {
-                symbolModel.addElement(name + " (definition)");
-            } else if (type[1]) {
-                symbolModel.addElement(name + " (reference)");
-            }
-            symbols.add(name);
         }
     }
 }

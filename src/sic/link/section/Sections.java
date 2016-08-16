@@ -48,28 +48,50 @@ public class Sections {
         }
     }
 
-    public void renameSymbol(String sectionName, String oldName, String newName) throws LinkerError{
+    public void renameDef(String sectionName, String oldName, String newName) throws LinkerError{
         Section s = map.get(sectionName);
 
         if (s == null)
-            throw new LinkerError("remove section", sectionName + " not found");
+            throw new LinkerError("rename definition","section " + sectionName + " not found");
         else {
             ExtDef symD = null;
-            ExtRef symR = null;
             for (ExtDef d : s.getExtDefs())
                 if (d.getName().equals(oldName))
                     symD = d;
 
-            for (ExtRef r : s.getExtRefs())
-                if (r.getName().equals(oldName))
-                    symR = r;
-
-            if (symD == null && symR == null)
-                throw new LinkerError("rename symbol", oldName + " not found");
+            if (symD == null)
+                throw new LinkerError("rename definition", oldName + " not found");
             else {
                 if (symD != null)
                     symD.setName(newName);
 
+            }
+        }
+    }
+
+    public void renameRef(String sectionName, String oldName, String newName) throws LinkerError{
+        Section s = map.get(sectionName);
+
+        if (s == null)
+            throw new LinkerError("rename reference", "section " + sectionName + " not found");
+        else {
+            ExtRef symR = null;
+            boolean exists = false;
+
+            for (ExtRef r : s.getExtRefs()) {
+                if (r.getName().equals(oldName))
+                    symR = r;
+
+                if (r.getName().equals(newName)) {
+                    exists = true;
+                }
+            }
+
+            if (symR == null)
+                throw new LinkerError("rename reference", oldName + " not found");
+            else if (exists) {
+                throw new LinkerError("rename reference", newName + " already exists");
+            } else {
                 if (symR != null)
                     symR.setName(newName);
 
@@ -93,11 +115,11 @@ public class Sections {
         }
     }
 
-    public void removeSymbol(String sectionName, String symbolName) throws LinkerError {
+    public void removeDef(String sectionName, String symbolName) throws LinkerError {
         Section s = map.get(sectionName);
 
         if (s == null)
-            throw new LinkerError("remove section", sectionName + " not found");
+            throw new LinkerError("remove definition", sectionName + " not found");
         else {
 
             boolean removed = false;
@@ -111,6 +133,19 @@ public class Sections {
                 }
             }
 
+            if (!removed)
+                throw new LinkerError("remove definition", symbolName + " not found");
+        }
+    }
+    public void removeRef(String sectionName, String symbolName) throws LinkerError {
+        Section s = map.get(sectionName);
+
+        if (s == null)
+            throw new LinkerError("remove reference", sectionName + " not found");
+        else {
+
+            boolean removed = false;
+
             ListIterator<ExtRef> iterRef = s.getExtRefs().listIterator();
             while(iterRef.hasNext()) {
                 ExtRef r = iterRef.next();
@@ -120,8 +155,17 @@ public class Sections {
                 }
             }
 
+            ListIterator<MRecord> iterM = s.getmRecords().listIterator();
+            while(iterM.hasNext()) {
+                MRecord m = iterM.next();
+                if (m.getSymbol().equals(symbolName)) {
+                    iterM.remove();
+                    removed = true;
+                }
+            }
+
             if (!removed)
-                throw new LinkerError("remove symbol", symbolName + " not found");
+                throw new LinkerError("remove reference", symbolName + " not found");
         }
     }
 
