@@ -137,7 +137,7 @@ public class MainView {
             public void actionPerformed(ActionEvent e) {
 
 
-                LinkerGui.gui(null, null, new LinkListener() {
+                LinkerGui linkerGui = new LinkerGui(null, null, new LinkListener() {
                     @Override
                     public void onLinked(File f, String message) {
                         if (f != null) {
@@ -148,6 +148,8 @@ public class MainView {
                         }
                     }
                 });
+
+                linkerGui.gui();
 
             }
         });

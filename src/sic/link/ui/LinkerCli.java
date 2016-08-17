@@ -1,16 +1,41 @@
 package sic.link.ui;
 
 
+import sic.link.Linker;
 import sic.link.LinkerError;
+import sic.link.Options;
 import sic.link.section.*;
+import sic.link.utils.Writer;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
 public class LinkerCli {
 
+    public static File link(Options options, List<String> inputs) throws LinkerError {
+        Linker linker = new Linker(inputs, options);
+
+        if (options.isEditing()) {
+            Sections sections = linker.parse();
+
+            sections = LinkerCli.sectionEdit(sections);
+
+            Section linkedSection = linker.passAndCombine(sections);
+
+            Writer writer = new Writer(linkedSection, options);
+            return writer.write();
+
+        } else {
+            Section linkedSection = linker.link();
+
+            Writer writer = new Writer(linkedSection, options);
+            return writer.write();
+        }
+
+    }
 
     public static Sections sectionEdit(Sections sections) {
         System.out.println("SIC Linker Interactive Section Editor");

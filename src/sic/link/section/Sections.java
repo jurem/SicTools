@@ -102,7 +102,7 @@ public class Sections {
                     if (exists)
                         s.getExtRefs().remove(symR);
                     else
-                        s.setName(newName);
+                        symR.setName(newName);
                 }
 
                 for (MRecord m : s.getmRecords()) {

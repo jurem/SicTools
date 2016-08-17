@@ -27,10 +27,13 @@ public class Link {
             int processedArgs = options.processFlags(args);
 
             // get the input files
-            List<String> inputs = processInputs(args, processedArgs);
+            List<String> inputs = new ArrayList<>();
 
-            if (options.isGraphical())
-                LinkerGui.gui(options, inputs, new LinkListener() {
+            for (int i=processedArgs; i<args.length; i++)
+                inputs.add(args[i]);
+
+            if (options.isGraphical()) {
+                LinkerGui linkerGui = new LinkerGui(options, inputs, new LinkListener() {
                     @Override
                     public void onLinked(File f, String message) {
                         if (f != null) {
@@ -40,43 +43,14 @@ public class Link {
                         }
                     }
                 });
-            else
-                link(options, inputs);
+                linkerGui.gui();
+            } else {
+                LinkerCli.link(options, inputs);
+            }
 
         } catch (LinkerError le) {
             System.err.println(le.getMessage());
         }
-    }
-
-    public static File link(Options options, List<String> inputs) throws LinkerError {
-        Linker linker = new Linker(inputs, options);
-
-        if (options.isEditing()) {
-            Sections sections = linker.parse();
-
-            sections = LinkerCli.sectionEdit(sections);
-
-            Section linkedSection = linker.passAndCombine(sections);
-
-            Writer writer = new Writer(linkedSection, options);
-            return writer.write();
-
-        } else {
-            Section linkedSection = linker.link();
-
-            Writer writer = new Writer(linkedSection, options);
-            return writer.write();
-        }
-
-    }
-
-    private static List<String> processInputs(String[] args, int start) {
-        List<String> inputs = new ArrayList<>();
-
-        for (int i=start; i<args.length; i++)
-            inputs.add(args[i]);
-
-        return inputs;
     }
 
 }

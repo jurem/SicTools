@@ -22,20 +22,102 @@ import java.util.List;
 
 public class LinkerGui {
 
-    public static void gui(Options options, List<String> inputs, LinkListener listener) {
+    private Options options;
+    private List<String> inputs;
+    private LinkListener listener;
 
-        JFrame frame = new JFrame("Select .obj files to link");
+    private JFrame frame;
+
+    // top panel components
+    private JTextField name;
+    private JLabel label;
+    private JButton browse;
+
+    // right panel components
+    private JButton up;
+    private JButton down;
+    private JButton remove;
+
+
+    // options
+    private JCheckBox force;
+    private JCheckBox keep;
+    private JCheckBox verbose;
+    private JCheckBox edit;
+    private JCheckBox main;
+    private JTextField mainName;
+
+    // bottom components
+    private JButton add;
+    private JButton help;
+    private JButton done;
+
+    // list
+    private JList<String> list;
+    private DefaultListModel<String> model;
+    private JScrollPane scrollPane;
+
+
+
+    public LinkerGui(Options options, List<String> inputs, LinkListener listener) {
+        this.options = options;
+        this.inputs = inputs;
+        this.listener = listener;
+    }
+
+    public void gui() {
+
+        frame = new JFrame("Select .obj files to link");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // central scrollpane
-        DefaultListModel<String> model = new DefaultListModel<>();
-        JList<String> list = new JList<>(model);
-        JScrollPane scrollPane = new JScrollPane(list);
+        model = new DefaultListModel<>();
+        list = new JList<>(model);
+        scrollPane = new JScrollPane(list);
 
         //top name input
-        JTextField name = new JTextField(40);
-        JLabel label = new JLabel("Output file:");
-        JButton browse = new JButton("Browse...");
+        name = new JTextField(40);
+        label = new JLabel("Output file:");
+        browse = new JButton("Browse...");
+
+        // bottom buttons
+        add = new JButton("Add .obj");
+
+        force = new JCheckBox("Force");
+        force.setToolTipText("Force linking even if not all external symbols are resolved");
+
+        keep = new JCheckBox("Keep");
+        keep.setToolTipText("Keep external symbol definitions in the output obj");
+
+        verbose = new JCheckBox("Verbose");
+        verbose.setToolTipText("Show debbuging information on standard output");
+
+        edit = new JCheckBox("Edit");
+        verbose.setToolTipText("Edit the sections and symbols before linking");
+
+        main = new JCheckBox("Main");
+        main.setToolTipText("If not specified, first section will be used");
+        mainName = new JTextField(8);
+        mainName.setEnabled(false);
+        mainName.setMaximumSize(new Dimension(mainName.getMaximumSize().width, mainName.getPreferredSize().height));
+        mainName.setVisible(false);
+
+        help = new JButton("Help");
+        done = new JButton("Link");
+
+        up = new JButton("Up");
+        up.setEnabled(false);
+        up.setPreferredSize(new Dimension(up.getMaximumSize().width, up.getPreferredSize().height));
+        down = new JButton("Down");
+        down.setEnabled(false);
+        down.setPreferredSize(new Dimension(down.getMaximumSize().width, down.getPreferredSize().height));
+
+        remove = new JButton("Remove");
+        remove.setEnabled(false);
+        remove.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // action listeners
+
         browse.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -53,13 +135,6 @@ public class LinkerGui {
             }
         });
 
-        JPanel topPanel = new JPanel();
-        topPanel.add(label);
-        topPanel.add(name);
-        topPanel.add(browse);
-
-        // bottom buttons
-        JButton add = new JButton("Add .obj");
         add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -76,26 +151,6 @@ public class LinkerGui {
             }
         });
 
-        JCheckBox force = new JCheckBox("Force");
-        force.setToolTipText("Force linking even if not all external symbols are resolved");
-
-        JCheckBox keep = new JCheckBox("Keep");
-        keep.setToolTipText("Keep external symbol definitions in the output obj");
-
-        JCheckBox verbose = new JCheckBox("Verbose");
-        verbose.setToolTipText("Show debbuging information on standard output");
-
-        JCheckBox edit = new JCheckBox("Edit");
-        verbose.setToolTipText("Edit the sections and symbols before linking");
-
-        JCheckBox main = new JCheckBox("Main");
-        main.setToolTipText("If not specified, first section will be used");
-        JTextField mainName = new JTextField(8);
-        mainName.setEnabled(false);
-        mainName.setMaximumSize(new Dimension(mainName.getMaximumSize().width, mainName.getPreferredSize().height));
-        mainName.setVisible(false);
-
-        JButton help = new JButton("Help");
         help.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -103,7 +158,6 @@ public class LinkerGui {
             }
         });
 
-        JButton done = new JButton("Link");
         done.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -141,49 +195,7 @@ public class LinkerGui {
                     in.add(model.get(i));
 
                 try {
-                    final Linker linker = new Linker(in, opt);
-
-                    if (opt.isEditing()) {
-                        Sections sections = linker.parse();
-
-                        new EditSectionGui(sections).sectionEdit(new SectionEditListener() {
-                            @Override
-                            public void onEdited(Sections sections, String message) {
-
-                                Section linkedSection = null;
-                                try {
-                                    linkedSection = linker.passAndCombine(sections);
-
-                                    Writer writer = new Writer(linkedSection, options);
-                                    File file = writer.write();
-
-                                    //notify the listener
-                                    if (listener != null)
-                                        listener.onLinked(file, "0");
-                                    frame.dispose();
-
-                                } catch (LinkerError linkerError) {
-                                    System.err.println(linkerError.getMessage());
-
-                                    //notify the listener
-                                    if (listener != null)
-                                        listener.onLinked(null, linkerError.getMessage());
-                                }
-                            }
-                        });
-                    } else {
-                        Section linkedSection = linker.link();
-
-                        Writer writer = new Writer(linkedSection, options);
-                        File file = writer.write();
-
-                        //notify the listener
-                        if (listener != null)
-                            listener.onLinked(file, "0");
-                        frame.dispose();
-                    }
-
-
+                    link(in, opt);
                 } catch (LinkerError linkerError) {
                     System.err.println(linkerError.getMessage());
 
@@ -195,7 +207,6 @@ public class LinkerGui {
             }
         });
 
-        JButton up = new JButton("Up");
         up.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -207,10 +218,7 @@ public class LinkerGui {
                 }
             }
         });
-        up.setEnabled(false);
-        up.setPreferredSize(new Dimension(up.getMaximumSize().width, up.getPreferredSize().height));
 
-        JButton down = new JButton("Down");
         down.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -222,11 +230,7 @@ public class LinkerGui {
                 }
             }
         });
-        down.setEnabled(false);
-        down.setPreferredSize(new Dimension(down.getMaximumSize().width, down.getPreferredSize().height));
 
-
-        JButton remove = new JButton("Remove");
         remove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -236,9 +240,6 @@ public class LinkerGui {
                 }
             }
         });
-        remove.setEnabled(false);
-        remove.setHorizontalAlignment(SwingConstants.CENTER);
-
 
         list.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -284,6 +285,11 @@ public class LinkerGui {
         JPanel botPanel = new JPanel();
         JPanel rightPanel = new JPanel();
         JPanel optionsPanel = new JPanel();
+        JPanel topPanel = new JPanel();
+
+        topPanel.add(label);
+        topPanel.add(name);
+        topPanel.add(browse);
 
         rightPanel.add(up);
         rightPanel.add(down);
@@ -333,6 +339,53 @@ public class LinkerGui {
         frame.setVisible(true);
 
     }
+
+    private void link(List<String> in, Options opt) throws LinkerError {
+        final Linker linker = new Linker(in, opt);
+
+        if (opt.isEditing()) {
+            Sections sections = linker.parse();
+
+            EditSectionGui editSectionGui = new EditSectionGui(sections);
+            editSectionGui.sectionEdit(new SectionEditListener() {
+                @Override
+                public void onEdited(Sections sections, String message) {
+
+                    Section linkedSection = null;
+                    try {
+                        linkedSection = linker.passAndCombine(sections);
+
+                        Writer writer = new Writer(linkedSection, options);
+                        File file = writer.write();
+
+                        //notify the listener
+                        if (listener != null)
+                            listener.onLinked(file, "0");
+                        frame.dispose();
+
+                    } catch (LinkerError linkerError) {
+                        System.err.println(linkerError.getMessage());
+
+                        //notify the listener
+                        if (listener != null)
+                            listener.onLinked(null, linkerError.getMessage());
+                    }
+                }
+            });
+        } else {
+            Section linkedSection = linker.link();
+
+            Writer writer = new Writer(linkedSection, options);
+            File file = writer.write();
+
+            //notify the listener
+            if (listener != null)
+                listener.onLinked(file, "0");
+            frame.dispose();
+        }
+    }
+
+    // static methods for dialogs
 
     public static void showSuccess(String path) {
         JOptionPane optionPane = new JOptionPane("Linking successful, output: " + path, JOptionPane.PLAIN_MESSAGE);

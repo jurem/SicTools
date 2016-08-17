@@ -99,7 +99,7 @@ public class SecondPassVisitor extends SectionVisitor {
             if (mRecord.isPositive())
                 corrected += symbol.getAddress();
             else
-                corrected -= symbol.getAddress(); // TODO: when is this needed?
+                corrected -= symbol.getAddress(); // rarely needed, example in Leland Beck's System Software, Figure 2.15 line 190
 
             String correctedString = String.format("%0" + mRecord.getLength() + "X",corrected);
             text = text.substring(0,start) + correctedString + text.substring(start + mRecord.getLength());
