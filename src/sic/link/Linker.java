@@ -61,7 +61,11 @@ public class Linker {
 
         if (options.getMain() != null) {
             log("moving " + options.getMain() + " (main) to start of sections list");
-            sections.makeFirst(options.getMain());
+            try {
+                sections.move(options.getMain(), 0);
+            } catch (LinkerError le) {
+                throw new LinkerError("options", "specified main section " + options.getMain() + " does not exist");
+            }
         }
 
         // name the section from options

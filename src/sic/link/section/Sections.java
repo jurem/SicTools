@@ -106,7 +106,7 @@ public class Sections {
                 }
 
                 for (MRecord m : s.getmRecords()) {
-                    if (m.getSymbol().equals(oldName)) {
+                    if (m.getSymbol() != null && m.getSymbol().equals(oldName)) {
                         m.setSymbol(newName);
                     }
                 }
@@ -168,7 +168,7 @@ public class Sections {
             ListIterator<MRecord> iterM = s.getmRecords().listIterator();
             while(iterM.hasNext()) {
                 MRecord m = iterM.next();
-                if (m.getSymbol().equals(symbolName)) {
+                if (m.getSymbol() != null && m.getSymbol().equals(symbolName)) {
                     iterM.remove();
                     removed = true;
                 }
@@ -197,25 +197,6 @@ public class Sections {
 
     public Section getSection(String name) {
         return map.get(name);
-    }
-
-    public void sort() {
-        Collections.sort(sections, (s1, s2) -> {
-            if (s1.getStart() < s2.getStart())
-                return -1;
-            else if (s1.getStart() > s2.getStart())
-                return 1;
-            else
-                return 0;
-        });
-    }
-
-    public void makeFirst(String name) throws LinkerError {
-        try {
-            move(name, 0);
-        } catch (LinkerError le) {
-            throw new LinkerError("options", "specified main section " + name + " does not exist");
-        }
     }
 
     public void move(String name, int position) throws LinkerError {
@@ -301,8 +282,10 @@ public class Sections {
         }
         else {
             // remove all of them
-            for (Section s : sections)
+            for (Section s : sections) {
                 s.setExtRefs(new ArrayList<>());
+                s.setmRecords(new ArrayList<>());
+            }
         }
     }
 }
