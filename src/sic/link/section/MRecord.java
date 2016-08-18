@@ -61,7 +61,7 @@ public class MRecord {
         this.location = location;
     }
 
-    public boolean getDelete() {
+    public boolean isDelete() {
         return delete;
     }
 

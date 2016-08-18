@@ -81,6 +81,13 @@ public class Linker {
     }
 
     public Section passAndCombine(Sections sections) throws LinkerError {
+
+        if (sections.getSections().size() == 0)
+            throw new LinkerError(PHASE, "No sections to link.");
+
+        if (sections.getName() == null)
+            sections.setName(sections.getSections().get(0).getName());
+
         // External Symbol table - used in both visitors
         Map<String, ExtDef> esTable = new HashMap<>();
 
@@ -92,12 +99,12 @@ public class Linker {
 
         log("starting second pass");
         // second pass - modifies the text records according to the modification records
-        SecondPassVisitor secondPassVisitor = new SecondPassVisitor(esTable, csTable, options);
+        SecondPassVisitor secondPassVisitor = new SecondPassVisitor(sections.getName(), esTable, csTable, options);
         secondPassVisitor.visit(sections);
 
-        log("removing used R records");
+        log("cleaning the output section (R and M records)");
         // clean out used R records
-        sections.clean(options.isForce());
+        sections.clean();
 
         log("combining section into one");
         // combine all of the sections into one

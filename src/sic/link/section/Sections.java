@@ -251,41 +251,81 @@ public class Sections {
 
     /*
      * cleans out unneccessary ExtRefs
+     * removes contradicting M records
      */
 
-    public void clean(boolean force) {
-        if (force) {
-            // remove some of them
-            for (Section s : sections) {
-                if (s.getmRecords().size() == 0) {
-                    // remove all
-                    s.setExtRefs(new ArrayList<>());
-                } else {
-                    // add remaining mRecord symbols to a Set
-                    Set<String> remaining = new HashSet<>();
-                    for (MRecord m : s.getmRecords()) {
-                        if (m.getSymbol() != null)
-                            remaining.add(m.getSymbol());
-                    }
+    public void clean() {
+        Set<String> keep = new HashSet<>();
 
-                    // remove a ref if it's not in the Set
-                    ListIterator<ExtRef> iter = s.getExtRefs().listIterator();
-                    while (iter.hasNext()) {
-                        ExtRef r = iter.next();
-                        if (!remaining.contains(r.getName()))
-                            iter.remove();
+        // remove M records that contradict eachother
+        // keep the R records that are still referenced by M records (if force option is used)
+
+        Map<Long, List<MRecord>> table = new HashMap<>();
+        for (Section s : sections) {
+            for (MRecord m : s.getmRecords()) {
+                // if mrecord is the regular one
+                // find others related to same address
+                if (m.getSymbol() == null || m.getSymbol().equals(this.name)) {
+                    // get a list of mRecords for this address
+                    List<MRecord> list = table.get(m.getStart());
+                    if (list == null) {
+                        // no records on this address yet
+                        // add m to table
+                        list = new ArrayList<>();
+                        list.add(m);
+                        table.put(m.getStart(), list);
+                    } else {
+                        ListIterator<MRecord> iterator = list.listIterator();
+                        while (iterator.hasNext()) {
+                            MRecord existing = iterator.next();
+
+                            // if m and existing are contradicting eachother
+                            // delete existing from table and mark them both for deletion
+                            if (m.isPositive() && !existing.isPositive() || !m.isPositive() && existing.isPositive()) {
+                                m.setDelete(true);
+                                existing.setDelete(true);
+                                iterator.remove();
+                                break;
+                            }
+                        }
                     }
+                } else {
+                    // if m record contains a reference
+                    // keep its R record
+                    keep.add(m.getSymbol());
+                }
+            }
+
+            // remove all ExtRefs that are not in keep Set
+            if (keep.size() == 0)
+                s.setExtRefs(new ArrayList<>());
+            else {
+                ListIterator<ExtRef> iterator = s.getExtRefs().listIterator();
+                while (iterator.hasNext()) {
+                    ExtRef r = iterator.next();
+                    if (!keep.contains(r.getName()))
+                        iterator.remove();
+                }
+            }
+        }
+
+        // delete all mRecords marked as deleted
+        for (Section s : sections) {
+            ListIterator<MRecord> mIterator = s.getmRecords().listIterator();
+            while (mIterator.hasNext()) {
+                MRecord m = mIterator.next();
+
+                // if symbol is +progname, we can skip it to get cleaner output code
+                // this usually simplifies all m records
+                if (m.getSymbol() != null && m.isPositive() && m.getSymbol().equals(this.name)) {
+                    m.setSymbol(null);
                 }
 
-            }
 
-        }
-        else {
-            // remove all of them
-            for (Section s : sections) {
-                s.setExtRefs(new ArrayList<>());
-                s.setmRecords(new ArrayList<>());
+                if (m.isDelete())
+                    mIterator.remove();
             }
         }
+
     }
 }

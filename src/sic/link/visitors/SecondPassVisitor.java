@@ -20,9 +20,11 @@ public class SecondPassVisitor extends SectionVisitor {
 
     private Section currSection = null;
     private Options options;
+    private String progname;
 
 
-    public SecondPassVisitor(Map<String, ExtDef> esTable, Map<String, Section> csTable, Options options) {
+    public SecondPassVisitor(String progname, Map<String, ExtDef> esTable, Map<String, Section> csTable, Options options) {
+        this.progname = progname;
         this.esTable = esTable;
         this.csTable = csTable;
         this.options = options;
@@ -41,9 +43,6 @@ public class SecondPassVisitor extends SectionVisitor {
                 MRecord mRecord = iter.next();
                 mRecord.accept(this);
 
-                // remove the m record if it is marked to be deleted
-                if (mRecord.getDelete())
-                    iter.remove();
             }
 
         }
@@ -52,7 +51,7 @@ public class SecondPassVisitor extends SectionVisitor {
 
     @Override
     public void visit(MRecord mRecord) throws LinkerError {
-        if (mRecord.getSymbol() != null) {
+        if (mRecord.getSymbol() != null && !mRecord.getSymbol().equals(progname)) {
 
             ExtDef symbol = esTable.get(mRecord.getSymbol());
             if (symbol == null) {
@@ -107,7 +106,9 @@ public class SecondPassVisitor extends SectionVisitor {
 
             if (options.isVerbose()) System.out.println("fixing " + mRecord.getLength() + " half-bytes from " + fixBytes + " to " + correctedString + "   symbol=" + symbol.getName());
 
-            mRecord.setDelete(true);
+            // remove symbol from M record
+            mRecord.setSymbol(progname);
+            mRecord.setStart(mRecord.getStart() + currSection.getStart());
 
         }
         // else this is a regular M record - not for external symbols, ignore
