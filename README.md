@@ -55,3 +55,17 @@ where source.asm is the file to be compiled.
 To get assembler help
 
     java -cp out/make/sictools.jar sic.Asm -help
+
+To run linker
+
+    java -cp out/make/sictools.jar sic.Link -o out.obj in1.obj in2.obj ...
+
+where out.obj is the output file and in1, in2,... are obj files to be linked.
+
+To get linker help
+
+    java -cp out/make/sictools.jar sic.Link -help
+
+To get graphical linker interface
+
+    java -cp out/make/sictools.jar sic.Link -g
