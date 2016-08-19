@@ -4,10 +4,6 @@ import sic.link.*;
 import sic.link.ui.LinkListener;
 import sic.link.ui.LinkerCli;
 import sic.link.ui.LinkerGui;
-import sic.link.section.Section;
-import sic.link.section.Sections;
-import sic.link.ui.SectionEditListener;
-import sic.link.utils.Writer;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,6 +1,5 @@
 package sic.link;
 
-import sic.Link;
 import sic.link.section.ExtDef;
 import sic.link.section.Section;
 import sic.link.section.Sections;

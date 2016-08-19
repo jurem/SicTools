@@ -4,7 +4,10 @@ package sic.link.ui;
 import sic.link.Linker;
 import sic.link.LinkerError;
 import sic.link.Options;
-import sic.link.section.*;
+import sic.link.section.ExtDef;
+import sic.link.section.ExtRef;
+import sic.link.section.Section;
+import sic.link.section.Sections;
 import sic.link.utils.Writer;
 
 import java.io.BufferedReader;

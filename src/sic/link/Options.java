@@ -1,9 +1,6 @@
 package sic.link;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * Options for the linker

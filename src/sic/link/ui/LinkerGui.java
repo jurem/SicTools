@@ -1,7 +1,6 @@
 package sic.link.ui;
 
 
-import sic.Link;
 import sic.link.Linker;
 import sic.link.LinkerError;
 import sic.link.Options;
@@ -12,7 +11,6 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

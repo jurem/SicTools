@@ -3,7 +3,9 @@ package sic.link.visitors;
 import sic.link.LinkerError;
 import sic.link.section.*;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /*
  * First pass visitor

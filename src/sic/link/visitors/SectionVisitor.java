@@ -1,10 +1,8 @@
 package sic.link.visitors;
 
-import org.omg.CORBA.TRANSACTION_REQUIRED;
 import sic.link.LinkerError;
 import sic.link.section.*;
 
-import java.util.List;
 
 /*
  * abstract Section visitor - just visits all the sections
