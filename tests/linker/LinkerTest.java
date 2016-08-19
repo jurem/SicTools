@@ -58,8 +58,8 @@ public class LinkerTest {
         tRecords.add(new TRecord(0xE + 0xF, 0x6, "000001000001"));
 
         List<MRecord> mRecords = new ArrayList<>();
-        mRecords.add(new MRecord(0x1, 5, true, null));
-        mRecords.add(new MRecord(0x8, 5, true, null));
+        mRecords.add(new MRecord(0x1, 5, true, "out"));
+        mRecords.add(new MRecord(0x8, 5, true, "out"));
 
 
         testTrecords(out, tRecords.size(), tRecords);
@@ -104,7 +104,7 @@ public class LinkerTest {
                     0x7,
                     "4B1" + func + "3F2FFD"
             ));
-            mRecords.add(new MRecord(0x1, 5, true, null));
+            mRecords.add(new MRecord(0x1, 5, true, "out_mu"));
 
             String ref1 = String.format("%05X", 0x7 + 0x12 + 0x1C);
             String ref2 = String.format("%05X", 0x7 + 0x12);
@@ -113,9 +113,9 @@ public class LinkerTest {
                     0x12,
                     "031" + ref1 + "1900050F1" + ref1 + "4B1" + ref2 + "4F0000"
             ));
-            mRecords.add(new MRecord(0x7 + 0x1, 5, true, null));
-            mRecords.add(new MRecord(0x7 + 0x8, 5, true, null));
-            mRecords.add(new MRecord(0x7 + 0xC, 5, true, null));
+            mRecords.add(new MRecord(0x7 + 0x1, 5, true, "out_mu"));
+            mRecords.add(new MRecord(0x7 + 0x8, 5, true, "out_mu"));
+            mRecords.add(new MRecord(0x7 + 0xC, 5, true, "out_mu"));
 
             String data1 = String.format("%05X", 0x7 + 0x12 + 0x1F + 0x9);
             String data2 = String.format("%05X", 0x7 + 0x12 + 0x1F + 0x9 + 0x3);
@@ -123,10 +123,10 @@ public class LinkerTest {
                     0x1F,
                     "031" + data1 + "1900050F1" + data1 + "031" + data2 + "1900030F1" + data2 +"0F20034F0000000001"
             ));
-            mRecords.add(new MRecord(0x7 + 0x12 + 0x1, 5, true, null));
-            mRecords.add(new MRecord(0x7 + 0x12 + 0x8, 5, true, null));
-            mRecords.add(new MRecord(0x7 + 0x12 + 0xC, 5, true, null));
-            mRecords.add(new MRecord(0x7 + 0x12 + 0x13, 5, true, null));
+            mRecords.add(new MRecord(0x7 + 0x12 + 0x1, 5, true, "out_mu"));
+            mRecords.add(new MRecord(0x7 + 0x12 + 0x8, 5, true, "out_mu"));
+            mRecords.add(new MRecord(0x7 + 0x12 + 0xC, 5, true, "out_mu"));
+            mRecords.add(new MRecord(0x7 + 0x12 + 0x13, 5, true, "out_mu"));
 
             tRecords.add(new TRecord(0x7 + 0x12 + 0x1F,
                     0x9,
@@ -192,15 +192,15 @@ public class LinkerTest {
                     0x4E, 0x1E,
                     "0F20214F00000E201B0320181900030F20124F000003200C1D00030F2006"
             ));
-            mRecords.add(new MRecord(0x4, 5, true, null));
-            mRecords.add(new MRecord(0xB, 5, true, null));
-            mRecords.add(new MRecord(0x12, 5, true, null));
-            mRecords.add(new MRecord(0x19, 5, true, null));
-            mRecords.add(new MRecord(0x20, 5, true, null));
-            mRecords.add(new MRecord(0x24, 5, true, null));
-            mRecords.add(new MRecord(0x2B, 5, true, null));
-            mRecords.add(new MRecord(0x32, 5, true, null));
-            mRecords.add(new MRecord(0x39, 5, true, null));
+            mRecords.add(new MRecord(0x4, 5, true, "demost"));
+            mRecords.add(new MRecord(0xB, 5, true, "demost"));
+            mRecords.add(new MRecord(0x12, 5, true, "demost"));
+            mRecords.add(new MRecord(0x19, 5, true, "demost"));
+            mRecords.add(new MRecord(0x20, 5, true, "demost"));
+            mRecords.add(new MRecord(0x24, 5, true, "demost"));
+            mRecords.add(new MRecord(0x2B, 5, true, "demost"));
+            mRecords.add(new MRecord(0x32, 5, true, "demost"));
+            mRecords.add(new MRecord(0x39, 5, true, "demost"));
 
             tRecords.add(new TRecord(
                     0x4E + 0x1E, 0x6,
@@ -256,8 +256,8 @@ public class LinkerTest {
                     "0000AA0000AA"
             ));
 
-            mRecords.add(new MRecord(0x1, 5, true, null));
-            mRecords.add(new MRecord(0x8, 5, true, null));
+            mRecords.add(new MRecord(0x1, 5, true, "prtial"));
+            mRecords.add(new MRecord(0x8, 5, true, "prtial"));
             mRecords.add(new MRecord(0x12, 5, true, "m"));
 
             List<ExtRef> extRefs = new ArrayList<>();
@@ -313,8 +313,8 @@ public class LinkerTest {
                     "0000AA0000AA"
             ));
 
-            mRecords.add(new MRecord(0x1, 5, true, null));
-            mRecords.add(new MRecord(0x8, 5, true, null));
+            mRecords.add(new MRecord(0x1, 5, true, "prtial"));
+            mRecords.add(new MRecord(0x8, 5, true, "prtial"));
             mRecords.add(new MRecord(0x12, 0x5, true, "m"));
 
             List<ExtRef> extRefs = new ArrayList<>();
@@ -378,12 +378,12 @@ public class LinkerTest {
                     0x1E, 0x15,
                     "4B1" + fact + "031" + result + "4B1" + print + "3F2FDB3F2FFD000000"
             ));
-            mRecords.add(new MRecord(0x1, 5, true, null));
-            mRecords.add(new MRecord(0x5, 5, true, null));
-            mRecords.add(new MRecord(0xC, 5, true, null));
-            mRecords.add(new MRecord(0x1F, 5, true, null));
-            mRecords.add(new MRecord(0x23, 5, true, null));
-            mRecords.add(new MRecord(0x27, 5, true, null));
+            mRecords.add(new MRecord(0x1, 5, true, "outfac"));
+            mRecords.add(new MRecord(0x5, 5, true, "outfac"));
+            mRecords.add(new MRecord(0xC, 5, true, "outfac"));
+            mRecords.add(new MRecord(0x1F, 5, true, "outfac"));
+            mRecords.add(new MRecord(0x23, 5, true, "outfac"));
+            mRecords.add(new MRecord(0x27, 5, true, "outfac"));
 
             // fact.obj
             String pop = String.format("%05X", 0xF3 + 0x103 + 0x123 + 0x15);
@@ -400,10 +400,10 @@ public class LinkerTest {
                     0xF3 + 0x3A, 0x3,
                     "000001"
             ));
-            mRecords.add(new MRecord(0xF3 + 0xD, 5, true, null));
-            mRecords.add(new MRecord(0xF3 + 0x14, 5, true, null));
-            mRecords.add(new MRecord(0xF3 + 0x21, 5, true, null));
-            mRecords.add(new MRecord(0xF3 + 0x28, 5, true, null));
+            mRecords.add(new MRecord(0xF3 + 0xD, 5, true, "outfac"));
+            mRecords.add(new MRecord(0xF3 + 0x14, 5, true, "outfac"));
+            mRecords.add(new MRecord(0xF3 + 0x21, 5, true, "outfac"));
+            mRecords.add(new MRecord(0xF3 + 0x28, 5, true, "outfac"));
 
             // print.obj
             tRecords.add(new TRecord(
