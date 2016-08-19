@@ -455,6 +455,90 @@ public class LinkerTest {
     }
 
     @Test
+    public void testNametest() {
+        System.out.println("running testFactorial");
+
+        // Link -o outfac.obj main.obj fact.obj print.obj stack.obj ending.obj
+        List<String> inputs = new ArrayList<>();
+        inputs.add("tests/linker/nametest/first.obj");
+        inputs.add("tests/linker/nametest/test.obj");
+        inputs.add("tests/linker/nametest/extd.obj");
+        Options options = new Options();
+        options.setOutputName("nmtest.obj");
+        options.setOutputPath("tests/linker/nametest/nmtest.obj");
+
+        Linker test = new Linker(inputs, options);
+        try {
+            Section out = test.link();
+
+            testSection(out, "nmtest", 0, 0x139 + 0x2045 + 0x6);
+
+            List<TRecord> tRecords = new ArrayList<>();
+            List<MRecord> mRecords = new ArrayList<>();
+
+            // first.obj
+            String testRef = String.format("%05X", 0x139);
+
+            tRecords.add(new TRecord(
+                    0, 0xA,
+                    "4B1" + testRef + "03000F0F2000"
+            ));
+            mRecords.add(new MRecord(0x1, 5, true, "nmtest"));
+
+            // test.obj
+            String mrecord1 = String.format("%05X", 0x01033 + 0x139);
+            String mrecord2 = String.format("%05X", 0x01036 + 0x139);
+            String mrecord3 = String.format("%05X", 0x01039 + 0x139);
+            String extd1 = String.format("%05X", 0x139 + 0x2045);
+            String extd2 = String.format("%05X", 0x139 + 0x2045 + 0x3);
+            String mrecord4 = String.format("%05X", 0x0203C + 0x139);
+            tRecords.add(new TRecord(
+                    0x139, 0x20,
+                    "01000F0F1" + mrecord1 + "031" + mrecord2 + "0F2019031" + mrecord3 + "0F2015031" + extd1
+                     + "0F2011031" + extd2
+            ));
+            tRecords.add(new TRecord(
+                    0x139 + 0x20, 0x13,
+                    "0F1" + mrecord4 + "4F000000000B00001600002100002C"
+            ));
+            tRecords.add(new TRecord(
+                    0x139 + 0x1033, 0x9,
+                    "0F10203C4F000000000B00001600002100002C"
+            ));
+            tRecords.add(new TRecord(
+                    0x139 + 0x203C, 0x9,
+                    "00005800006300006E"
+            ));
+            mRecords.add(new MRecord(0x139 + 0x4, 5, true, "nmtest"));
+            mRecords.add(new MRecord(0x139 + 0x8, 5, true, "nmtest"));
+            mRecords.add(new MRecord(0x139 + 0xF, 5, true, "nmtest"));
+            mRecords.add(new MRecord(0x139 + 0x16, 5, true, "nmtest")); // from refs
+            mRecords.add(new MRecord(0x139 + 0x1D, 5, true, "nmtest")); // from refs
+            mRecords.add(new MRecord(0x139 + 0x21, 5, true, "nmtest"));
+
+            // extd.obj
+            tRecords.add(new TRecord(
+                    0x139 + 0x2045, 0x6,
+                    "00000F000010"
+            ));
+
+
+            testTrecords(out, tRecords.size(), tRecords);
+            testMrecords(out, mRecords.size(), mRecords);
+            testExtDefs(out, 0, new ArrayList<>());
+            testExtRefs(out, 0, new ArrayList<>());
+
+            if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
+                Assert.fail("wrong E record message");
+
+            testWriterParser(out, options);
+
+        } catch (LinkerError le) {
+            Assert.fail("LinkerError: " + le.getMessage());
+        }
+    }
+
+    @Test
     public void testAbsolute() {
         System.out.println("running testAbsolute, expecting a LinkerError");
 

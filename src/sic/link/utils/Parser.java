@@ -137,6 +137,9 @@ public class Parser {
                         if (m.length() > 8) {
                             direction = m.charAt(8) == '+';
                             symbol = m.substring(9).replace(" ", "");
+                        } else {
+                            direction = true;
+                            symbol = currSect.getName();
                         }
 
                         MRecord mRecord = new MRecord(mStart, (int) mLength, direction, symbol);

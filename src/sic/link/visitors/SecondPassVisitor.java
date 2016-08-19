@@ -81,15 +81,14 @@ public class SecondPassVisitor extends SectionVisitor {
                 throw new LinkerError(PHASE, "Address " + fixAddress + " is not present in any T Record", mRecord.getLocation());
 
             // each byte is 2 chars
-            int start = (int)(fixAddress - fixRecord.getStartAddr()) * 2;
+            int start = (int)(fixAddress - fixRecord.getStartAddr()) * 2; // start of the addressed word
 
-            // if length is odd, we skip the first char
-            if (mRecord.getLength() % 2 == 1)
-                start++;
+            start = start + 6 - mRecord.getLength(); // last mRecord.getLength() halfbytes of the adressed word
+            int end = start + mRecord.getLength();
 
             String text = fixRecord.getText();
 
-            String fixBytes = text.substring(start, start + mRecord.getLength());
+            String fixBytes = text.substring(start, end);
 
             // add the address of extdef's section
             long corrected =  Integer.decode("0x" + fixBytes) + symbol.getCsAddress();
@@ -101,7 +100,7 @@ public class SecondPassVisitor extends SectionVisitor {
                 corrected -= symbol.getAddress(); // rarely needed, example in Leland Beck's System Software, Figure 2.15 line 190
 
             String correctedString = String.format("%0" + mRecord.getLength() + "X",corrected);
-            text = text.substring(0,start) + correctedString + text.substring(start + mRecord.getLength());
+            text = text.substring(0,start) + correctedString + text.substring(end);
             fixRecord.setText(text);
 
             if (options.isVerbose()) System.out.println("fixing " + mRecord.getLength() + " half-bytes from " + fixBytes + " to " + correctedString + "   symbol=" + symbol.getName());

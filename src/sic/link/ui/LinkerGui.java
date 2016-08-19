@@ -375,7 +375,7 @@ public class LinkerGui {
         } else {
             Section linkedSection = linker.link();
 
-            Writer writer = new Writer(linkedSection, options);
+            Writer writer = new Writer(linkedSection, opt);
             File file = writer.write();
 
             //notify the listener
