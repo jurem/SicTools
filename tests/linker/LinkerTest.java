@@ -63,7 +63,7 @@ public class LinkerTest {
 
 
         testTrecords(out, tRecords.size(), tRecords);
-        testMrecords(out, mRecords.size(), mRecords);
+        testMrecords(out, mRecords.size(), mRecords, "out");
         testExtDefs(out, 0, new ArrayList<>());
         testExtRefs(out, 0, new ArrayList<>());
 
@@ -104,7 +104,7 @@ public class LinkerTest {
                     0x7,
                     "4B1" + func + "3F2FFD"
             ));
-            mRecords.add(new MRecord(0x1, 5, true, "out_mu"));
+            mRecords.add(new MRecord(0x1, 5, true, null));
 
             String ref1 = String.format("%05X", 0x7 + 0x12 + 0x1C);
             String ref2 = String.format("%05X", 0x7 + 0x12);
@@ -113,9 +113,9 @@ public class LinkerTest {
                     0x12,
                     "031" + ref1 + "1900050F1" + ref1 + "4B1" + ref2 + "4F0000"
             ));
-            mRecords.add(new MRecord(0x7 + 0x1, 5, true, "out_mu"));
-            mRecords.add(new MRecord(0x7 + 0x8, 5, true, "out_mu"));
-            mRecords.add(new MRecord(0x7 + 0xC, 5, true, "out_mu"));
+            mRecords.add(new MRecord(0x7 + 0x1, 5, true, null));
+            mRecords.add(new MRecord(0x7 + 0x8, 5, true, null));
+            mRecords.add(new MRecord(0x7 + 0xC, 5, true, null));
 
             String data1 = String.format("%05X", 0x7 + 0x12 + 0x1F + 0x9);
             String data2 = String.format("%05X", 0x7 + 0x12 + 0x1F + 0x9 + 0x3);
@@ -123,10 +123,10 @@ public class LinkerTest {
                     0x1F,
                     "031" + data1 + "1900050F1" + data1 + "031" + data2 + "1900030F1" + data2 +"0F20034F0000000001"
             ));
-            mRecords.add(new MRecord(0x7 + 0x12 + 0x1, 5, true, "out_mu"));
-            mRecords.add(new MRecord(0x7 + 0x12 + 0x8, 5, true, "out_mu"));
-            mRecords.add(new MRecord(0x7 + 0x12 + 0xC, 5, true, "out_mu"));
-            mRecords.add(new MRecord(0x7 + 0x12 + 0x13, 5, true, "out_mu"));
+            mRecords.add(new MRecord(0x7 + 0x12 + 0x1, 5, true, null));
+            mRecords.add(new MRecord(0x7 + 0x12 + 0x8, 5, true, null));
+            mRecords.add(new MRecord(0x7 + 0x12 + 0xC, 5, true, null));
+            mRecords.add(new MRecord(0x7 + 0x12 + 0x13, 5, true, null));
 
             tRecords.add(new TRecord(0x7 + 0x12 + 0x1F,
                     0x9,
@@ -134,7 +134,7 @@ public class LinkerTest {
             ));
 
             testTrecords(out, tRecords.size(), tRecords);
-            testMrecords(out, mRecords.size(), mRecords);
+            testMrecords(out, mRecords.size(), mRecords, "out_mu");
             testExtDefs(out, 0, new ArrayList<>());
             testExtRefs(out, 0, new ArrayList<>());
 
@@ -192,15 +192,15 @@ public class LinkerTest {
                     0x4E, 0x1E,
                     "0F20214F00000E201B0320181900030F20124F000003200C1D00030F2006"
             ));
-            mRecords.add(new MRecord(0x4, 5, true, "demost"));
-            mRecords.add(new MRecord(0xB, 5, true, "demost"));
-            mRecords.add(new MRecord(0x12, 5, true, "demost"));
-            mRecords.add(new MRecord(0x19, 5, true, "demost"));
-            mRecords.add(new MRecord(0x20, 5, true, "demost"));
-            mRecords.add(new MRecord(0x24, 5, true, "demost"));
-            mRecords.add(new MRecord(0x2B, 5, true, "demost"));
-            mRecords.add(new MRecord(0x32, 5, true, "demost"));
-            mRecords.add(new MRecord(0x39, 5, true, "demost"));
+            mRecords.add(new MRecord(0x4, 5, true, null));
+            mRecords.add(new MRecord(0xB, 5, true, null));
+            mRecords.add(new MRecord(0x12, 5, true, null));
+            mRecords.add(new MRecord(0x19, 5, true, null));
+            mRecords.add(new MRecord(0x20, 5, true, null));
+            mRecords.add(new MRecord(0x24, 5, true, null));
+            mRecords.add(new MRecord(0x2B, 5, true, null));
+            mRecords.add(new MRecord(0x32, 5, true, null));
+            mRecords.add(new MRecord(0x39, 5, true, null));
 
             tRecords.add(new TRecord(
                     0x4E + 0x1E, 0x6,
@@ -208,7 +208,7 @@ public class LinkerTest {
             ));
 
             testTrecords(out, tRecords.size(), tRecords);
-            testMrecords(out, mRecords.size(), mRecords);
+            testMrecords(out, mRecords.size(), mRecords, "demost");
             testExtDefs(out, 0, new ArrayList<>());
             testExtRefs(out, 0, new ArrayList<>());
 
@@ -256,15 +256,15 @@ public class LinkerTest {
                     "0000AA0000AA"
             ));
 
-            mRecords.add(new MRecord(0x1, 5, true, "prtial"));
-            mRecords.add(new MRecord(0x8, 5, true, "prtial"));
+            mRecords.add(new MRecord(0x1, 5, true, null));
+            mRecords.add(new MRecord(0x8, 5, true, null));
             mRecords.add(new MRecord(0x12, 5, true, "m"));
 
             List<ExtRef> extRefs = new ArrayList<>();
             extRefs.add(new ExtRef("m"));
 
             testTrecords(out, tRecords.size(), tRecords);
-            testMrecords(out, mRecords.size(), mRecords);
+            testMrecords(out, mRecords.size(), mRecords, "prtial");
             testExtDefs(out, 0, new ArrayList<>());
             testExtRefs(out, extRefs.size(), extRefs);
 
@@ -313,8 +313,8 @@ public class LinkerTest {
                     "0000AA0000AA"
             ));
 
-            mRecords.add(new MRecord(0x1, 5, true, "prtial"));
-            mRecords.add(new MRecord(0x8, 5, true, "prtial"));
+            mRecords.add(new MRecord(0x1, 5, true, null));
+            mRecords.add(new MRecord(0x8, 5, true, null));
             mRecords.add(new MRecord(0x12, 0x5, true, "m"));
 
             List<ExtRef> extRefs = new ArrayList<>();
@@ -325,7 +325,7 @@ public class LinkerTest {
             extDefs.add(new ExtDef("b", 0x1E + 0x3));
 
             testTrecords(out, tRecords.size(), tRecords);
-            testMrecords(out, mRecords.size(), mRecords);
+            testMrecords(out, mRecords.size(), mRecords, "prtial");
             testExtDefs(out, extDefs.size(), extDefs);
             testExtRefs(out, extRefs.size(), extRefs);
 
@@ -378,12 +378,12 @@ public class LinkerTest {
                     0x1E, 0x15,
                     "4B1" + fact + "031" + result + "4B1" + print + "3F2FDB3F2FFD000000"
             ));
-            mRecords.add(new MRecord(0x1, 5, true, "outfac"));
-            mRecords.add(new MRecord(0x5, 5, true, "outfac"));
-            mRecords.add(new MRecord(0xC, 5, true, "outfac"));
-            mRecords.add(new MRecord(0x1F, 5, true, "outfac"));
-            mRecords.add(new MRecord(0x23, 5, true, "outfac"));
-            mRecords.add(new MRecord(0x27, 5, true, "outfac"));
+            mRecords.add(new MRecord(0x1, 5, true, null));
+            mRecords.add(new MRecord(0x5, 5, true, null));
+            mRecords.add(new MRecord(0xC, 5, true, null));
+            mRecords.add(new MRecord(0x1F, 5, true, null));
+            mRecords.add(new MRecord(0x23, 5, true, null));
+            mRecords.add(new MRecord(0x27, 5, true, null));
 
             // fact.obj
             String pop = String.format("%05X", 0xF3 + 0x103 + 0x123 + 0x15);
@@ -400,10 +400,10 @@ public class LinkerTest {
                     0xF3 + 0x3A, 0x3,
                     "000001"
             ));
-            mRecords.add(new MRecord(0xF3 + 0xD, 5, true, "outfac"));
-            mRecords.add(new MRecord(0xF3 + 0x14, 5, true, "outfac"));
-            mRecords.add(new MRecord(0xF3 + 0x21, 5, true, "outfac"));
-            mRecords.add(new MRecord(0xF3 + 0x28, 5, true, "outfac"));
+            mRecords.add(new MRecord(0xF3 + 0xD, 5, true, null));
+            mRecords.add(new MRecord(0xF3 + 0x14, 5, true, null));
+            mRecords.add(new MRecord(0xF3 + 0x21, 5, true, null));
+            mRecords.add(new MRecord(0xF3 + 0x28, 5, true, null));
 
             // print.obj
             tRecords.add(new TRecord(
@@ -440,7 +440,7 @@ public class LinkerTest {
             ));
 
             testTrecords(out, tRecords.size(), tRecords);
-            testMrecords(out, mRecords.size(), mRecords);
+            testMrecords(out, mRecords.size(), mRecords, null);
             testExtDefs(out, 0, new ArrayList<>());
             testExtRefs(out, 0, new ArrayList<>());
 
@@ -483,7 +483,7 @@ public class LinkerTest {
                     0, 0xA,
                     "4B1" + testRef + "03000F0F2000"
             ));
-            mRecords.add(new MRecord(0x1, 5, true, "nmtest"));
+            mRecords.add(new MRecord(0x1, 5, true, null));
 
             // test.obj
             String mrecord1 = String.format("%05X", 0x01033 + 0x139);
@@ -509,12 +509,12 @@ public class LinkerTest {
                     0x139 + 0x203C, 0x9,
                     "00005800006300006E"
             ));
-            mRecords.add(new MRecord(0x139 + 0x4, 5, true, "nmtest"));
-            mRecords.add(new MRecord(0x139 + 0x8, 5, true, "nmtest"));
-            mRecords.add(new MRecord(0x139 + 0xF, 5, true, "nmtest"));
-            mRecords.add(new MRecord(0x139 + 0x16, 5, true, "nmtest")); // from refs
-            mRecords.add(new MRecord(0x139 + 0x1D, 5, true, "nmtest")); // from refs
-            mRecords.add(new MRecord(0x139 + 0x21, 5, true, "nmtest"));
+            mRecords.add(new MRecord(0x139 + 0x4, 5, true, null));
+            mRecords.add(new MRecord(0x139 + 0x8, 5, true, null));
+            mRecords.add(new MRecord(0x139 + 0xF, 5, true, null));
+            mRecords.add(new MRecord(0x139 + 0x16, 5, true, null)); // from refs
+            mRecords.add(new MRecord(0x139 + 0x1D, 5, true, null)); // from refs
+            mRecords.add(new MRecord(0x139 + 0x21, 5, true, null));
 
             // extd.obj
             tRecords.add(new TRecord(
@@ -524,7 +524,7 @@ public class LinkerTest {
 
 
             testTrecords(out, tRecords.size(), tRecords);
-            testMrecords(out, mRecords.size(), mRecords);
+            testMrecords(out, mRecords.size(), mRecords, "nmtest");
             testExtDefs(out, 0, new ArrayList<>());
             testExtRefs(out, 0, new ArrayList<>());
 
@@ -594,7 +594,7 @@ public class LinkerTest {
 
     }
 
-    private void testMrecords(Section section, int count, List<MRecord> list) {
+    private void testMrecords(Section section, int count, List<MRecord> list, String progname) {
         if (count <= 0) {
             if (!(section.getmRecords() == null || section.getmRecords().size() == 0)) {
                 Assert.fail("Section still has M records");
@@ -613,7 +613,13 @@ public class LinkerTest {
 
                 Assert.assertEquals(i + "th M record start test",m1.getStart(), m2.getStart());
                 Assert.assertEquals(i + "th M record length test",m1.getLength(), m2.getLength());
-                Assert.assertEquals(i + "th M record symbol test",m1.getSymbol(), m2.getSymbol());
+                Assert.assertEquals(i + "th M record flag test",m1.isPositive(), m2.isPositive());
+                if (m1.getSymbol() == null || m1.getSymbol().equals(progname)) {
+                    if (m2.getSymbol() != null && !m2.getSymbol().equals(progname))
+                        Assert.fail(i + "th M record should have +" + progname + " or no symbol");
+                } else {
+                    Assert.assertEquals(i + "th M record symbol test", m1.getSymbol(), m2.getSymbol());
+                }
                 i++;
             }
         }
@@ -690,7 +696,7 @@ public class LinkerTest {
 
             testSection(newSection, section.getName(), section.getStart(), section.getLength());
             testTrecords(newSection, section.gettRecords() == null ? 0 : section.gettRecords().size(), section.gettRecords());
-            testMrecords(newSection, section.getmRecords() == null ? 0 : section.getmRecords().size(), section.getmRecords());
+            testMrecords(newSection, section.getmRecords() == null ? 0 : section.getmRecords().size(), section.getmRecords(), newSection.getName());
             testExtDefs(newSection, section.getExtDefs() == null ? 0 : section.getExtDefs().size(), section.getExtDefs());
             testExtRefs(newSection, section.getExtRefs() == null ? 0 : section.getExtRefs().size(), section.getExtRefs());
 

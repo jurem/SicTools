@@ -315,14 +315,14 @@ public class Sections {
             while (mIterator.hasNext()) {
                 MRecord m = mIterator.next();
 
-                /* TODO: think about this, for now leave the +progname in
+                // TODO: what about the -progname symbols?
                 // if symbol is +progname, we can skip it to get cleaner output code
                 // this usually simplifies all m records
 
                 if (m.getSymbol() != null && m.isPositive() && m.getSymbol().equals(this.name)) {
                     m.setSymbol(null);
                 }
-                */
+
 
                 if (m.isDelete())
                     mIterator.remove();
