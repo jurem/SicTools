@@ -135,7 +135,7 @@ public class Options {
                         System.out.println();
                         System.out.println("-h : shows this help");
 
-                        throw new LinkerError(null); // throw error to end execution
+                        throw new LinkerError(); // throw error to end execution
 
                 }
             }

@@ -42,7 +42,7 @@ public class LinkerCli {
 
     public static Sections sectionEdit(Sections sections) {
         System.out.println("SIC Linker Interactive Section Editor");
-        System.out.println("Type 'help' for list of commands or 'done' to finish editing");
+        System.out.println("Enter 'help' for list of commands or 'done' to finish editing");
 
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 

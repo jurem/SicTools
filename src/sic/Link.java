@@ -13,9 +13,17 @@ import java.util.List;
 /*
  * SIC/XE Linker
  *
+ * start linker by calling this class
+ * run "java sic.Link -help" for all available options or
+ *     "java sic.Link -gui" for graphical interface
+ *
  */
 public class Link {
 
+    /*
+     * processes args into Options class and list of input files
+     * calls LinkerGui or LinkerCli based on entered options
+     */
     public static void main(String[] args) {
         try {
             // get options

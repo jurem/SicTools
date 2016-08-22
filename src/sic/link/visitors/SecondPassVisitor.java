@@ -16,17 +16,15 @@ public class SecondPassVisitor extends SectionVisitor {
     private static final String PHASE = "second pass";
 
     private Map<String, ExtDef> esTable;
-    private Map<String, Section> csTable;
 
     private Section currSection = null;
     private Options options;
     private String progname;
 
 
-    public SecondPassVisitor(String progname, Map<String, ExtDef> esTable, Map<String, Section> csTable, Options options) {
+    public SecondPassVisitor(String progname, Map<String, ExtDef> esTable, Options options) {
         this.progname = progname;
         this.esTable = esTable;
-        this.csTable = csTable;
         this.options = options;
     }
 
@@ -37,16 +35,9 @@ public class SecondPassVisitor extends SectionVisitor {
 
         //visit all mRecords
         if (section.getmRecords() != null) {
-            ListIterator<MRecord> iter = section.getmRecords().listIterator();
-
-            while (iter.hasNext()) {
-                MRecord mRecord = iter.next();
+            for (MRecord mRecord : section.getmRecords())
                 mRecord.accept(this);
-
-            }
-
         }
-
     }
 
     @Override
@@ -97,7 +88,7 @@ public class SecondPassVisitor extends SectionVisitor {
             if (mRecord.isPositive())
                 corrected += symbol.getAddress();
             else
-                corrected -= symbol.getAddress(); // rarely needed, example in Leland Beck's System Software, Figure 2.15 line 190
+                corrected -= symbol.getAddress(); // rarely needed, example in Leland Beck's "System Software", Figure 2.15 line 190
 
             String correctedString = String.format("%0" + mRecord.getLength() + "X",corrected);
             text = text.substring(0,start) + correctedString + text.substring(end);
@@ -111,7 +102,6 @@ public class SecondPassVisitor extends SectionVisitor {
 
         }
         // else this is a regular M record - not for external symbols, ignore
-
 
     }
 }

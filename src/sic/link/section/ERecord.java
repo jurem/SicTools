@@ -1,8 +1,8 @@
 package sic.link.section;
 
-/**
- * Created by nejc on 10/07/16.
- */
+import sic.link.LinkerError;
+import sic.link.visitors.SectionVisitor;
+
 public class ERecord {
     private long startAddr;
 
@@ -33,5 +33,9 @@ public class ERecord {
         return "ERecord{" +
                 "startAddr=" + startAddr +
                 '}';
+    }
+
+    public void accept(SectionVisitor visitor) throws LinkerError {
+        visitor.visit(this);
     }
 }

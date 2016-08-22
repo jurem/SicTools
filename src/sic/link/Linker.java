@@ -21,9 +21,6 @@ import java.util.Map;
 public class Linker {
     private static final String PHASE = "linker";
 
-    // control section table contains all the control sections
-    private Map<String, Section> csTable;
-
     private List<String> inputs;
     private Options options;
 
@@ -31,8 +28,6 @@ public class Linker {
     public Linker(List<String> inputs, Options options) {
         this.inputs = inputs;
         this.options = options;
-
-        csTable = new HashMap<>();
     }
 
     public Section link() throws LinkerError {
@@ -98,7 +93,7 @@ public class Linker {
 
         log("starting second pass");
         // second pass - modifies the text records according to the modification records
-        SecondPassVisitor secondPassVisitor = new SecondPassVisitor(sections.getName(), esTable, csTable, options);
+        SecondPassVisitor secondPassVisitor = new SecondPassVisitor(sections.getName(), esTable, options);
         secondPassVisitor.visit(sections);
 
         log("cleaning the output section (R and M records)");

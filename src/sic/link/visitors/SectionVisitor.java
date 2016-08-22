@@ -5,10 +5,9 @@ import sic.link.section.*;
 
 
 /*
- * abstract Section visitor - just visits all the sections
+ * abstract Section visitor - visits all the records in all sections
  */
 public abstract class SectionVisitor {
-
 
     public void visit(Sections sections) throws LinkerError {
         for (Section section : sections.getSections())
@@ -36,10 +35,12 @@ public abstract class SectionVisitor {
 
     public void visit(ExtDef extDef) throws LinkerError {}
 
-    public void visit(ExtRef extRef) {}
+    public void visit(ExtRef extRef) throws LinkerError{}
 
-    public void visit(TRecord tRecord) {}
+    public void visit(TRecord tRecord) throws LinkerError{}
 
     public void visit(MRecord mRecord) throws LinkerError {}
+
+    public void visit(ERecord eRecord) throws LinkerError {}
 
 }

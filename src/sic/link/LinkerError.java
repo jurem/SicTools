@@ -8,21 +8,18 @@ import sic.link.section.Location;
 public class LinkerError extends Throwable {
 
     // empty message
-    public LinkerError(Void v) {
+    public LinkerError() {
         super("");
     }
 
     // just a String message
-    public LinkerError(String phase, String message) {
-        super(phase + ": " + message);
+    public LinkerError(String phase, String msg) {
+        super(phase + ": " + msg);
     }
 
-    // String message and location
-    public LinkerError(String phase, String message, Location location) {
-        super(phase + ": " + message + " - " + location.toString());
+    // String message and Location
+    public LinkerError(String phase, String msg, Location loc) {
+        super(phase + ": " + msg + " - " + loc.toString());
     }
-
-
-    //TODO
 
 }

@@ -58,8 +58,8 @@ public class LinkerTest {
         tRecords.add(new TRecord(0xE + 0xF, 0x6, "000001000001"));
 
         List<MRecord> mRecords = new ArrayList<>();
-        mRecords.add(new MRecord(0x1, 5, true, "out"));
-        mRecords.add(new MRecord(0x8, 5, true, "out"));
+        mRecords.add(new MRecord(0x1, 5, true, null));
+        mRecords.add(new MRecord(0x8, 5, true, null));
 
 
         testTrecords(out, tRecords.size(), tRecords);
@@ -76,6 +76,54 @@ public class LinkerTest {
         Assert.fail("LinkerError: " + le.getMessage());
         }
      }
+
+    @Test
+    public void testOne2() {
+        System.out.println("running testOne2");
+
+        List<String> inputs = new ArrayList<>();
+        inputs.add("tests/linker/one2/prog.obj");
+        Options options = new Options();
+        options.setOutputName("linked.obj");
+        options.setOutputPath("tests/linker/one2/linked.obj");
+
+        Linker test = new Linker(inputs, options);
+        try {
+            Section out = test.link();
+
+            testSection(out, "linked", 0, 0xF + 0x6 + 0xF);
+
+            List<TRecord> tRecords = new ArrayList<>();
+
+            String ref1 = String.format("%05X", 0xF);
+            String ref2 = String.format("%05X", 0xF + 0x3);
+            String sect3 = String.format("%05X", 0xF + 0x6);
+            tRecords.add(new TRecord(0x0, 0xF, "031" + ref1 + "0F1" + ref2 + "4B1" + sect3 + "3F2FFD"));
+
+            tRecords.add(new TRecord(0xF, 0x3, "00000F"));
+
+            tRecords.add(new TRecord(0xF + 0x6, 0xC, "01000F19000F0F20034F0000"));
+
+            List<MRecord> mRecords = new ArrayList<>();
+            mRecords.add(new MRecord(0x1, 5, true, null));
+            mRecords.add(new MRecord(0x5, 5, true, null));
+            mRecords.add(new MRecord(0x9, 5, true, null));
+
+
+            testTrecords(out, tRecords.size(), tRecords);
+            testMrecords(out, mRecords.size(), mRecords, "linked");
+            testExtDefs(out, 0, new ArrayList<>());
+            testExtRefs(out, 0, new ArrayList<>());
+
+            if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
+                Assert.fail("wrong E record message");
+
+            testWriterParser(out, options);
+
+        } catch (LinkerError le) {
+            Assert.fail("LinkerError: " + le.getMessage());
+        }
+    }
 
     @Test
     public void testMulti1() {
