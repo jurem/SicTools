@@ -1,25 +1,19 @@
-stack START 0
+stack   START 0
 	EXTDEF stinit
 	EXTDEF push
 	EXTDEF pop
-	
-. starts the stack at the address in A
-stinit STA stackptr
+stinit  STA stackptr    . inicializira sklad na naslovu iz A
 	RSUB
-	
-. pushes the content from A to stack
-push STA @stackptr
+push    STA @stackptr   . spravi vrednost iz A na sklad
 	LDA stackptr
 	ADD #3
 	STA stackptr
 	RSUB
-	
-.pops the top element to A
-pop LDA stackptr
+pop     LDA stackptr    . spravi vrednost s sklada v A
 	SUB #3
 	STA stackptr
 	LDA @stackptr
 	RSUB
 	
-stackptr RESW 1
-	END stack
+stackptr RESW 1         . kazalec na sklad
+
