@@ -67,7 +67,7 @@ public class LinkerTest {
         testExtDefs(out, 0, new ArrayList<>());
         testExtRefs(out, 0, new ArrayList<>());
 
-        if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
+        if (out.getERecord() == null || out.getERecord().getStartAddr() != 0)
         Assert.fail("wrong E record message");
 
         testWriterParser(out, options);
@@ -115,7 +115,7 @@ public class LinkerTest {
             testExtDefs(out, 0, new ArrayList<>());
             testExtRefs(out, 0, new ArrayList<>());
 
-            if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
+            if (out.getERecord() == null || out.getERecord().getStartAddr() != 0)
                 Assert.fail("wrong E record message");
 
             testWriterParser(out, options);
@@ -186,7 +186,7 @@ public class LinkerTest {
             testExtDefs(out, 0, new ArrayList<>());
             testExtRefs(out, 0, new ArrayList<>());
 
-            if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
+            if (out.getERecord() == null || out.getERecord().getStartAddr() != 0)
                 Assert.fail("wrong E record message");
 
             testWriterParser(out, options);
@@ -260,7 +260,7 @@ public class LinkerTest {
             testExtDefs(out, 0, new ArrayList<>());
             testExtRefs(out, 0, new ArrayList<>());
 
-            if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
+            if (out.getERecord() == null || out.getERecord().getStartAddr() != 0)
                 Assert.fail("wrong E record message");
 
             testWriterParser(out, options);
@@ -316,7 +316,7 @@ public class LinkerTest {
             testExtDefs(out, 0, new ArrayList<>());
             testExtRefs(out, extRefs.size(), extRefs);
 
-            if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
+            if (out.getERecord() == null || out.getERecord().getStartAddr() != 0)
                 Assert.fail("wrong E record message");
 
             testWriterParser(out, options);
@@ -377,7 +377,7 @@ public class LinkerTest {
             testExtDefs(out, extDefs.size(), extDefs);
             testExtRefs(out, extRefs.size(), extRefs);
 
-            if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
+            if (out.getERecord() == null || out.getERecord().getStartAddr() != 0)
                 Assert.fail("wrong E record message");
 
             testWriterParser(out, options);
@@ -492,7 +492,7 @@ public class LinkerTest {
             testExtDefs(out, 0, new ArrayList<>());
             testExtRefs(out, 0, new ArrayList<>());
 
-            if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
+            if (out.getERecord() == null || out.getERecord().getStartAddr() != 0)
                 Assert.fail("wrong E record message");
 
             testWriterParser(out, options);
@@ -576,7 +576,7 @@ public class LinkerTest {
             testExtDefs(out, 0, new ArrayList<>());
             testExtRefs(out, 0, new ArrayList<>());
 
-            if (out.geteRecord() == null || out.geteRecord().getStartAddr() != 0)
+            if (out.getERecord() == null || out.getERecord().getStartAddr() != 0)
                 Assert.fail("wrong E record message");
 
             testWriterParser(out, options);
@@ -618,15 +618,15 @@ public class LinkerTest {
 
     private void testTrecords(Section section, int count, List<TRecord> list) {
         if (count <= 0) {
-            if (!(section.gettRecords() == null || section.gettRecords().size() == 0)) {
+            if (!(section.getTRecords() == null || section.getTRecords().size() == 0)) {
                 Assert.fail("Section has T records");
             }
         } else {
-            Assert.assertEquals("T record count test", list.size(), section.gettRecords().size());
+            Assert.assertEquals("T record count test", list.size(), section.getTRecords().size());
 
 
             ListIterator<TRecord> i1 = list.listIterator();
-            ListIterator<TRecord> i2 = section.gettRecords().listIterator();
+            ListIterator<TRecord> i2 = section.getTRecords().listIterator();
             int i=0;
 
             while (i1.hasNext() && i2.hasNext()) {
@@ -644,14 +644,14 @@ public class LinkerTest {
 
     private void testMrecords(Section section, int count, List<MRecord> list, String progname) {
         if (count <= 0) {
-            if (!(section.getmRecords() == null || section.getmRecords().size() == 0)) {
+            if (!(section.getMRecords() == null || section.getMRecords().size() == 0)) {
                 Assert.fail("Section still has M records");
             }
         } else {
-            Assert.assertEquals("M record count test", list.size(), section.getmRecords().size());
+            Assert.assertEquals("M record count test", list.size(), section.getMRecords().size());
 
             ListIterator<MRecord> i1 = list.listIterator();
-            ListIterator<MRecord> i2  = section.getmRecords().listIterator();
+            ListIterator<MRecord> i2  = section.getMRecords().listIterator();
 
             int i=0;
 
@@ -743,14 +743,14 @@ public class LinkerTest {
             Section newSection = sects.get(0);
 
             testSection(newSection, section.getName(), section.getStart(), section.getLength());
-            testTrecords(newSection, section.gettRecords() == null ? 0 : section.gettRecords().size(), section.gettRecords());
-            testMrecords(newSection, section.getmRecords() == null ? 0 : section.getmRecords().size(), section.getmRecords(), newSection.getName());
+            testTrecords(newSection, section.getTRecords() == null ? 0 : section.getTRecords().size(), section.getTRecords());
+            testMrecords(newSection, section.getMRecords() == null ? 0 : section.getMRecords().size(), section.getMRecords(), newSection.getName());
             testExtDefs(newSection, section.getExtDefs() == null ? 0 : section.getExtDefs().size(), section.getExtDefs());
             testExtRefs(newSection, section.getExtRefs() == null ? 0 : section.getExtRefs().size(), section.getExtRefs());
 
-            if (newSection.geteRecord() != null && section.geteRecord() != null) {
-                Assert.assertEquals("E records should be the same", section.geteRecord().getStartAddr(), newSection.geteRecord().getStartAddr());
-            } else if (!(newSection.geteRecord() == null && section.geteRecord() == null))
+            if (newSection.getERecord() != null && section.getERecord() != null) {
+                Assert.assertEquals("E records should be the same", section.getERecord().getStartAddr(), newSection.getERecord().getStartAddr());
+            } else if (!(newSection.getERecord() == null && section.getERecord() == null))
                 Assert.fail("E records not the same");
 
         }

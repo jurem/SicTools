@@ -52,8 +52,8 @@ public class Writer {
         writer.println();
 
         //text records
-        if (section.gettRecords() != null)
-            for (TRecord t : section.gettRecords()) {
+        if (section.getTRecords() != null)
+            for (TRecord t : section.getTRecords()) {
                 writer.print("T");
                 writer.printf("%06X", t.getStartAddr());
                 writer.printf("%02X", t.getLength());
@@ -62,8 +62,8 @@ public class Writer {
             }
 
         //modification records
-        if (section.getmRecords() != null)
-            for (MRecord m : section.getmRecords()) {
+        if (section.getMRecords() != null)
+            for (MRecord m : section.getMRecords()) {
                 writer.print("M");
                 writer.printf("%06X", m.getStart());
                 writer.printf("%02X", m.getLength());
@@ -105,9 +105,9 @@ public class Writer {
             }
 
 
-        if (section.geteRecord() != null) {
+        if (section.getERecord() != null) {
             writer.print("E");
-            writer.printf("%06X", section.geteRecord().getStartAddr());
+            writer.printf("%06X", section.getERecord().getStartAddr());
             writer.println();
         }
 

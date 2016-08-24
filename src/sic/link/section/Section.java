@@ -77,30 +77,30 @@ public class Section {
         this.length = length;
     }
 
-    public List<TRecord> gettRecords() {
+    public List<TRecord> getTRecords() {
         return tRecords;
     }
 
-    public void settRecords(List<TRecord> tRecords) {
+    public void setTRecords(List<TRecord> tRecords) {
         this.tRecords = tRecords;
     }
 
-    public void addtRecord(TRecord tRecord) {
+    public void addTRecord(TRecord tRecord) {
         if (this.tRecords == null)
             this.tRecords = new ArrayList<>();
 
         this.tRecords.add(tRecord);
     }
 
-    public List<MRecord> getmRecords() {
+    public List<MRecord> getMRecords() {
         return mRecords;
     }
 
-    public void setmRecords(List<MRecord> mRecords) {
+    public void setMRecords(List<MRecord> mRecords) {
         this.mRecords = mRecords;
     }
 
-    public void addmRecord(MRecord mRecord) {
+    public void addMRecord(MRecord mRecord) {
         if (this.mRecords == null)
             this.mRecords = new ArrayList<>();
 
@@ -130,7 +130,7 @@ public class Section {
         this.extDefs = extDefs;
     }
 
-    public ERecord geteRecord() {
+    public ERecord getERecord() {
         return eRecord;
     }
 
@@ -141,7 +141,7 @@ public class Section {
         this.extRefs.add(extRef);
     }
 
-    public void seteRecord(ERecord eRecord) {
+    public void setERecord(ERecord eRecord) {
         this.eRecord = eRecord;
     }
 

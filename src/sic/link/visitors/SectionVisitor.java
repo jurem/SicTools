@@ -24,12 +24,12 @@ public abstract class SectionVisitor {
             for (ExtRef extRef : section.getExtRefs())
                 extRef.accept(this);
 
-        if (section.gettRecords() != null)
-            for (TRecord tRecord : section.gettRecords())
+        if (section.getTRecords() != null)
+            for (TRecord tRecord : section.getTRecords())
                 tRecord.accept(this);
 
-        if (section.getmRecords() != null)
-            for (MRecord mRecord : section.getmRecords())
+        if (section.getMRecords() != null)
+            for (MRecord mRecord : section.getMRecords())
                 mRecord.accept(this);
     }
 

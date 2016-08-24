@@ -105,7 +105,7 @@ public class Sections {
                         symR.setName(newName);
                 }
 
-                for (MRecord m : s.getmRecords()) {
+                for (MRecord m : s.getMRecords()) {
                     if (m.getSymbol() != null && m.getSymbol().equals(oldName)) {
                         m.setSymbol(newName);
                     }
@@ -165,7 +165,7 @@ public class Sections {
                 }
             }
 
-            ListIterator<MRecord> iterM = s.getmRecords().listIterator();
+            ListIterator<MRecord> iterM = s.getMRecords().listIterator();
             while(iterM.hasNext()) {
                 MRecord m = iterM.next();
                 if (m.getSymbol() != null && m.getSymbol().equals(symbolName)) {
@@ -235,8 +235,8 @@ public class Sections {
         List<ExtRef> extRefs = new ArrayList<>();
 
         for (Section s : sections) {
-            tRecords.addAll(s.gettRecords());
-            mRecords.addAll(s.getmRecords());
+            tRecords.addAll(s.getTRecords());
+            mRecords.addAll(s.getMRecords());
             if (keep)
                 extDefs.addAll(s.getExtDefs());
             extRefs.addAll(s.getExtRefs());
@@ -262,7 +262,7 @@ public class Sections {
 
         Map<Long, List<MRecord>> table = new HashMap<>();
         for (Section s : sections) {
-            for (MRecord m : s.getmRecords()) {
+            for (MRecord m : s.getMRecords()) {
                 // if mrecord is the regular one
                 // find others related to same address
                 if (m.getSymbol() == null || m.getSymbol().equals(this.name)) {
@@ -311,7 +311,7 @@ public class Sections {
 
         // delete all mRecords marked as deleted
         for (Section s : sections) {
-            ListIterator<MRecord> mIterator = s.getmRecords().listIterator();
+            ListIterator<MRecord> mIterator = s.getMRecords().listIterator();
             while (mIterator.hasNext()) {
                 MRecord m = mIterator.next();
 

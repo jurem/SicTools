@@ -55,10 +55,10 @@ public class FirstPassVisitor extends SectionVisitor {
                 extDef.accept(this);
         }
 
-        if (section.gettRecords() != null) {
+        if (section.getTRecords() != null) {
 
             // sort TRecords by address (they might not be in order)
-            Collections.sort(section.gettRecords(), (t1, t2) -> {
+            Collections.sort(section.getTRecords(), (t1, t2) -> {
 
                 if (t1.getStartAddr() < t2.getStartAddr())
                     return -1;
@@ -69,7 +69,7 @@ public class FirstPassVisitor extends SectionVisitor {
             });
 
             // visit all T records
-            for (TRecord tRecord : section.gettRecords())
+            for (TRecord tRecord : section.getTRecords())
                 tRecord.accept(this);
         }
 

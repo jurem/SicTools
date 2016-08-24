@@ -4,7 +4,6 @@ import sic.link.LinkerError;
 import sic.link.Options;
 import sic.link.section.*;
 
-import java.util.ListIterator;
 import java.util.Map;
 
 /*
@@ -34,8 +33,8 @@ public class SecondPassVisitor extends SectionVisitor {
         currSection = section;
 
         //visit all mRecords
-        if (section.getmRecords() != null) {
-            for (MRecord mRecord : section.getmRecords())
+        if (section.getMRecords() != null) {
+            for (MRecord mRecord : section.getMRecords())
                 mRecord.accept(this);
         }
     }
@@ -58,8 +57,8 @@ public class SecondPassVisitor extends SectionVisitor {
 
             // find the Trecord that has to be fixed
             TRecord fixRecord = null;
-            if (currSection.gettRecords() != null) {
-                for (TRecord tRecord : currSection.gettRecords()) {
+            if (currSection.getTRecords() != null) {
+                for (TRecord tRecord : currSection.getTRecords()) {
                     if (tRecord.contains(fixAddress)) {
                         fixRecord = tRecord;
                         break;

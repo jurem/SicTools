@@ -89,7 +89,7 @@ public class Parser {
 
                         ERecord eRecord = new ERecord(startAddr);
                         eRecord.setLocation(new Location(input, row));
-                        currSect.seteRecord(eRecord);
+                        currSect.setERecord(eRecord);
 
                         // add section to the list
                         sects.add(currSect);
@@ -115,7 +115,7 @@ public class Parser {
 
                         TRecord tRecord = new TRecord(tStart, tLength, text);
                         tRecord.setLocation(new Location(input, row));
-                        currSect.addtRecord(new TRecord(tStart, tLength, text));
+                        currSect.addTRecord(new TRecord(tStart, tLength, text));
 
                         // read next char
                         c = (char) reader.read();
@@ -145,7 +145,7 @@ public class Parser {
 
                         MRecord mRecord = new MRecord(mStart, (int) mLength, direction, symbol);
                         mRecord.setLocation(new Location(input, row));
-                        currSect.addmRecord(mRecord);
+                        currSect.addMRecord(mRecord);
 
                         // read next char
                         c = (char) reader.read();
