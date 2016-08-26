@@ -25,6 +25,7 @@ public class Visitor {
     }
 
     protected void begin() {
+        program.switchDefault();
         for (Section section : program.sections) {
             section.reset();
             for (Block block : section.blocks)
