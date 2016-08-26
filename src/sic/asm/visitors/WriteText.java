@@ -52,7 +52,7 @@ public class WriteText extends WriteVisitor {
         for (Symbol sym : section.symbols.asSortedList()) if (sym.isExported()) {
             if (sym.name.equals(name)) continue;  // name of the programm is automatically exported
             if (cnt == 0) w("D");
-            w("%s%-6s%s%06X ", space, sym.name, space, sym.value() - start);
+            w("%s%-6s%s%06X", space, sym.name, space, sym.value() - start);
             if (++cnt >= 6) { cnt = 0; w("\n"); }
         }
         if (cnt > 0) w("\n");
