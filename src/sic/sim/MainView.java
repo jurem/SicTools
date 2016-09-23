@@ -210,6 +210,7 @@ public class MainView {
         try {
             Reader reader = new FileReader(file);
             Loader.loadSection(executor.machine, reader);
+			updateView();
         } catch (FileNotFoundException e1) {
             JOptionPane.showMessageDialog(mainFrame, "Error loading object file.");
             updateView();

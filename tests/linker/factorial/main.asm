@@ -3,9 +3,8 @@ main    START 0
 	EXTREF fact
 	EXTREF print
 	EXTREF stinit
-	EXTREF end
 	
-	+LDA #end
+	LDA #gap
 	+JSUB stinit    . postavi sklad
 loop    LDA #1          
 	+STA result     . result = 1
@@ -22,3 +21,4 @@ halt    J halt
 
 i       WORD 0
 gap     RESW 64
+        END main

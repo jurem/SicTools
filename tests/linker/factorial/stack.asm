@@ -2,18 +2,18 @@ stack   START 0
 	EXTDEF stinit
 	EXTDEF push
 	EXTDEF pop
-stinit  STA stackptr    . inicializira sklad na naslovu iz A
+stinit  STA stackp    . inicializira sklad na naslovu iz A
 	RSUB
-push    STA @stackptr   . spravi vrednost iz A na sklad
-	LDA stackptr
+push    STA @stackp   . spravi vrednost iz A na sklad
+	LDA stackp
 	ADD #3
-	STA stackptr
+	STA stackp
 	RSUB
-pop     LDA stackptr    . spravi vrednost s sklada v A
+pop     LDA stackp    . spravi vrednost s sklada v A
 	SUB #3
-	STA stackptr
-	LDA @stackptr
+	STA stackp
+	LDA @stackp
 	RSUB
 	
-stackptr RESW 1         . kazalec na sklad
+stackp RESW 1      . kazalec na sklad
 
