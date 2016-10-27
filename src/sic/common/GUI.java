@@ -37,6 +37,12 @@ public class GUI {
         return frame;
     }
 
+    public static JFrame showInJFrame(JFrame parent, String title, Container container) {
+        int x = parent.getX() + parent.getWidth() / 2 - container.getWidth() / 2;
+        int y = parent.getY() + parent.getHeight() / 2 - container.getHeight() / 2;
+        return showInJFrame(title, container, x, y);
+    }
+
     public static JMenuItem addMenuItem(JMenu menu, String caption, int mnemonic, ActionListener actionListener) {
         JMenuItem mi = new JMenuItem(caption, mnemonic);
         mi.addActionListener(actionListener);

@@ -36,13 +36,32 @@ public class GraphicalScreen {
     private final JFrame view;
     private JPanel pnlScreen;
 
-    public GraphicalScreen(final Executor executor) {
-        this.memory = executor.getMachine().memory;
-        this.view = createView();
-        setScreen(ADDRESS, COLS, ROWS, PIXELSIZE);
+    /////////////// screen view
+
+    void paintScreen(Graphics g) {
+        if (memory == null) return;
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < cols; j++) {
+                int color = memory.getByte(address + i * cols + j);
+                int amp = (((color >> 6) & 3) + 1) * 20;
+                int red = ((color >> 4) & 3) * amp;
+                int green = ((color >> 2) & 3) * amp;
+                int blue = (color & 3) * amp;
+                g.setColor(new Color(red, green, blue));
+                g.fillRect(j * pixelSize, i * pixelSize, pixelSize, pixelSize);
+            }
+    }
+
+    public void clearScreen() {
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < cols; j++)
+                memory.setByte(address + i * cols + j, 0);
     }
 
     private JFrame createView() {
+        final JFrame frame = new JFrame("Graphical screen");
+        frame.setResizable(false);
+
         pnlScreen = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -58,6 +77,11 @@ public class GraphicalScreen {
                     clearScreen();
                     updateView();
                 }
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    JPanel panel = createSettingsPane();
+                    GUI.showInJFrame(frame, "Settings", panel);
+
+                }
             }
         });
 
@@ -71,15 +95,15 @@ public class GraphicalScreen {
         panel.setLayout(new BorderLayout());
         panel.add(bevel);
 
-        JFrame frame = new JFrame("Screen");
-        frame.setResizable(false);
-//        frame.setBounds(620, 370, 500, 300);
         frame.setContentPane(panel);
-
         return frame;
     }
 
-    void setScreen(int addr, int cols, int rows, int pixelSize) {
+    public void setSize(int cols, int rows) {
+        setScreen(address, cols, rows, pixelSize);
+    }
+
+    public void setScreen(int addr, int cols, int rows, int pixelSize) {
         int maxaddr = SICXE.MASK_ADDR - cols * rows;
         if (addr > maxaddr) addr = maxaddr;
         this.address = addr;
@@ -99,25 +123,14 @@ public class GraphicalScreen {
         pnlScreen.repaint();
     }
 
-    void paintScreen(Graphics g) {
-        if (memory == null) return;
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < cols; j++) {
-                int color = memory.getByte(address + i * cols + j);
-                int amp = (((color >> 6) & 3) + 1) * 20;
-                int red = ((color >> 4) & 3) * amp;
-                int green = ((color >> 2) & 3) * amp;
-                int blue = (color & 3) * amp;
-                g.setColor(new Color(red, green, blue));
-                g.fillRect(j * pixelSize, i * pixelSize, pixelSize, pixelSize);
-        }
+
+    public GraphicalScreen(final Executor executor) {
+        this.memory = executor.getMachine().memory;
+        this.view = createView();
+        setScreen(ADDRESS, COLS, ROWS, PIXELSIZE);
     }
 
-    public void clearScreen() {
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < cols; j++)
-                memory.setByte(address + i * cols + j, ' ');
-    }
+    /////////////// settings
 
     public JPanel createSettingsPane() {
         JPanel pane = new JPanel();

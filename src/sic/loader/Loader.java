@@ -1,10 +1,14 @@
 package sic.loader;
 
+import sic.asm.Assembler;
+import sic.asm.ErrorCatcher;
+import sic.ast.Program;
+import sic.common.Logger;
+import sic.common.Utils;
 import sic.sim.vm.Machine;
 import sic.sim.vm.Memory;
 
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 
 /**
  * @author: jure
@@ -76,6 +80,32 @@ public class Loader {
             return false;
         }
         return true;
+    }
+
+    public static boolean loadObj(Machine machine, String filename) {
+        try {
+            Reader reader = new FileReader(filename);
+            Loader.loadSection(machine, reader);
+        } catch (FileNotFoundException e1) {
+            Logger.fmterr("Error reading file '%s'.", filename);
+            return false;
+        }
+        return true;
+    }
+
+    static public void loadAsm(Machine machine, String filename) {
+        Assembler assembler = new Assembler();
+        ErrorCatcher errorCatcher = assembler.errorCatcher;
+        Program program = assembler.assemble(Utils.readFile(filename));
+        if (errorCatcher.count() > 0) {
+            errorCatcher.print();
+            return;
+        }
+        //
+        Writer writer = new StringWriter();
+        assembler.generateObj(program, writer, false);
+        Reader reader = new StringReader(writer.toString());
+        Loader.loadSection(machine, reader);
     }
 
 }

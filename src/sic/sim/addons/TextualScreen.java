@@ -47,7 +47,11 @@ public class TextualScreen {
                 memory.setByte(address + i * cols + j, ' ');
     }
 
-    void setScreen(int addr, int cols, int rows, int fontSize) {
+    public void setSize(int cols, int rows) {
+        setScreen(address, cols, rows, txtScreen.getFont().getSize());
+    }
+
+    public void setScreen(int addr, int cols, int rows, int fontSize) {
         int maxaddr = SICXE.MASK_ADDR - cols * rows;
         if (addr > maxaddr) addr = maxaddr;
         this.address = addr;

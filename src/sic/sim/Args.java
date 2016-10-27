@@ -1,0 +1,169 @@
+package sic.sim;
+
+import sic.common.Utils;
+
+/**
+ * Created by jure on 9. 02. 16.
+ */
+
+//TODO
+class AbstractCmdLineArgs {
+
+    String[] args;
+    int pos;
+
+    public void AbstractCmdLineArgs(String[] args) {
+        this.args = args;
+        pos = 0;
+    }
+
+    public boolean hasNext() {
+        return pos < args.length;
+    }
+
+    public String next() {
+        return args[pos];
+    }
+
+    public int nextInt() {
+        return 0;
+    }
+}
+
+
+public class Args extends  AbstractCmdLineArgs {
+
+    private boolean help;
+
+    private String filename;
+    private String filebase;
+    private String fileext;
+
+    private int freq;
+    private int debug;
+
+    private boolean textScr;
+    private int textScrCols;
+    private int textScrRows;
+
+    private boolean graphScr;
+    private int graphScrCols;
+    private int graphScrRows;
+
+    public boolean isHelp() {
+        return help;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public String getFilebase() {
+        return filebase;
+    }
+
+    public String getFileext() {
+        return fileext;
+    }
+
+    public boolean hasFilename() {
+        return filename != null;
+    }
+
+    public int getFreq() {
+        return freq;
+    }
+
+    public int getDebug() {
+        return debug;
+    }
+
+    public boolean isTextScr() {
+        return textScr;
+    }
+
+    public int getTextScrCols() {
+        return textScrCols;
+    }
+
+    public int getTextScrRows() {
+        return textScrRows;
+    }
+
+    public boolean isGraphScr() {
+        return graphScr;
+    }
+
+    public int getGraphScrCols() {
+        return graphScrCols;
+    }
+
+    public int getGraphScrRows() {
+        return graphScrRows;
+    }
+
+    public static void printArgs() {
+        System.out.print(
+            "    -help|-h      Print help.\n" +
+            "    -freq hz      Set the machine frequency.\n" +
+            "    -debug level  Set the debug level.\n" +
+            "    -text rowsxcols\n");
+    }
+
+    int parseFreq(String s) {
+        return Integer.parseInt(s);
+    }
+
+    void parseTextScreen(String s) {
+        int x = s.indexOf('x');
+        textScrCols = Integer.parseInt(s.substring(0, x-1));
+        textScrRows = Integer.parseInt(s.substring(x+1));
+    }
+
+    void parseGraphScreen(String s) {
+        int x = s.indexOf('x');
+        graphScrCols = Integer.parseInt(s.substring(0, x));
+        graphScrRows = Integer.parseInt(s.substring(x+1));
+    }
+
+    void processArgs(String[] args) {
+        // options
+        int last = 0;
+        while (last < args.length) {
+            String arg = args[last];
+            switch (arg) {
+                case "-help":
+                case "-h":
+                    help = true;
+                    break;
+                case "-freq":
+                    freq = parseFreq(args[++last]);
+                    break;
+                case "-debug":
+                    debug = Integer.parseInt(args[++last]);
+                    break;
+                case "-text":
+                    textScr = true;
+                    parseTextScreen(args[++last]);
+                    break;
+                case "-graph":
+                    graphScr = true;
+                    parseGraphScreen(args[++last]);
+                    break;
+            }
+            if (!arg.startsWith("-") || arg.equals("--")) break;
+            last++;
+        }
+        // parameters
+        if (last < args.length) {
+            filename = args[last++];
+            filebase = Utils.getFileBasename(filename);
+            fileext = Utils.getFileExtension(filename);
+        }
+    }
+
+    public Args(String[] args) {
+        processArgs(args);
+    }
+
+}
