@@ -36,6 +36,7 @@
 <ul>
 <li>Assembler</li>
 <li>Simulator</li>
+<li>Linker</li>
 </ul>
 
 <p>Assembler supports all instructions and directives described in the book. This includes load/store instructions, arithmetic instructions, jumps etc. And directives START, END, ORG, LTORG, BASE, NOBASE, CSECT, USE, EQU, RESB, RESW, EXTDEF, EXTREF. Some features:</p>
@@ -69,6 +70,15 @@
 <li>and more</li>
 </ul>
 
+<p>Linker supports linking .obj files produced by the assembler into one. Each object file can have multiple control sections and needs to be relative. Other features include:</p>
+
+<ul>
+  <li>a graphical interface for selecting .obj files and choosing the linker settings</li>
+  <li>inspecting, editing and reordering control sections or symbols in a gui or textual interface</li>
+  <li>partial linking when some of the references are not present</li>
+  <li>option to keep symbols in the output file to allow further linking</li>
+  <li>and more</li>
+          
 <p>See also <a href="https://github.com/jurem/SicDemos">SicDemos</a> for several example assembly programms. Available under BSD 2-Clause license.</p>
 
 <h2>
