@@ -4,6 +4,7 @@ Tools for SIC/XE hypothetical computer from the Leland Beck's book System Softwa
   * Simulator
   * Linker
 
+## Assembler
 Assembler supports all instructions and directives described in the book. This includes load/store instructions, arithmetic instructions, jumps etc. And directives START, END, ORG, LTORG, BASE, NOBASE, CSECT, USE, EQU, RESB, RESW, EXTDEF, EXTREF. Some features:
   * immediate addressing, indirect addressing, simple addressing
   * PC-relative addressing, base addressing (BASE and NOBASE directive), indexed addressing
@@ -19,6 +20,7 @@ Assembler supports all instructions and directives described in the book. This i
   * generates log file showing code statistics, list of blocks, list of sections, list of symbols, list of literals, list of relocations
   * and more
 
+## Simulator
 Simulator is user-friendly GUI based application that loads asm or obj files. Features:
   * CPU view of registers and current instructions, shows changed registers in different color, supports changing registers values
   * disassembly view and breakpoints
@@ -29,6 +31,7 @@ Simulator is user-friendly GUI based application that loads asm or obj files. Fe
   * automatic execution with set speed (from 1 Hz to 1 MHz)
   * and more
 
+## Linker
 Linker supports linking .obj files produced by the assembler into one. Each object file can have multiple control sections and needs to be relative. Other features include:
   * a graphical interface for selecting .obj files and choosing the linker settings
   * inspecting, editing and reordering control sections or symbols in a gui or textual interface
@@ -59,7 +62,7 @@ To run assembler
 
     java -cp out/make/sictools.jar sic.Asm source.asm
 
-where source.asm is the file to be compiled.
+where `source.asm` is the file to be compiled.
 
 To get assembler help
 
@@ -69,7 +72,7 @@ To run linker
 
     java -cp out/make/sictools.jar sic.Link -o out.obj in1.obj in2.obj ...
 
-where out.obj is the output file and in1, in2,... are .obj files to be linked.
+where `out.obj` is the output file and `in1.obj`, `in2.obj`,... are .obj files to be linked.
 
 To get linker help
 
