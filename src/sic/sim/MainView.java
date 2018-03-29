@@ -18,10 +18,7 @@ import sic.sim.views.MemoryView;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.*;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -178,6 +175,37 @@ public class MainView {
         });
         mb.add(menu);
 
+
+        // Debug
+        menu = new JMenu("Debug");
+        GUI.addMenuItem(menu, "Start", KeyEvent.VK_S, KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                executor.start();
+            }
+        });
+        GUI.addMenuItem(menu, "Step", KeyEvent.VK_T, KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                executor.step();
+            }
+        });
+        GUI.addMenuItem(menu, "Stop", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                executor.stop();
+            }
+        });
+        menu.addSeparator();
+        GUI.addMenuItem(menu, "Toggle breakpoint", KeyEvent.VK_B, KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                disassemblyView.toggleBreakpointAtSelectedRow();
+            }
+        });
+        mb.add(menu);
+
+        // View
         menu = new JMenu("View");
         GUI.addMenuItem(menu, "Textual screen", KeyEvent.VK_S, new ActionListener() {
             @Override

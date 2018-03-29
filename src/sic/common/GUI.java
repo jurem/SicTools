@@ -50,6 +50,14 @@ public class GUI {
         return mi;
     }
 
+    public static JMenuItem addMenuItem(JMenu menu, String caption, int mnemonic, KeyStroke accelerator, ActionListener actionListener) {
+        JMenuItem mi = new JMenuItem(caption, mnemonic);
+        mi.setAccelerator(accelerator);
+        mi.addActionListener(actionListener);
+        menu.add(mi);
+        return mi;
+    }
+
     public static JTextField createField(JPanel pane, String label, String text, int columns, ActionListener listener) {
         JLabel lbl = new JLabel(label);
         JTextField txt = new JTextField(text, columns);
