@@ -209,6 +209,7 @@ public class DisassemblyView {
         modelDis.setValueAt("", row, 2);
         modelDis.setValueAt("", row, 3);
         modelDis.setValueAt("", row, 4);
+        modelDis.setValueAt("", row, 5);
     }
 
     private void updateDisLine(int row, int addr, Command cmd) {
@@ -217,7 +218,7 @@ public class DisassemblyView {
         modelDis.setValueAt(Conversion.bytesToHex(machine.memory.memory, addr, cmd.size()), row, 2);
         modelDis.setValueAt(cmd.nameToString(), row, 3);
         modelDis.setValueAt(cmd.operandToString(), row, 4);
-//        modelDis.setValueAt(cmd.explain, row, 5);
+        modelDis.setValueAt(cmd.disassemblyExtra(addr), row, 5);
     }
 
     public void updateDis(boolean selectPC, boolean followPC) {
