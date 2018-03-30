@@ -40,6 +40,8 @@ public class MainView {
     private TextualScreen textScreen;
     private GraphicalScreen graphScreen;
 
+    private File lastLoadedFile;
+
 
     public MainView(final Executor executor, Disassembler disassembler) {
         this.executor = executor;
@@ -115,14 +117,14 @@ public class MainView {
 
         // Machine
         menu = new JMenu("Machine");
-        GUI.addMenuItem(menu, "Load asm", KeyEvent.VK_A, new ActionListener() {
+        GUI.addMenuItem(menu, "Load asm", KeyEvent.VK_A, KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK) , new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 File file = GUI.openFileDialog(mainFrame, new FileNameExtensionFilter("Sic assembler files", "asm"));
                 if (file != null) loadAsm(file);
             }
         });
-        GUI.addMenuItem(menu, "Load obj", KeyEvent.VK_O, new ActionListener() {
+        GUI.addMenuItem(menu, "Load obj", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 File file = GUI.openFileDialog(mainFrame, new FileNameExtensionFilter("Sic object files", "obj"));
@@ -173,6 +175,16 @@ public class MainView {
                 updateView();
             }
         });
+        menu.addSeparator();
+        GUI.addMenuItem(menu, "Clear & Reload", KeyEvent.VK_C, KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                executor.getMachine().registers.reset();
+                executor.getMachine().memory.reset();
+                loadLastLoaded();
+                updateView();
+            }
+        });
         mb.add(menu);
 
 
@@ -184,13 +196,13 @@ public class MainView {
                 executor.start();
             }
         });
-        GUI.addMenuItem(menu, "Step", KeyEvent.VK_T, KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0), new ActionListener() {
+        GUI.addMenuItem(menu, "Step", KeyEvent.VK_T, KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 executor.step();
             }
         });
-        GUI.addMenuItem(menu, "Stop", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0), new ActionListener() {
+        GUI.addMenuItem(menu, "Stop", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 executor.stop();
@@ -238,6 +250,7 @@ public class MainView {
         try {
             Reader reader = new FileReader(file);
             Loader.loadSection(executor.machine, reader);
+            lastLoadedFile = file;
 			updateView();
         } catch (FileNotFoundException e1) {
             JOptionPane.showMessageDialog(mainFrame, "Error loading object file.");
@@ -258,7 +271,15 @@ public class MainView {
         assembler.generateObj(program, writer, false);
         Reader reader = new StringReader(writer.toString());
         Loader.loadSection(executor.machine, reader);
+        lastLoadedFile = file;
         updateView();
+    }
+
+
+    private void loadLastLoaded() {
+        if (lastLoadedFile == null) return; // No file loaded before
+
+        load(lastLoadedFile);
     }
 
 
