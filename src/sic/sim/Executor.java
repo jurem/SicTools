@@ -5,6 +5,7 @@ import sic.sim.vm.Machine;
 import java.awt.event.ActionListener;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.function.Predicate;
 
 /**
  * @author jure
@@ -41,7 +42,11 @@ public class Executor {
         timerPeriod = 1000 * timerRepeat / Hz;
     }
 
-    private void timerTick() {
+    /**
+     * Execute the timer tick until the stopPredicate / Breakpoint / Halt is reached.
+     * @param stopPredicate Stop if predicate passes.
+     */
+    private void timerTickUntil(Predicate<Machine> stopPredicate) {
         for (int i = 0; i < timerRepeat; i++) {
             int oldPC = machine.registers.getPC();
             machine.execute();
@@ -57,18 +62,32 @@ public class Executor {
                 if (onBreakpoint != null) onBreakpoint.actionPerformed(null);
                 break;
             }
+
+            if (stopPredicate.test(machine)) {
+                stop();
+                break;
+            }
         }
     }
 
-    public void start() {
+    /**
+     * Run until the stopPredicate / Breakpoint / Halt is reached.
+     * @param stopPredicate Stop if predicate passes.
+     */
+    private void runUntil(Predicate<Machine> stopPredicate) {
         if (timer != null) return;
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                timerTick();
+                timerTickUntil(stopPredicate);
             }
         }, 0, timerPeriod);
+    }
+
+    public void start() {
+        Predicate<Machine> stopPredicate = x -> false; // Never stop - no additional stop condition
+        runUntil(stopPredicate);
     }
 
     public void stop() {
@@ -93,4 +112,18 @@ public class Executor {
         hasChanged = false;
         return c;
     }
+
+    /**
+     * Start the machine and run until the given address is reached in PC (or breakpoint or halt).
+     * @param stopAddress Address to stop at.
+     */
+    public void runToAddress(int stopAddress) {
+        runUntil(m -> machine.registers.getPC() == stopAddress);
+    }
+
+    // TODO: Implement stepOut
+//    public void stepOut() {
+//        // runUntil(m -> machine);
+//        // How to catch last method jump from here without disassembler???
+//    }
 }

@@ -120,4 +120,22 @@ public class Disassembler {
         return instruction;
     }
 
+    /**
+     * Returns the location after given PC
+     * @param location (current) address
+     * @return next instruction address
+     */
+    public int getLocationAfter(int location) {
+        Command cmd = disassemble(location);
+        return location + (cmd == null ? 1 : cmd.size());
+    }
+
+    /**
+     * Get the next PC location, ignoring jumps / function calls.
+     * @return next instruction address
+     */
+    public int getNextPCLocation() {
+        return getLocationAfter(machine.registers.getPC());
+    }
+
 }

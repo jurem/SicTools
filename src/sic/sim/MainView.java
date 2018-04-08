@@ -30,6 +30,7 @@ import java.util.TimerTask;
  */
 public class MainView {
     private final Executor executor;
+    private final Disassembler disassembler;
 
     private JFrame mainFrame;
     // core views
@@ -45,6 +46,7 @@ public class MainView {
 
     public MainView(final Executor executor, Disassembler disassembler) {
         this.executor = executor;
+        this.disassembler = disassembler;
 
         cpuView = new CPUView(executor, disassembler);
         disassemblyView = new DisassemblyView(executor, disassembler);
@@ -208,6 +210,26 @@ public class MainView {
                 executor.stop();
             }
         });
+        menu.addSeparator();
+        GUI.addMenuItem(menu, "Run to next line", KeyEvent.VK_N, KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                executor.runToAddress(disassembler.getNextPCLocation());
+            }
+        });
+        GUI.addMenuItem(menu, "Run to cursor", KeyEvent.VK_C, KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                executor.runToAddress(disassemblyView.getSelectedAddress());
+            }
+        });
+        // TODO: Implement step out
+//        GUI.addMenuItem(menu, "Step out", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0), new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent actionEvent) {
+//
+//            }
+//        });
         menu.addSeparator();
         GUI.addMenuItem(menu, "Toggle breakpoint", KeyEvent.VK_B, KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
             @Override
