@@ -1,6 +1,8 @@
 package sic.sim.vm;
 
 import sic.common.*;
+import sic.sim.breakpoints.MemoryBreakpointException;
+import sic.sim.breakpoints.ReadMemoryBreakpointException;
 
 /**
  * @author jure
@@ -86,31 +88,31 @@ public class Machine {
     }
 
     // load
-    private int loadWord(Flags flags, int operand) {
+    private int loadWord(Flags flags, int operand) throws ReadMemoryBreakpointException {
         if (flags.isImmediate()) return operand;
         operand = memory.getWord(operand);
         if (flags.isIndirect()) operand = memory.getWord(operand);
         return operand;
     }
 
-    private int loadByte(Flags flags, int operand) {
+    private int loadByte(Flags flags, int operand) throws ReadMemoryBreakpointException {
         if (flags.isImmediate()) return operand;
         if (flags.isIndirect()) return memory.getByte(memory.getWord(operand));
         return memory.getByte(operand);
     }
 
-    private double loadFloat(Flags flags, int operand) {
+    private double loadFloat(Flags flags, int operand) throws ReadMemoryBreakpointException {
         if (flags.isImmediate()) return operand;
         if (flags.isIndirect())  return memory.getFloat(memory.getWord(operand));
         return memory.getFloat(operand);
     }
 
     // use of TA for store: addr / addr of addr
-    private int storeAddr(Flags flags, int addr) {
+    private int storeAddr(Flags flags, int addr) throws ReadMemoryBreakpointException {
         return flags.isIndirect() ? memory.getWord(addr) : addr;
     }
 
-    private boolean execSICF3F4(int opcode, Flags flags, int operand) {
+    private boolean execSICF3F4(int opcode, Flags flags, int operand) throws MemoryBreakpointException {
         // Formats: SIC, F3, F4
         switch (opcode) {
             // ***** immediate addressing not possible *****
@@ -172,13 +174,13 @@ public class Machine {
         return true;
     }
 
-    public int fetch() {
+    public int fetch() throws ReadMemoryBreakpointException {
         int b = memory.getByte(registers.getPC());
         registers.incPC();
         return b;
     }
 
-    public void execute() {
+    public void execute() throws MemoryBreakpointException {
         instructionCount++;
         // fetch first byte
         int opcode = fetch();

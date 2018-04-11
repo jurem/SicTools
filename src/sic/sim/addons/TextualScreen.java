@@ -44,7 +44,7 @@ public class TextualScreen {
     public void clearScreen() {
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < cols; j++)
-                memory.setByte(address + i * cols + j, ' ');
+                memory.setByteNoBreakpoint(address + i * cols + j, ' ');
     }
 
     public void setSize(int cols, int rows) {
@@ -102,7 +102,7 @@ public class TextualScreen {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                char znak = (char) memory.getByte(address + i * cols + j);
+                char znak = (char) memory.getByteNoBreakpoint(address + i * cols + j);
                 if (znak > 31) sb.append(znak); else sb.append(" ");
             }
             if (i < rows-1) sb.append("\n");
