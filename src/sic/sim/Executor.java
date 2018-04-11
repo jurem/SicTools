@@ -1,8 +1,8 @@
 package sic.sim;
 
 import sic.sim.breakpoints.Breakpoints;
-import sic.sim.breakpoints.MemoryBreakpointException;
-import sic.sim.breakpoints.MemoryBreakpoints;
+import sic.sim.breakpoints.DataBreakpointException;
+import sic.sim.breakpoints.DataBreakpoints;
 import sic.sim.vm.Machine;
 
 import java.awt.event.ActionListener;
@@ -23,13 +23,13 @@ public class Executor {
     private int timerRepeat;        // timer loop-repeat count
     public final Breakpoints breakpoints;
     public ActionListener onBreakpoint;
-    public final MemoryBreakpoints memoryBreakpoints;
+    public final DataBreakpoints dataBreakpoints;
     private boolean hasChanged;
 
     public Executor(final Machine machine) {
         this.machine = machine;
         this.breakpoints = new Breakpoints();
-        this.memoryBreakpoints = new MemoryBreakpoints();
+        this.dataBreakpoints = new DataBreakpoints();
         setSpeed(100);
     }
 
@@ -57,7 +57,7 @@ public class Executor {
 
             try {
                 machine.execute();
-            } catch (MemoryBreakpointException ex) {
+            } catch (DataBreakpointException ex) {
                 if (onBreakpoint != null) onBreakpoint.actionPerformed(null);
                 stop();
                 break;
@@ -113,11 +113,11 @@ public class Executor {
         if (!isRunning()) {
             try {
                 machine.execute();
-            } catch (MemoryBreakpointException ex) {
+            } catch (DataBreakpointException ex) {
                 // Try again; the breakpoint will be automatically ignored the second time
                 try {
                     machine.execute();
-                } catch (MemoryBreakpointException ex2) {
+                } catch (DataBreakpointException ex2) {
                     // Do nothing, it cannot really happen this time...
                 }
             }

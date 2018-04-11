@@ -2,14 +2,14 @@ package sic.sim.breakpoints;
 
 import java.util.ArrayList;
 
-public class MemoryBreakpoints {
-    private ArrayList<MemoryBreakpoint> breakpoints = new ArrayList<>();
+public class DataBreakpoints {
+    private ArrayList<DataBreakpoint> breakpoints = new ArrayList<>();
 
-    public MemoryBreakpoint triggered;
+    public DataBreakpoint triggered;
 
     public Integer ignoreNext;
 
-    public MemoryBreakpoints() {
+    public DataBreakpoints() {
 
     }
 
@@ -18,16 +18,16 @@ public class MemoryBreakpoints {
      * Throws exception if breakpoint is triggered.
      * @param address Address to check
      */
-    public void checkRead(int address) throws ReadMemoryBreakpointException {
+    public void checkRead(int address) throws ReadDataBreakpointException {
         if (ignoreNext != null && ignoreNext == address) {
             ignoreNext = null;
             return;
         }
 
-        for (MemoryBreakpoint breakpoint : breakpoints) {
+        for (DataBreakpoint breakpoint : breakpoints) {
             if (breakpoint.checkRead(address)) {
                 ignoreNext = address;
-                throw new ReadMemoryBreakpointException(breakpoint, address);
+                throw new ReadDataBreakpointException(breakpoint, address);
             }
         }
     }
@@ -37,25 +37,25 @@ public class MemoryBreakpoints {
      * Throws exception if breakpoint is triggered.
      * @param address Address to check
      */
-    public void checkWrite(int address) throws WriteMemoryBreakpointException {
+    public void checkWrite(int address) throws WriteDataBreakpointException {
         if (ignoreNext != null && ignoreNext == address) {
             ignoreNext = null;
             return;
         }
 
-        for (MemoryBreakpoint breakpoint : breakpoints) {
+        for (DataBreakpoint breakpoint : breakpoints) {
             if (breakpoint.checkWrite(address)) {
                 ignoreNext = address;
-                throw new WriteMemoryBreakpointException(breakpoint, address);
+                throw new WriteDataBreakpointException(breakpoint, address);
             }
         }
     }
 
-    public void add(MemoryBreakpoint breakpoint) {
+    public void add(DataBreakpoint breakpoint) {
         this.breakpoints.add(breakpoint);
     }
 
-    public void remove(MemoryBreakpoint breakpoint) {
+    public void remove(DataBreakpoint breakpoint) {
         this.breakpoints.remove(breakpoint);
     }
 

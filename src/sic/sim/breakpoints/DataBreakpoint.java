@@ -2,7 +2,7 @@ package sic.sim.breakpoints;
 
 import java.security.InvalidParameterException;
 
-public class MemoryBreakpoint {
+public class DataBreakpoint {
 
     private int from;
     private int to;
@@ -21,7 +21,7 @@ public class MemoryBreakpoint {
     // ----------------------
     // |    Constructor     |
     // ----------------------
-    public MemoryBreakpoint(int from, int to, MemoryAccess access) {
+    public DataBreakpoint(int from, int to, MemoryAccess access) {
         if (from > to) {
             throw new InvalidParameterException("Range should be from lower address to higher address!");
         }
