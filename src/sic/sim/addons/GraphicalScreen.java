@@ -42,7 +42,7 @@ public class GraphicalScreen {
         if (memory == null) return;
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < cols; j++) {
-                int color = memory.getByte(address + i * cols + j);
+                int color = memory.getByteNoBreakpoint(address + i * cols + j);
                 int amp = (((color >> 6) & 3) + 1) * 20;
                 int red = ((color >> 4) & 3) * amp;
                 int green = ((color >> 2) & 3) * amp;
@@ -55,7 +55,7 @@ public class GraphicalScreen {
     public void clearScreen() {
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < cols; j++)
-                memory.setByte(address + i * cols + j, 0);
+                memory.setByteNoBreakpoint(address + i * cols + j, 0);
     }
 
     private JFrame createView() {

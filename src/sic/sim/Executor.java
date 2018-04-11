@@ -1,5 +1,8 @@
 package sic.sim;
 
+import sic.sim.breakpoints.Breakpoints;
+import sic.sim.breakpoints.MemoryBreakpointException;
+import sic.sim.breakpoints.MemoryBreakpoints;
 import sic.sim.vm.Machine;
 
 import java.awt.event.ActionListener;
@@ -20,11 +23,13 @@ public class Executor {
     private int timerRepeat;        // timer loop-repeat count
     public final Breakpoints breakpoints;
     public ActionListener onBreakpoint;
+    public final MemoryBreakpoints memoryBreakpoints;
     private boolean hasChanged;
 
     public Executor(final Machine machine) {
         this.machine = machine;
         this.breakpoints = new Breakpoints();
+        this.memoryBreakpoints = new MemoryBreakpoints();
         setSpeed(100);
     }
 
@@ -49,7 +54,15 @@ public class Executor {
     private void timerTickUntil(Predicate<Machine> stopPredicate) {
         for (int i = 0; i < timerRepeat; i++) {
             int oldPC = machine.registers.getPC();
-            machine.execute();
+
+            try {
+                machine.execute();
+            } catch (MemoryBreakpointException ex) {
+                if (onBreakpoint != null) onBreakpoint.actionPerformed(null);
+                stop();
+                break;
+            }
+
             hasChanged = true;
             // check if the same instruction: halt J halt
             if (oldPC == machine.registers.getPC()) {
@@ -98,7 +111,16 @@ public class Executor {
 
     public void step() {
         if (!isRunning()) {
-            machine.execute();
+            try {
+                machine.execute();
+            } catch (MemoryBreakpointException ex) {
+                // Try again; the breakpoint will be automatically ignored the second time
+                try {
+                    machine.execute();
+                } catch (MemoryBreakpointException ex2) {
+                    // Do nothing, it cannot really happen this time...
+                }
+            }
             hasChanged = true;
         }
     }
