@@ -23,13 +23,11 @@ public class Executor {
     private int timerRepeat;        // timer loop-repeat count
     public final Breakpoints breakpoints;
     public ActionListener onBreakpoint;
-    public final DataBreakpoints dataBreakpoints;
     private boolean hasChanged;
 
     public Executor(final Machine machine) {
         this.machine = machine;
         this.breakpoints = new Breakpoints();
-        this.dataBreakpoints = new DataBreakpoints();
         setSpeed(100);
     }
 
@@ -58,8 +56,10 @@ public class Executor {
             try {
                 machine.execute();
             } catch (DataBreakpointException ex) {
-                if (onBreakpoint != null) onBreakpoint.actionPerformed(null);
+                machine.registers.setPC(oldPC);
+                hasChanged = true;
                 stop();
+                if (onBreakpoint != null) onBreakpoint.actionPerformed(null);
                 break;
             }
 

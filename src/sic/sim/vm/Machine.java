@@ -178,8 +178,8 @@ public class Machine {
         return true;
     }
 
-    public int fetch() throws ReadDataBreakpointException {
-        int b = memory.getByte(registers.getPC());
+    public int fetch() {
+        int b = memory.getByteNoBreakpoint(registers.getPC());
         registers.incPC();
         return b;
     }
