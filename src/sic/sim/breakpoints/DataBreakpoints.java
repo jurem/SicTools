@@ -7,7 +7,10 @@ public class DataBreakpoints {
 
     public DataBreakpoint triggered;
 
-    public Integer ignoreNext;
+    public int ignoreNextAmount = 0;
+    // For handling multiple
+    private int requestSize = 1;
+    private int requestLeft = 0;
 
     public DataBreakpoints() {
 
@@ -19,14 +22,12 @@ public class DataBreakpoints {
      * @param address Address to check
      */
     public void checkRead(int address) throws ReadDataBreakpointException {
-        if (ignoreNext != null && ignoreNext == address) {
-            ignoreNext = null;
-            return;
-        }
+        requestReduce();
+        if (shouldIgnore()) return;
 
         for (DataBreakpoint breakpoint : breakpoints) {
             if (breakpoint.checkRead(address)) {
-                ignoreNext = address;
+                ignoreNextAmount = requestSize;
                 throw new ReadDataBreakpointException(breakpoint, address);
             }
         }
@@ -38,18 +39,38 @@ public class DataBreakpoints {
      * @param address Address to check
      */
     public void checkWrite(int address) throws WriteDataBreakpointException {
-        if (ignoreNext != null && ignoreNext == address) {
-            ignoreNext = null;
-            return;
-        }
+        requestReduce();
+        if (shouldIgnore()) return;
 
         for (DataBreakpoint breakpoint : breakpoints) {
             if (breakpoint.checkWrite(address)) {
-                ignoreNext = address;
+                ignoreNextAmount = requestSize;
                 throw new WriteDataBreakpointException(breakpoint, address);
             }
         }
     }
+
+    private boolean shouldIgnore() {
+        if (this.ignoreNextAmount == 0) {
+            return false;
+        }
+        this.ignoreNextAmount--;
+        return true;
+    }
+
+    private void requestReduce() {
+        if (requestLeft > 0) {
+            requestLeft--;
+        } else {
+            requestSize = 1;
+        }
+    }
+
+    public void requestMultiple(int size) {
+        requestSize = size;
+        requestLeft = size;
+    }
+
 
     public void add(DataBreakpoint breakpoint) {
         this.breakpoints.add(breakpoint);
@@ -61,6 +82,10 @@ public class DataBreakpoints {
 
     public void remove(int breakpointIndex) {
         this.breakpoints.remove(breakpointIndex);
+    }
+
+    public DataBreakpoint at(int index) {
+        return this.breakpoints.get(index);
     }
 
 

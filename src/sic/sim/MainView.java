@@ -10,6 +10,7 @@ import sic.link.ui.LinkListener;
 import sic.link.ui.LinkerGui;
 import sic.loader.Loader;
 import sic.sim.addons.GraphicalScreen;
+import sic.sim.addons.DataBreakpointView;
 import sic.sim.addons.TextualScreen;
 import sic.sim.views.CPUView;
 import sic.sim.views.DisassemblyView;
@@ -40,6 +41,7 @@ public class MainView {
     // addon views
     private TextualScreen textScreen;
     private GraphicalScreen graphScreen;
+    private DataBreakpointView dataBreakpointView;
 
     private File lastLoadedFile;
 
@@ -70,6 +72,7 @@ public class MainView {
 
         textScreen = new TextualScreen(executor);
         graphScreen = new GraphicalScreen(executor);
+        dataBreakpointView = new DataBreakpointView(executor);
 
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
@@ -241,16 +244,23 @@ public class MainView {
 
         // View
         menu = new JMenu("View");
-        GUI.addMenuItem(menu, "Textual screen", KeyEvent.VK_S, new ActionListener() {
+        GUI.addMenuItem(menu, "Textual screen", KeyEvent.VK_T, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 textScreen.toggleView();
             }
         });
-        GUI.addMenuItem(menu, "Graphical screen", KeyEvent.VK_S, new ActionListener() {
+        GUI.addMenuItem(menu, "Graphical screen", KeyEvent.VK_G, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 graphScreen.toggleView();
+            }
+        });
+        menu.addSeparator();
+        GUI.addMenuItem(menu, "Data breakpoints", KeyEvent.VK_D, KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                dataBreakpointView.toggleView();
             }
         });
         mb.add(menu);
