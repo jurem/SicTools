@@ -179,7 +179,7 @@ public class Machine {
     }
 
     public int fetch() {
-        int b = memory.getByteNoBreakpoint(registers.getPC());
+        int b = memory.getByteRaw(registers.getPC());
         registers.incPC();
         return b;
     }
