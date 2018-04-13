@@ -78,13 +78,18 @@ public class Memory {
         this.memory = new byte[capacity];
     }
 
-
-    public int getByteNoBreakpoint(int address)  {
+    /**
+     * Gets a byte without checking for breakpoints
+     */
+    public int getByteRaw(int address)  {
         if (checkAddress(address)) return 0;
         return ((int)memory[address]) & 0xFF;
     }
 
-    public void setByteNoBreakpoint(int address, int value){
+    /**
+     * Sets a byte without checking for breakpoints
+     */
+    public void setByteRaw(int address, int value){
         if (checkAddress(address)) return;
         memory[address] = (byte)(value & 0xFF);
     }

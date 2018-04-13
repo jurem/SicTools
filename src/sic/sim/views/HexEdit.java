@@ -229,12 +229,12 @@ public class HexEdit extends JPanel implements FocusListener, MouseListener, Key
 
     private int get(int addr) {
         if (memory == null) return 0;
-        return memory.getByteNoBreakpoint(addr);
+        return memory.getByteRaw(addr);
     }
 
     private void set(int addr, int val) {
         if (memory != null)
-            memory.setByteNoBreakpoint(addr, val);
+            memory.setByteRaw(addr, val);
     }
 
     @Override
