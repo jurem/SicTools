@@ -40,19 +40,16 @@ public class Memory {
     }
 
     public int getWord(int address) throws ReadDataBreakpointException {
-        dataBreakpoints.requestMultiple(3);
         return getByte(address + 2) | getByte(address + 1) << 8 | getByte(address) << 16;
     }
 
     public void setWord(int address, int value) throws WriteDataBreakpointException {
-        dataBreakpoints.requestMultiple(3);
         setByte(address, value >> 16);
         setByte(address + 1, value >> 8);
         setByte(address + 2, value);
     }
 
     public double getFloat(int address) throws ReadDataBreakpointException {
-        dataBreakpoints.requestMultiple(6);
         long bits  =  (long)getByte(address)  << 40 | (long)getByte(address+1) << 32 |
                       (long)getByte(address+2) << 24 | getByte(address+3) << 16 |
                       getByte(address+4) << 8  | getByte(address+5);
@@ -60,7 +57,6 @@ public class Memory {
     }
 
     public void setFloat(int address, double value) throws WriteDataBreakpointException {
-        dataBreakpoints.requestMultiple(6);
         long bits = SICXE.floatToBits(value);
         setByte(address, (int)(bits >> 40));
         setByte(address + 1, (int)(bits >> 32));

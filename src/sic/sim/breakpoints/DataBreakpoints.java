@@ -5,15 +5,18 @@ import java.util.ArrayList;
 public class DataBreakpoints {
     private ArrayList<DataBreakpoint> breakpoints = new ArrayList<>();
 
-    public DataBreakpoint triggered;
+    private boolean enabled = false;
 
-    public int ignoreNextAmount = 0;
-    // For handling multiple
-    private int requestSize = 1;
-    private int requestLeft = 0;
+    public boolean isEnabled() {
+        return enabled;
+    }
 
-    public DataBreakpoints() {
+    public void enable() {
+        this.enabled = true;
+    }
 
+    public void disable() {
+        this.enabled = false;
     }
 
     /**
@@ -22,12 +25,11 @@ public class DataBreakpoints {
      * @param address Address to check
      */
     public void checkRead(int address) throws ReadDataBreakpointException {
-        requestReduce();
-        if (shouldIgnore()) return;
+        if (!this.enabled) return;
 
         for (DataBreakpoint breakpoint : breakpoints) {
             if (breakpoint.checkRead(address)) {
-                ignoreNextAmount = requestSize;
+                this.disable(); // let next instruction through
                 throw new ReadDataBreakpointException(breakpoint, address);
             }
         }
@@ -39,38 +41,15 @@ public class DataBreakpoints {
      * @param address Address to check
      */
     public void checkWrite(int address) throws WriteDataBreakpointException {
-        requestReduce();
-        if (shouldIgnore()) return;
+        if (!this.enabled) return;
 
         for (DataBreakpoint breakpoint : breakpoints) {
             if (breakpoint.checkWrite(address)) {
-                ignoreNextAmount = requestSize;
+                this.disable(); // let next instruction through
                 throw new WriteDataBreakpointException(breakpoint, address);
             }
         }
     }
-
-    private boolean shouldIgnore() {
-        if (this.ignoreNextAmount == 0) {
-            return false;
-        }
-        this.ignoreNextAmount--;
-        return true;
-    }
-
-    private void requestReduce() {
-        if (requestLeft > 0) {
-            requestLeft--;
-        } else {
-            requestSize = 1;
-        }
-    }
-
-    public void requestMultiple(int size) {
-        requestSize = size;
-        requestLeft = size;
-    }
-
 
     public void add(DataBreakpoint breakpoint) {
         this.breakpoints.add(breakpoint);

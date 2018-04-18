@@ -39,8 +39,6 @@ public class DataBreakpointView {
     }
 
     private JFrame createView() {
-        //Object dataRow[] = {"166", "2321", "read", "write", "enabled"};
-        //Object dataRow[] = {"166", "2321", true, true, false };
         String column[] = {"From", "To", "Read", "Write", "Enabled"};
 
         table = new JTable() {
@@ -170,10 +168,10 @@ public class DataBreakpointView {
                 breakpoint.setRange(breakpoint.getFrom(), Conversion.hexToInt((String)data));
                 break;
             case "Read":
-                breakpoint.setAccess(DataBreakpoint.memoryAccessFromBool((Boolean) data, breakpoint.getWrite()));
+                breakpoint.setRead((Boolean) data);
                 break;
             case "Write":
-                breakpoint.setAccess(DataBreakpoint.memoryAccessFromBool(breakpoint.getRead(), (Boolean) data));
+                breakpoint.setWrite((Boolean) data);
                 break;
             case "Enabled":
                 breakpoint.setEnabled((Boolean) data);

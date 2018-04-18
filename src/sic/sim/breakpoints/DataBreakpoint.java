@@ -9,21 +9,15 @@ public class DataBreakpoint {
     private int from;
     private int to;
 
-    /**
-     * On what kind of memory access should the breakpoint be triggered?
-     */
-    private MemoryAccess access;
-
-    public enum MemoryAccess {
-        WRITE, READ, BOTH, NONE
-    }
+    private boolean read = false; // trigger on read access
+    private boolean write = false; // trigger on write access
 
     private boolean enabled = true;
 
     // ----------------------
     // |    Constructor     |
     // ----------------------
-    public DataBreakpoint(int from, int to) {
+    private DataBreakpoint(int from, int to) {
         if (from > to) {
             throw new InvalidParameterException("Range should be from lower address to higher address!");
         }
@@ -32,14 +26,10 @@ public class DataBreakpoint {
         this.to = to;
     }
 
-    public DataBreakpoint(int from, int to, MemoryAccess access) {
-        this(from, to);
-        this.access = access;
-    }
-
     public DataBreakpoint(int from, int to, boolean read, boolean write) {
         this(from, to);
-        this.access = memoryAccessFromBool(read, write);
+        this.read = read;
+        this.write = write;
     }
 
     // ----------------------
@@ -57,16 +47,16 @@ public class DataBreakpoint {
         return enabled;
     }
 
-    public MemoryAccess getAccess() {
-        return access;
-    }
-
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    public void setAccess(MemoryAccess access) {
-        this.access = access;
+    public void setRead(boolean read) {
+        this.read = read;
+    }
+
+    public void setWrite(boolean write) {
+        this.write = write;
     }
 
     public void setRange(int from, int to) {
@@ -79,11 +69,11 @@ public class DataBreakpoint {
     }
 
     public boolean getRead() {
-        return access == MemoryAccess.READ || access == MemoryAccess.BOTH;
+        return this.read;
     }
 
     public boolean getWrite() {
-        return access == MemoryAccess.WRITE || access == MemoryAccess.BOTH;
+        return this.write;
     }
 
     // ----------------------
@@ -119,13 +109,6 @@ public class DataBreakpoint {
 
     // ---
     // Helper
-    public static MemoryAccess memoryAccessFromBool(boolean read, boolean write) {
-        if (read && write) return MemoryAccess.BOTH;
-        else if (read) return MemoryAccess.READ;
-        else if (write) return MemoryAccess.WRITE;
-        else return MemoryAccess.NONE;
-    }
-
     public Object[] toTable() {
         Object[] fields = new Object[5];
         fields[0] = Conversion.addrToHex(from);

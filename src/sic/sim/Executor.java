@@ -22,12 +22,15 @@ public class Executor {
     private int timerPeriod;        // timer period in miliseconds
     private int timerRepeat;        // timer loop-repeat count
     public final Breakpoints breakpoints;
+    private final DataBreakpoints dataBreakpoints;
     public ActionListener onBreakpoint;
     private boolean hasChanged;
 
     public Executor(final Machine machine) {
         this.machine = machine;
         this.breakpoints = new Breakpoints();
+        this.dataBreakpoints = machine.memory.dataBreakpoints;
+        this.dataBreakpoints.enable();
         setSpeed(100);
     }
 
@@ -55,8 +58,13 @@ public class Executor {
 
             try {
                 machine.execute();
+
+                if (!dataBreakpoints.isEnabled()) {
+                    // Enable data breakpoints in case they got disabled because they were triggered.
+                    dataBreakpoints.enable();
+                }
             } catch (DataBreakpointException ex) {
-                machine.registers.setPC(oldPC);
+                machine.registers.setPC(oldPC); // reset PC to old one - instruction didn't execute anyway
                 hasChanged = true;
                 stop();
                 if (onBreakpoint != null) onBreakpoint.actionPerformed(null);
@@ -111,16 +119,18 @@ public class Executor {
 
     public void step() {
         if (!isRunning()) {
+
+            boolean dataBpEnabledBefore = dataBreakpoints.isEnabled();
+            dataBreakpoints.disable();
+
             try {
                 machine.execute();
             } catch (DataBreakpointException ex) {
-                // Try again; the breakpoint will be automatically ignored the second time
-                try {
-                    machine.execute();
-                } catch (DataBreakpointException ex2) {
-                    // Do nothing, it cannot really happen this time...
-                }
+                // Shouldn't be triggered when breakpoints are disabled
             }
+
+            if (dataBpEnabledBefore) dataBreakpoints.enable();
+
             hasChanged = true;
         }
     }
