@@ -223,13 +223,12 @@ public class MainView {
                 executor.runToAddress(disassemblyView.getSelectedAddress());
             }
         });
-        // TODO: Implement step out
-//        GUI.addMenuItem(menu, "Step out", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0), new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent actionEvent) {
-//
-//            }
-//        });
+        GUI.addMenuItem(menu, "Step out", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_F6, InputEvent.SHIFT_DOWN_MASK), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                executor.stepOut();
+            }
+        });
         menu.addSeparator();
         GUI.addMenuItem(menu, "Toggle breakpoint", KeyEvent.VK_B, KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
             @Override

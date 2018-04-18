@@ -2,6 +2,8 @@ package sic.sim.vm;
 
 import sic.common.*;
 
+import java.util.Stack;
+
 /**
  * @author jure
  */
@@ -19,6 +21,8 @@ public class Machine {
     // ************ Statistics
 
     private int instructionCount;
+
+    private Stack<Integer> addressBelowJSUB = new Stack<>();
 
     // ************ Constructor
 
@@ -129,8 +133,8 @@ public class Machine {
             case Opcode.JGT:	if (registers.isGreater()) registers.setPC(storeAddr(flags, operand)); break;
             case Opcode.JLT:	if (registers.isLower()) registers.setPC(storeAddr(flags, operand)); break;
             case Opcode.J:		registers.setPC(storeAddr(flags, operand)); break;
-            case Opcode.RSUB:	registers.setPC(registers.getL()); break;
-            case Opcode.JSUB:	registers.setL(registers.getPC()); registers.setPC(storeAddr(flags, operand)); break;
+            case Opcode.RSUB:	registers.setPC(registers.getL()); popJSUB(); break;
+            case Opcode.JSUB:	registers.setL(registers.getPC()); pushJSUB(); registers.setPC(storeAddr(flags, operand)); break;
             // ***** immediate addressing possible *****
             // loads
             case Opcode.LDA:	registers.setA(loadWord(flags, operand)); break;
@@ -216,6 +220,33 @@ public class Machine {
         // try to execute
         if (execSICF3F4(opcode & 0xFC, flags, operand)) return;
         invalidOpcode(opcode);
+    }
+
+
+    // ********** Step over functionality *****************
+
+    /**
+     * Push the address bellow current JSUB to the stack, so we can step out of procedure later.
+     */
+    private void pushJSUB() {
+        this.addressBelowJSUB.push(this.registers.getPC());
+    }
+
+    /**
+     * Pop the last address bellow current JSUB from the stack, since we got out of current function.
+     * (to be called with RSUB)
+     */
+    private void popJSUB() {
+        this.addressBelowJSUB.pop();
+    }
+
+    /**
+     * Get the address below the last JSUB was executed, so we can step out.
+     * @return null if no item on stack - no JSUB encountered, otherwise last address.
+     */
+    public Integer getAddressBelowLastJSUB() {
+        if (this.addressBelowJSUB.isEmpty()) return null;
+        else return this.addressBelowJSUB.peek();
     }
 
 }

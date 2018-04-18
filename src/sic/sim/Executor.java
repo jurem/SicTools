@@ -118,12 +118,15 @@ public class Executor {
      * @param stopAddress Address to stop at.
      */
     public void runToAddress(int stopAddress) {
-        runUntil(m -> machine.registers.getPC() == stopAddress);
+        runUntil(machine -> machine.registers.getPC() == stopAddress);
     }
 
-    // TODO: Implement stepOut
-//    public void stepOut() {
-//        // runUntil(m -> machine);
-//        // How to catch last method jump from here without disassembler???
-//    }
+    /**
+     * Step out of the current sub procedure
+     */
+    public void stepOut() {
+        Integer addressAfterLastJSUB = machine.getAddressBelowLastJSUB();
+        if (addressAfterLastJSUB == null) return;
+        runUntil(machine -> machine.registers.getPC() == addressAfterLastJSUB);
+    }
 }
