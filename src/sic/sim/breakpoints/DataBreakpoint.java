@@ -32,6 +32,12 @@ public class DataBreakpoint {
         this.write = write;
     }
 
+    public DataBreakpoint(int from, int to, boolean read, boolean write, boolean enabled) {
+        this(from, to, read, write);
+        this.enabled = enabled;
+    }
+
+
     // ----------------------
     // |  Getters & Setters |
     // ----------------------
