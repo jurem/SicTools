@@ -15,10 +15,15 @@ public class Symbol extends Node implements Comparable<Symbol> {
         LOCAL, IMPORTED, EXPORTED
     }
 
+    enum LabelType {
+        NOTLABEL, CODE, DATA
+    }
+
     public final String name;           // name of the symbol
     public final Location loc;          // location of the definition
     private Scope scope;
     private boolean absolute;           // is the symbol absolute
+    private LabelType labelType;                  // is it before code or data
     // value or expr of the symbol
     private int value;                  // value of the symbol
     public final Expr expr;             // if expr == null then symbol is defined by value
@@ -26,13 +31,14 @@ public class Symbol extends Node implements Comparable<Symbol> {
     private int dependencyCount;        // number of symbols this symbol depends on
 
     // labels
-    public Symbol(String name, Location loc, int value) {
+    public Symbol(String name, Location loc, int value, boolean isData) {
         this.name = name;
         this.loc = loc;
         this.scope = Scope.LOCAL;
         this.value = value;
         this.expr = null;
         this.evaluated = true;
+        this.labelType = isData ? LabelType.DATA : LabelType.CODE;
     }
 
     // EQU expressions
@@ -42,6 +48,7 @@ public class Symbol extends Node implements Comparable<Symbol> {
         this.scope = Scope.LOCAL;
         this.expr = expr;
         this.dependencyCount = expr.countSyms();
+        this.labelType = LabelType.NOTLABEL;
     }
 
     // imported/external symbols
@@ -51,6 +58,7 @@ public class Symbol extends Node implements Comparable<Symbol> {
         this.value = 0;
         this.expr = null;
         this.scope = Scope.IMPORTED;
+        this.labelType = LabelType.NOTLABEL;
     }
 
     @Override
@@ -90,6 +98,10 @@ public class Symbol extends Node implements Comparable<Symbol> {
     public String kindToString() {
         if (absolute) return "absolute";
         else return "relative";
+    }
+
+    public String labelTypeToString() {
+        return this.labelType.toString().toLowerCase();
     }
 
     public String valueToString() {

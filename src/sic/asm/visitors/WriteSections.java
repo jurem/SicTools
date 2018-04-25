@@ -25,7 +25,7 @@ public class WriteSections extends WriteVisitor {
     }
 
     public void visit(Symbol sym) {
-        w(String.format("    %-" + symLen + "s  %06X  %8d  %-8s  %-8s  %s\n", sym.name, sym.value(), sym.value(), sym.scopeToString(), sym.kindToString(), sym.exprToString()));
+        w(String.format("    %-" + symLen + "s  %06X  %8d  %-8s  %-8s  %-8s  %s\n", sym.name, sym.value(), sym.value(), sym.scopeToString(), sym.kindToString(), sym.labelTypeToString(), sym.exprToString()));
     }
 
     public void visit(Section section) {
@@ -40,7 +40,7 @@ public class WriteSections extends WriteVisitor {
         visitBlocks(section.blocks);
         // symbols
         w("Symbols\n");
-        w(String.format("    %-" + symLen + "s     hex       dec  scope     kind      description\n", "name"));
+        w(String.format("    %-" + symLen + "s     hex       dec  scope     kind      type      description\n", "name"));
         visitSymbols(section.symbols.asSortedList());
         // literals
         w("Literals\n");

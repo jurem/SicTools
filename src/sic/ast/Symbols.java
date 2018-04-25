@@ -71,8 +71,8 @@ public class Symbols {
     }
 
     // for labels
-    public void defineLabel(String name, Location loc, int val) throws AsmError {
-        define(new Symbol(name, loc, val));
+    public void defineLabel(String name, Location loc, int val, boolean isData) throws AsmError {
+        define(new Symbol(name, loc, val, isData));
     }
 
     // for external symbols
