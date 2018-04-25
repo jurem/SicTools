@@ -59,7 +59,7 @@ public class Loader {
                 while (len-- > 0) {
                     if (loc < start || loc >= start + length) return false;
                     byte val = (byte)readByte(r);
-                    mem.setByte(loc++, val);
+                    mem.setByteRaw(loc++, val);
                 }
                 r.read();  // EOL
                 ch = r.read();

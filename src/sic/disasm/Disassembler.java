@@ -66,7 +66,7 @@ public class Disassembler {
     protected int fetch() {
         if (fetchAddr < 0) return 0;
         if (fetchAddr > SICXE.MAX_ADDR) return 0;
-        return machine.memory.getByte(fetchAddr++);
+        return machine.memory.getByteRaw(fetchAddr++);
     }
 
     public Instruction disassemble(int addr) {
@@ -114,7 +114,7 @@ public class Disassembler {
         Instruction instruction = disassemble(loc);
         if (instruction == null) {
             Data data = new DataHex(mnemonics.get("BYTE").opcode);
-            data.setData((byte)machine.memory.getByte(loc));
+            data.setData((byte)machine.memory.getByteRaw(loc));
             return new StorageData(new Location(-1,-1,-1), "", mnemonics.get("BYTE"), data);
         }
         return instruction;

@@ -4,7 +4,7 @@ import sic.ast.Command;
 import sic.common.Conversion;
 import sic.common.SICXE;
 import sic.disasm.Disassembler;
-import sic.sim.Breakpoints;
+import sic.sim.breakpoints.Breakpoints;
 import sic.sim.Colors;
 import sic.sim.Executor;
 import sic.sim.vm.Machine;

@@ -1,5 +1,8 @@
 package sic.sim;
 
+import sic.sim.breakpoints.Breakpoints;
+import sic.sim.breakpoints.DataBreakpointException;
+import sic.sim.breakpoints.DataBreakpoints;
 import sic.sim.vm.Machine;
 
 import java.awt.event.ActionListener;
@@ -19,12 +22,15 @@ public class Executor {
     private int timerPeriod;        // timer period in miliseconds
     private int timerRepeat;        // timer loop-repeat count
     public final Breakpoints breakpoints;
+    private final DataBreakpoints dataBreakpoints;
     public ActionListener onBreakpoint;
     private boolean hasChanged;
 
     public Executor(final Machine machine) {
         this.machine = machine;
         this.breakpoints = new Breakpoints();
+        this.dataBreakpoints = machine.memory.dataBreakpoints;
+        this.dataBreakpoints.enable();
         setSpeed(100);
     }
 
@@ -49,7 +55,22 @@ public class Executor {
     private void timerTickUntil(Predicate<Machine> stopPredicate) {
         for (int i = 0; i < timerRepeat; i++) {
             int oldPC = machine.registers.getPC();
-            machine.execute();
+
+            try {
+                machine.execute();
+
+                if (!dataBreakpoints.isEnabled()) {
+                    // Enable data breakpoints in case they got disabled because they were triggered.
+                    dataBreakpoints.enable();
+                }
+            } catch (DataBreakpointException ex) {
+                machine.registers.setPC(oldPC); // reset PC to old one - instruction didn't execute anyway
+                hasChanged = true;
+                stop();
+                if (onBreakpoint != null) onBreakpoint.actionPerformed(null);
+                break;
+            }
+
             hasChanged = true;
             // check if the same instruction: halt J halt
             if (oldPC == machine.registers.getPC()) {
@@ -98,7 +119,18 @@ public class Executor {
 
     public void step() {
         if (!isRunning()) {
-            machine.execute();
+
+            boolean dataBpEnabledBefore = dataBreakpoints.isEnabled();
+            dataBreakpoints.disable();
+
+            try {
+                machine.execute();
+            } catch (DataBreakpointException ex) {
+                // Shouldn't be triggered when breakpoints are disabled
+            }
+
+            if (dataBpEnabledBefore) dataBreakpoints.enable();
+
             hasChanged = true;
         }
     }
