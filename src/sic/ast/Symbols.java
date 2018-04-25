@@ -5,6 +5,7 @@ import sic.asm.Location;
 import sic.ast.expression.Expr;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Symbol table
@@ -44,6 +45,22 @@ public class Symbols {
         Collections.sort(s);
         return s;
     }
+
+
+    // ************ getting labels for better simulator experience
+
+    public List<Symbol> labels() {
+        return this.syms.values().stream()
+                .filter(symbol -> symbol.labelType != Symbol.LabelType.NOTLABEL)
+                .collect(Collectors.toList());
+    }
+
+    public List<Symbol> dataLabels() {
+        return this.syms.values().stream()
+                .filter(symbol -> symbol.labelType == Symbol.LabelType.DATA)
+                .collect(Collectors.toList());
+    }
+
 
     // ************ getting info about symbols
 

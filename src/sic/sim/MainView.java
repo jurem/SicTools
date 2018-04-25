@@ -9,8 +9,8 @@ import sic.disasm.Disassembler;
 import sic.link.ui.LinkListener;
 import sic.link.ui.LinkerGui;
 import sic.loader.Loader;
-import sic.sim.addons.GraphicalScreen;
 import sic.sim.addons.DataBreakpointView;
+import sic.sim.addons.GraphicalScreen;
 import sic.sim.addons.TextualScreen;
 import sic.sim.views.CPUView;
 import sic.sim.views.DisassemblyView;
@@ -278,6 +278,7 @@ public class MainView {
     }
 
     public void loadObj(File file) {
+        disassemblyView.clearLabelMap();
         try {
             Reader reader = new FileReader(file);
             Loader.loadSection(executor.machine, reader);
@@ -303,6 +304,7 @@ public class MainView {
         Reader reader = new StringReader(writer.toString());
         Loader.loadSection(executor.machine, reader);
         lastLoadedFile = file;
+        disassemblyView.setLabelMap(program.getLabels());
         updateView();
     }
 

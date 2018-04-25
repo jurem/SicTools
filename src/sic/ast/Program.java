@@ -3,6 +3,7 @@ package sic.ast;
 import sic.asm.AsmError;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -148,4 +149,31 @@ public class Program extends Node {
         switchDefault();
     }
 
+    // ************ data for view
+
+    public HashMap<Integer, Symbol> getLabels() {
+        HashMap<Integer, Symbol> map = new HashMap<>();
+
+        for (Section section : this.sections) {
+            List<Symbol> sectionLabels = section.symbols.labels();
+            for (Symbol symbol : sectionLabels) {
+                map.put(symbol.value(), symbol);
+            }
+        }
+
+        return map;
+    }
+
+    public HashMap<Integer, Symbol> getDataLabels() {
+        HashMap<Integer, Symbol> map = new HashMap<>();
+
+        for (Section section : this.sections) {
+            List<Symbol> sectionLabels = section.symbols.dataLabels();
+            for (Symbol symbol : sectionLabels) {
+                map.put(symbol.value(), symbol);
+            }
+        }
+
+        return map;
+    }
 }

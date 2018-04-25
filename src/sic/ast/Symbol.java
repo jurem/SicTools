@@ -23,7 +23,7 @@ public class Symbol extends Node implements Comparable<Symbol> {
     public final Location loc;          // location of the definition
     private Scope scope;
     private boolean absolute;           // is the symbol absolute
-    private LabelType labelType;                  // is it before code or data
+    public LabelType labelType;         // is it before code or data
     // value or expr of the symbol
     private int value;                  // value of the symbol
     public final Expr expr;             // if expr == null then symbol is defined by value

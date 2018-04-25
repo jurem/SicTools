@@ -75,11 +75,7 @@ public class InstructionF3m extends InstructionF34Base {
     }
 
     @Override
-    public String disassemblyExtra(int address) {
-        String extra = super.disassemblyExtra(address);
-        if (flags.isPCRelative()) {
-            extra = "=" + Conversion.addrToHex(address + size() + value) + " " + extra;
-        }
-        return extra;
+    public Integer resolveRelativeOperand(int address) {
+        return flags.isPCRelative() ? address + size() + value : null ;
     }
 }
