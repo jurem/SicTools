@@ -63,4 +63,4 @@ It can be configured in _SicTools -> Settings -> Graphical screen_, but default 
     * ii represents intensity - 0, 1, 2, 3 = 20, 40, 60, 80
     * color: (R, G, B) * amp
 
-
+_More examples are available at [SicDemos/graph-screen](https://github.com/jurem/SicDemos/tree/master/graph-screen)._
