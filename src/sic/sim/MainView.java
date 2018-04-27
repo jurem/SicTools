@@ -15,6 +15,7 @@ import sic.sim.addons.TextualScreen;
 import sic.sim.views.CPUView;
 import sic.sim.views.DisassemblyView;
 import sic.sim.views.MemoryView;
+import sic.sim.views.WatchView;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -38,6 +39,7 @@ public class MainView {
     private CPUView cpuView;
     private DisassemblyView disassemblyView;
     private MemoryView memoryView;
+    private WatchView watchView;
     // addon views
     private TextualScreen textScreen;
     private GraphicalScreen graphScreen;
@@ -53,14 +55,19 @@ public class MainView {
         cpuView = new CPUView(executor, disassembler);
         disassemblyView = new DisassemblyView(executor, disassembler);
         memoryView = new MemoryView(executor);
+        watchView = new WatchView(executor);
 
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(cpuView.mainPanel, BorderLayout.NORTH);
-        panel.add(disassemblyView.mainPanel, BorderLayout.CENTER);
+        JPanel westPanel = new JPanel(new BorderLayout());
+        westPanel.add(cpuView.mainPanel, BorderLayout.NORTH);
+        westPanel.add(disassemblyView.mainPanel, BorderLayout.CENTER);
+
+        JPanel eastPanel = new JPanel(new BorderLayout());
+        eastPanel.add(watchView.mainPanel, BorderLayout.NORTH);
+        eastPanel.add(memoryView.mainPanel, BorderLayout.CENTER);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(panel, BorderLayout.WEST);
-        mainPanel.add(memoryView.mainPanel, BorderLayout.CENTER);
+        mainPanel.add(westPanel, BorderLayout.WEST);
+        mainPanel.add(eastPanel, BorderLayout.CENTER);
 
         mainFrame = new JFrame();
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -91,6 +98,7 @@ public class MainView {
         cpuView.updateView();
         disassemblyView.updateView(!executor.isRunning(), !executor.isRunning());
         memoryView.updateView();
+        watchView.updateView();
     }
 
     private JMenuBar createMenuBar() {
@@ -279,6 +287,7 @@ public class MainView {
 
     public void loadObj(File file) {
         disassemblyView.clearLabelMap();
+        watchView.clearLabelMap();
         try {
             Reader reader = new FileReader(file);
             Loader.loadSection(executor.machine, reader);
@@ -305,6 +314,7 @@ public class MainView {
         Loader.loadSection(executor.machine, reader);
         lastLoadedFile = file;
         disassemblyView.setLabelMap(program.getLabels());
+        watchView.setLabelMap(program.getDataLabels());
         updateView();
     }
 

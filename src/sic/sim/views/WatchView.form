@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="sic.sim.views.WatchView">
+  <grid id="27dc6" binding="mainPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties>
+      <minimumSize width="50" height="200"/>
+      <preferredSize width="100" height="200"/>
+      <requestFocusEnabled value="true"/>
+    </properties>
+    <border type="bevel-lowered" title="Watch"/>
+    <children>
+      <scrollpane id="d749">
+        <constraints border-constraint="Center"/>
+        <properties>
+          <preferredSize width="98" height="120"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="d79a0" class="javax.swing.JTree" binding="tree">
+            <constraints/>
+            <properties>
+              <rootVisible value="true"/>
+            </properties>
+            <clientProperties>
+              <JTree.lineStyle class="java.lang.String" value=""/>
+            </clientProperties>
+          </component>
+        </children>
+      </scrollpane>
+    </children>
+  </grid>
+</form>

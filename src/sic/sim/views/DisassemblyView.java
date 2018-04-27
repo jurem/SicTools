@@ -67,6 +67,7 @@ class BreakpointIconCellRenderer extends CellRenderer {
 public class DisassemblyView {
 
     public static final int MOVE_SMALL = 1;
+    private static final int ROW_AMOUNT = 19;
 
     private Executor executor;
     private Machine machine;
@@ -94,7 +95,7 @@ public class DisassemblyView {
         $$$setupUI$$$();
         // disassembly table
         modelDis = (DefaultTableModel) tabDis.getModel();
-        modelDis.setRowCount(16);
+        modelDis.setRowCount(DisassemblyView.ROW_AMOUNT);
         modelDis.setColumnCount(7);
         tabDis.setBackground(Colors.bg);
         tabDis.setForeground(Colors.fg);
@@ -109,6 +110,7 @@ public class DisassemblyView {
         tabDis.getColumnModel().getColumn(1).setPreferredWidth(60);
         tabDis.getColumnModel().getColumn(2).setPreferredWidth(80);
         tabDis.getColumnModel().getColumn(3).setPreferredWidth(60);
+        tabDis.getColumnModel().getColumn(3).setMinWidth(0);
         tabDis.getColumnModel().getColumn(4).setPreferredWidth(60);
         tabDis.getColumnModel().getColumn(5).setPreferredWidth(120);
 //        tabDis.getColumnModel().getColumn(2).setCellRenderer(new TooltipRenderer());
@@ -283,10 +285,12 @@ public class DisassemblyView {
 
     public void setLabelMap(HashMap<Integer, Symbol> map) {
         this.labelMap = map;
+        tabDis.getColumnModel().getColumn(3).setPreferredWidth(60);
     }
 
     public void clearLabelMap() {
         this.labelMap = new HashMap<>();
+        tabDis.getColumnModel().getColumn(3).setPreferredWidth(0);
     }
 
     private String toLabel(int address) {
