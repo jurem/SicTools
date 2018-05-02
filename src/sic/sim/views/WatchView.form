@@ -18,14 +18,9 @@
         </properties>
         <border type="none"/>
         <children>
-          <component id="d79a0" class="javax.swing.JTree" binding="tree">
+          <component id="7579e" class="sic.sim.views.components.treetable.JTreeTable" binding="treeTable" custom-create="true" default-binding="true">
             <constraints/>
-            <properties>
-              <rootVisible value="true"/>
-            </properties>
-            <clientProperties>
-              <JTree.lineStyle class="java.lang.String" value=""/>
-            </clientProperties>
+            <properties/>
           </component>
         </children>
       </scrollpane>
