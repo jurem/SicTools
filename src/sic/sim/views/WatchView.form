@@ -20,7 +20,9 @@
         <children>
           <component id="7579e" class="sic.sim.views.components.treetable.JTreeTable" binding="treeTable" custom-create="true" default-binding="true">
             <constraints/>
-            <properties/>
+            <properties>
+              <font name="Lucida Console"/>
+            </properties>
           </component>
         </children>
       </scrollpane>

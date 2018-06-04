@@ -151,6 +151,9 @@ public class Program extends Node {
 
     // ************ data for view
 
+    /**
+     * Get all labels in the code
+     */
     public HashMap<Integer, Symbol> getLabels() {
         HashMap<Integer, Symbol> map = new HashMap<>();
 
@@ -164,12 +167,15 @@ public class Program extends Node {
         return map;
     }
 
-    public HashMap<Integer, Symbol> getDataLabels() {
-        HashMap<Integer, Symbol> map = new HashMap<>();
+    /**
+     * Get only the labels that are for data (before BYTE, WORD, RESB, RESW...)
+     */
+    public HashMap<Integer, StorageSymbol> getDataLabels() {
+        HashMap<Integer, StorageSymbol> map = new HashMap<>();
 
         for (Section section : this.sections) {
-            List<Symbol> sectionLabels = section.symbols.dataLabels();
-            for (Symbol symbol : sectionLabels) {
+            List<StorageSymbol> sectionLabels = section.symbols.dataLabels();
+            for (StorageSymbol symbol : sectionLabels) {
                 map.put(symbol.value(), symbol);
             }
         }

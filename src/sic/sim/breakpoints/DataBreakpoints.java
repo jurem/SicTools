@@ -1,6 +1,7 @@
 package sic.sim.breakpoints;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class DataBreakpoints {
     private ArrayList<DataBreakpoint> breakpoints = new ArrayList<>();
@@ -17,6 +18,10 @@ public class DataBreakpoints {
 
     public void disable() {
         this.enabled = false;
+    }
+
+    public Iterator<DataBreakpoint> getBreakpointsIterator() {
+        return breakpoints.iterator();
     }
 
     /**

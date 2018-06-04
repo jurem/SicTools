@@ -9,7 +9,7 @@ import sic.disasm.Disassembler;
 import sic.link.ui.LinkListener;
 import sic.link.ui.LinkerGui;
 import sic.loader.Loader;
-import sic.sim.addons.DataBreakpointView;
+import sic.sim.views.DataBreakpointView;
 import sic.sim.addons.GraphicalScreen;
 import sic.sim.addons.TextualScreen;
 import sic.sim.views.CPUView;
@@ -55,7 +55,8 @@ public class MainView {
         cpuView = new CPUView(executor, disassembler);
         disassemblyView = new DisassemblyView(executor, disassembler);
         memoryView = new MemoryView(executor);
-        watchView = new WatchView(executor);
+        dataBreakpointView = new DataBreakpointView(executor);
+        watchView = new WatchView(executor, actionEvent -> dataBreakpointView.updateView());
 
         JPanel westPanel = new JPanel(new BorderLayout());
         westPanel.add(cpuView.mainPanel, BorderLayout.NORTH);
@@ -79,7 +80,6 @@ public class MainView {
 
         textScreen = new TextualScreen(executor);
         graphScreen = new GraphicalScreen(executor);
-        dataBreakpointView = new DataBreakpointView(executor);
 
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
@@ -302,14 +302,17 @@ public class MainView {
             errorCatcher.print();
             return;
         }
-        //
+
         Writer writer = new StringWriter();
         assembler.generateObj(program, writer, false);
         Reader reader = new StringReader(writer.toString());
         Loader.loadSection(executor.machine, reader);
         lastLoadedFile = file;
+
         disassemblyView.setLabelMap(program.getLabels());
+        watchView.clearLabelMap();
         watchView.setLabelMap(program.getDataLabels());
+
         updateView();
     }
 

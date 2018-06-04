@@ -3,6 +3,8 @@ package sic.ast;
 import sic.asm.AsmError;
 import sic.asm.Location;
 import sic.ast.expression.Expr;
+import sic.ast.storage.StorageData;
+import sic.ast.storage.StorageRes;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,9 +57,10 @@ public class Symbols {
                 .collect(Collectors.toList());
     }
 
-    public List<Symbol> dataLabels() {
+    public List<StorageSymbol> dataLabels() {
         return this.syms.values().stream()
-                .filter(symbol -> symbol.labelType == Symbol.LabelType.DATA)
+                .filter(symbol -> symbol instanceof StorageSymbol)
+                .map(symbol -> (StorageSymbol) symbol)
                 .collect(Collectors.toList());
     }
 
@@ -88,8 +91,16 @@ public class Symbols {
     }
 
     // for labels
-    public void defineLabel(String name, Location loc, int val, boolean isData) throws AsmError {
-        define(new Symbol(name, loc, val, isData));
+    public void defineLabel(String name, Location loc, int val, Command command) throws AsmError {
+        Symbol symbol;
+
+        if (command instanceof StorageRes || command instanceof StorageData) {
+            symbol = new StorageSymbol(name, loc, val, command);
+        } else {
+            symbol = new Symbol(name, loc, val, false);
+        }
+
+        define(symbol);
     }
 
     // for external symbols

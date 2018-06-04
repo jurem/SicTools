@@ -1,4 +1,4 @@
-package sic.sim.addons;
+package sic.sim.views;
 
 import sic.common.Conversion;
 import sic.sim.Executor;
@@ -11,6 +11,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class DataBreakpointView {
 
@@ -25,6 +27,8 @@ public class DataBreakpointView {
     private JTextField fromField, toField;
     private JCheckBox readBox, writeBox, enabledBox;
     private JButton addButton, editButton, removeButton;
+
+    private ArrayList<DataBreakpoint> displayedBreakpoints = new ArrayList<>();
 
     public DataBreakpointView(Executor executor) {
         this.dataBreakpoints = executor.machine.memory.dataBreakpoints;
@@ -85,7 +89,6 @@ public class DataBreakpointView {
         controlPanel.add(addButton);
         controlPanel.add(editButton);
         controlPanel.add(removeButton);
-
 
         JPanel panel = new JPanel();
         panel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -157,7 +160,9 @@ public class DataBreakpointView {
             boolean write = writeBox.isSelected();
             boolean enabled = enabledBox.isSelected();
 
-            addBreakpoint(new DataBreakpoint(from, to, read, write, enabled));
+            DataBreakpoint breakpoint = new DataBreakpoint(from, to, read, write, enabled);
+            dataBreakpoints.add(breakpoint);
+            addBreakpoint(breakpoint);
         });
         editButton.addActionListener(actionEvent -> {
             int from = Conversion.hexToInt(fromField.getText().replaceFirst("0x", ""));
@@ -179,8 +184,7 @@ public class DataBreakpointView {
         removeButton.addActionListener(actionEvent -> {
             int selectedIndex = table.getSelectedRow();
             dataBreakpoints.remove(selectedIndex);
-            tableModel.removeRow(selectedIndex);
-            tableModel.fireTableDataChanged();
+            removeBreakpoint(selectedIndex);
         });
     }
 
@@ -197,10 +201,10 @@ public class DataBreakpointView {
     }
 
     /**
-     * Adds the given breakpoint to data structure and to the table
+     * Adds the given breakpoint to the table
      */
     private void addBreakpoint(DataBreakpoint breakpoint) {
-        dataBreakpoints.add(breakpoint);
+        displayedBreakpoints.add(breakpoint);
         tableModel.addRow(breakpoint.toTable());
         tableModel.fireTableDataChanged();
     }
@@ -214,6 +218,51 @@ public class DataBreakpointView {
             tableModel.setValueAt(data[i], index, i);
         }
         tableModel.fireTableDataChanged();
+    }
+
+    /**
+     * Remove the breakpoint (on display) at given index
+     */
+    private void removeBreakpoint(int index) {
+        displayedBreakpoints.remove(index);
+        tableModel.removeRow(index);
+        tableModel.fireTableDataChanged();
+    }
+
+    /**
+     * Sync the display of the view after data in the memory.dataBreakpoints has been changed
+     */
+    public void updateView() {
+        boolean[] visited = new boolean[displayedBreakpoints.size()];
+        ArrayList<DataBreakpoint> toAdd = new ArrayList<>();
+        Iterator<DataBreakpoint> model = dataBreakpoints.getBreakpointsIterator();
+
+        // Find additions, update those already displayed
+        while (model.hasNext()) {
+            DataBreakpoint modelBp = model.next();
+            int index = displayedBreakpoints.indexOf(modelBp);
+            if (index == -1) {
+                toAdd.add(modelBp);
+            } else {
+                visited[index] = true;
+                editBreakpoint(modelBp, index);
+            }
+        }
+
+        // Remove breakpoints that were removed in the model
+        int deletedAlready = 0;
+        for (int i = 0; i < visited.length; i++) {
+            if (!visited[i]) {
+                removeBreakpoint(i - deletedAlready);
+                deletedAlready++;
+            }
+        }
+
+        // Add new breakpoints from the model
+        for (DataBreakpoint breakpoint : toAdd) {
+            addBreakpoint(breakpoint);
+        }
+
     }
 
     /**
