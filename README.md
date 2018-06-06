@@ -29,6 +29,7 @@ Simulator is user-friendly GUI based application that loads asm or obj files. Fe
   * devices 0, 1, 2 are redirected to standard input, output and error
   * detected pseudo HALT instruction (jump on itself)
   * automatic execution with set speed (from 1 Hz to 1 MHz)
+  * keyboard input
   * and more
 
 ## Linker

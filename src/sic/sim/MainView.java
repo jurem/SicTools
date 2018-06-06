@@ -11,6 +11,7 @@ import sic.link.ui.LinkerGui;
 import sic.loader.Loader;
 import sic.sim.views.DataBreakpointView;
 import sic.sim.addons.GraphicalScreen;
+import sic.sim.addons.Keyboard;
 import sic.sim.addons.TextualScreen;
 import sic.sim.views.CPUView;
 import sic.sim.views.DisassemblyView;
@@ -43,6 +44,7 @@ public class MainView {
     // addon views
     private TextualScreen textScreen;
     private GraphicalScreen graphScreen;
+    private Keyboard keyboard;
     private DataBreakpointView dataBreakpointView;
 
     private File lastLoadedFile;
@@ -80,6 +82,7 @@ public class MainView {
 
         textScreen = new TextualScreen(executor);
         graphScreen = new GraphicalScreen(executor);
+        keyboard = new Keyboard(executor);
 
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
@@ -256,6 +259,12 @@ public class MainView {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 graphScreen.toggleView();
+            }
+        });
+        GUI.addMenuItem(menu, "Keyboard", KeyEvent.VK_S, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                keyboard.toggleView();
             }
         });
         menu.addSeparator();
