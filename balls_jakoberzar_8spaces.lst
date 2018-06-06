@@ -1,0 +1,196 @@
+                  ... -------------------------------
+                  ... |         B A L L S           |
+                  ... -------------------------------
+                  ... This file is indented using 8 spaces.
+                  ... Author: Jakob Erzar
+                  ... Recommended running frequency: 2000
+                  ... Known issues:
+                  ...   - One frame for a ball might go wrong while it's going
+                  ...     directly through the corner.
+00000            start    START   0    
+00000  4B20E8             JSUB    skinit    . Init the stack
+                  ... initialize variables
+00003  032144             LDA     row    
+00006  1D0001             SUB     #1    
+00009  0F2144             STA     rowLmt    . Row limit
+0000C  03213E             LDA     column    
+0000F  1D0001             SUB     #1    
+00012  0F213E             STA     colLmt    . Column limit
+00015  750003             LDT     #3    . Incrementor
+00018  0320F1             LDA     nBalls    
+0001B  210003             MUL     #3    
+0001E  AC04               RMO     A,S    . Table limit
+                  
+                  ... draw initial state
+00020  050000             LDX     #0    
+00023  4B2038    initlp   JSUB    calcPlc    
+00026  53211C             LDCH    ballC    
+00029  562116             STCH    @ballPlc    
+                  ... increase index
+0002C  9051               ADDR    T,X    
+0002E  A014               COMPR   X,S    
+00030  3B2FF0             JLT     initlp    
+                  
+00033  050000    lpstart  LDX     #0    
+00036  4B2025    loop     JSUB    calcPlc    
+                  ... save current place as old
+00039  032106             LDA     ballPlc    
+0003C  0F2100             STA     oldPlc    
+                  
+                  ... move ball
+0003F  4B202E             JSUB    updtCrd    
+00042  4B2040             JSUB    chckCrd    
+00045  4B2016             JSUB    calcPlc    
+                  
+                  ... update screen
+00048  5320FB             LDCH    emptyC    
+0004B  5620F1             STCH    @oldPlc    
+0004E  5320F4             LDCH    ballC    
+00051  5620EE             STCH    @ballPlc    
+                  
+                  ... loop
+00054  9051               ADDR    T,X    
+00056  A014               COMPR   X,S    
+00058  3B2FDB             JLT     loop    
+0005B  3F2FD5             J       lpstart    
+                  
+                  
+                  ... -------------------------------
+                  ... |   S U B R O U T I N E S     |
+                  ... -------------------------------
+                  ... calculate ball address
+0005E  03A0BA    calcPlc  LDA     ballY,X    
+00061  2320E9             MUL     column    
+00064  1B20E0             ADD     disp    
+00067  1BA0A5             ADD     ballX,X    
+0006A  0F20D5             STA     ballPlc    
+0006D  4F0000             RSUB        
+                  
+                  ... update ball x and y
+00070  03A09C    updtCrd  LDA     ballX,X    
+00073  1BA0B1             ADD     ballVX,X    
+00076  0FA096             STA     ballX,X    
+00079  03A09F             LDA     ballY,X    
+0007C  1BA0B4             ADD     ballVY,X    
+0007F  0FA099             STA     ballY,X    
+00082  4F0000             RSUB        
+                  
+                  ... check that ball is inside bounds
+00085  1620CE    chckCrd  STL     @skptr    
+                  ... push L register
+00088  4B2069             JSUB    skpush    
+                  ... push S register
+0008B  7E20C8             STS     @skptr    
+0008E  4B2063             JSUB    skpush    
+00091  7D0000             STS     #0    
+                  ... check X coordinate
+00094  03A078             LDA     ballX,X    
+00097  2B20B9             COMP    colLmt    
+0009A  372029             JGT     invertX    
+0009D  290000             COMP    #0    
+000A0  3B2023             JLT     invertX    
+                  ... check Y coordinate
+000A3  03A075    chckVY   LDA     ballY,X    
+000A6  2B20A7             COMP    rowLmt    
+000A9  372028             JGT     invertY    
+000AC  290000             COMP    #0    
+000AF  3B2022             JLT     invertY    
+                  ... check if vectors have changed - update position
+000B2  A045      chckDrt  COMPR   S,T    
+000B4  33202B             JEQ     drtyVec    
+                  ... pop S register
+000B7  4B2046    chckBck  JSUB    skpop    
+000BA  6E2099             LDS     @skptr    
+                  ... pop L register
+000BD  4B2040             JSUB    skpop    
+000C0  0A2093             LDL     @skptr    
+000C3  4F0000             RSUB        ... Return call from chckCrd
+                  ... invert X branch
+000C6  03A05E    invertX  LDA     ballVX,X    
+000C9  2322E5             MUL     *0 (WORD -1)    
+000CC  0FA058             STA     ballVX,X    
+000CF  AC54               RMO     T,S    ... mark as dirty - vectors have changes
+000D1  3F2FCF             J       chckVY    
+                  ... invert Y branch
+000D4  03A05C    invertY  LDA     ballVY,X    
+000D7  2322D7             MUL     *0 (WORD -1)    
+000DA  0FA056             STA     ballVY,X    
+000DD  AC54               RMO     T,S    ... mark as dirty - vectors have changes
+000DF  3F2FD0             J       chckDrt    
+                  ... update position for the new vectors branch
+000E2  4B2F8B    drtyVec  JSUB    updtCrd    ... Move vectors have been changed; revert to old position
+000E5  4B2F88             JSUB    updtCrd    ... call one more time to move it to new position
+000E8  3F2FCC             J       chckBck    
+                  
+                  
+                  ... -------------------------------
+                  ... |         S T A C K           |
+                  ... -------------------------------
+                  ... Note: Register A is mutated.
+                  
+                  ... Subroutine Stack Initialize
+000EB  01206B    skinit   LDA     #skstart    
+000EE  0F2065             STA     skptr    
+000F1  4F0000             RSUB        
+                  ... Subroutine Stack Push
+000F4  03205F    skpush   LDA     skptr    
+000F7  190003             ADD     #3    
+000FA  0F2059             STA     skptr    
+000FD  4F0000             RSUB        
+                  ... Subroutine Stack Pop
+00100  032053    skpop    LDA     skptr    
+00103  1D0003             SUB     #3    
+00106  0F204D             STA     skptr    
+00109  4F0000             RSUB        
+                  
+                  
+                  ... -------------------------------
+                  ... |        M E M O R Y          |
+                  ... -------------------------------
+                  ... Number of balls
+0010C  000004    nBalls   WORD    4    
+                  ... Ball starting X coord
+0010F  000001    ballX    WORD    1    
+00112  000028             WORD    40    
+00115  000000             WORD    0    
+00118  000000             WORD    0    
+                  ... Ball starting Y coord
+0011B  000000    ballY    WORD    0    
+0011E  000000             WORD    0    
+00121  00000C             WORD    12    
+00124  000008             WORD    8    
+                  ... Ball speed (X axis)
+00127  000001    ballVX   WORD    1    
+0012A  000001             WORD    1    
+0012D  000004             WORD    4    
+00130  000002             WORD    2    
+                  ... Ball speed (Y axis)
+00133  000001    ballVY   WORD    1    
+00136  000004             WORD    4    
+00139  000001             WORD    1    
+0013C  000001             WORD    1    
+                  
+                  ... Place for storing ball position on screen
+0013F  000000    oldPlc   RESW    1    
+00142  000000    ballPlc  RESW    1    
+                  
+                  ... Characters for ball and cleaning
+00145  4F        ballC    BYTE    X'4F'    . 4F => O
+00146  2E        emptyC   BYTE    X'2E'    . 2F => . (for a cool trailing effect)
+                  
+                  ... Display configuration
+00147  00B800    disp     WORD    X'00B800'    
+0014A  000019    row      WORD    25    
+0014D  000050    column   WORD    80    
+                  
+                  ... Automatically initialized
+00150  000000    rowLmt   RESW    1    . Limit for the rows (Y)
+00153  000000    colLmt   RESW    1    . Limit for the columns (X)
+                  ... Stack variables
+00156  000000    skptr    RESW    1    
+00159  00....00  skstart  RESW    200    
+                  
+003B1            test     EQU     skptr    
+                  
+003B1  FFFFFF    *0       WORD    -1    
+003B4                     END     start    

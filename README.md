@@ -1,12 +1,3 @@
-
-#### *New feature in this fork: Keyboard*
-The Keyboard can be opened by navigating to *View > Keyboard*.  
-
-Whenever a key is pressed (note that the Keyboard has to be focused), the key's character value is stored to a predefined location in the memory (default `0xC000`).  
-In a SIC program that is utilising the Keyboard, the program should clear the memory location where character values are stored after they are read.
-
----
-
 # SicTools
 Tools for SIC/XE hypothetical computer from the Leland Beck's book System Software. Includes:
   * Assembler
@@ -36,6 +27,7 @@ Simulator is user-friendly GUI based application that loads asm or obj files. Fe
   * devices 0, 1, 2 are redirected to standard input, output and error
   * detected pseudo HALT instruction (jump on itself)
   * automatic execution with set speed (from 1 Hz to 1 MHz)
+  * keyboard input
   * and more
 
 Linker supports linking .obj files produced by the assembler into one. Each object file can have multiple control sections and needs to be relative. Other features include:
