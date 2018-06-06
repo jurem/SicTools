@@ -261,7 +261,7 @@ public class MainView {
                 graphScreen.toggleView();
             }
         });
-        GUI.addMenuItem(menu, "Keyboard", KeyEvent.VK_S, new ActionListener() {
+        GUI.addMenuItem(menu, "Keyboard", KeyEvent.VK_K, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 keyboard.toggleView();
@@ -354,6 +354,7 @@ public class MainView {
         tabs.addTab("General", null, createSettingsGeneralPane(), null);
         tabs.addTab("Textual screen", null, textScreen.createSettingsPane(), null);
         tabs.addTab("Graphical screen", null, graphScreen.createSettingsPane(), null);
+        tabs.addTab("Keyboard", null, keyboard.createSettingsPane(), null);
         GUI.showInJFrame("Settings", tabs, 0, 0);
     }
 

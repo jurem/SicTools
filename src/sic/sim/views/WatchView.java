@@ -17,22 +17,20 @@ import java.util.*;
 import java.util.List;
 
 public class WatchView {
+    // gui
     public JPanel mainPanel;
     private JTreeTable treeTable;
-
     private WatchTreeTableModel treeTableModel;
-
-    private Executor executor;
+    // data & communication with other views
     private Memory memory;
     private ActionListener updateBreakpointsEvent;
-
+    // data & cached
     private HashMap<Integer, StorageSymbol> labelMap = new HashMap<>();
     private ArrayList<StorageSymbol> symbols;
     private int[] indicies;
     private HashMap<StorageSymbol, DataBreakpoint> breakpoints = new HashMap<>();
 
     public WatchView(Executor executor, ActionListener updateBreakpoints) {
-        this.executor = executor;
         this.memory = executor.machine.memory;
         this.updateBreakpointsEvent = updateBreakpoints;
         this.treeTableModel.setMemory(this.memory); // Sometimes createUIComponents gets called before constructor...

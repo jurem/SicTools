@@ -64,7 +64,7 @@ public class Keyboard {
                 e.consume();
                 int value = (Character.toUpperCase(e.getKeyChar()) & 0xFF);
                 inputArea.setText(String.format("%c => %c (%d) ", e.getKeyChar(), (char)value, value));
-                memory.setByte(address, value);
+                memory.setByteRaw(address, value);
             }
 
             @Override
@@ -82,7 +82,7 @@ public class Keyboard {
         panel.setLayout(new BorderLayout());
         panel.add(bevel);
 
-        JFrame frame = new JFrame("Screen");
+        JFrame frame = new JFrame("Keyboard");
 //        frame.setResizable(false);
 //        frame.setBounds(620, 370, 500, 300);
         frame.setContentPane(panel);
