@@ -49,8 +49,7 @@ public class ResolveBlocks extends Visitor {
     }
 
     public void visit(Command c) throws AsmError {
-        boolean isData = c instanceof StorageRes || c instanceof StorageData;
-        program.section().symbols.defineLabel(c.label(), c.loc, program.locctr(), isData);
+        program.section().symbols.defineLabel(c.label(), c.loc, program.locctr(), c);
     }
 
     public void visit(DirectiveEQU d) {

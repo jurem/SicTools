@@ -82,6 +82,14 @@ public class DataBreakpoint {
         return this.write;
     }
 
+    public void toggleRead() {
+        this.read = !this.read;
+    }
+
+    public void toggleWrite() {
+        this.write = !this.write;
+    }
+
     // ----------------------
     // |      Methods       |
     // ----------------------

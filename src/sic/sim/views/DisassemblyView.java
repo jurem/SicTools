@@ -1,6 +1,7 @@
 package sic.sim.views;
 
 import sic.ast.Command;
+import sic.ast.Symbol;
 import sic.common.Conversion;
 import sic.common.SICXE;
 import sic.disasm.Disassembler;
@@ -15,6 +16,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
+import java.util.HashMap;
 
 
 class CellRenderer extends DefaultTableCellRenderer {
@@ -65,6 +67,7 @@ class BreakpointIconCellRenderer extends CellRenderer {
 public class DisassemblyView {
 
     public static final int MOVE_SMALL = 1;
+    private static final int ROW_AMOUNT = 19;
 
     private Executor executor;
     private Machine machine;
@@ -79,17 +82,21 @@ public class DisassemblyView {
     private JTextField txtLoc;
     private JTable tabDis;
 
+    private HashMap<Integer, Symbol> labelMap;
+
     public DisassemblyView(final Executor executor, final Disassembler disassembler) {
         this.executor = executor;
         this.machine = executor.machine;
         this.breakpoints = executor.breakpoints;
         this.disassembler = disassembler;
 
+        this.labelMap = new HashMap<>();
+
         $$$setupUI$$$();
         // disassembly table
         modelDis = (DefaultTableModel) tabDis.getModel();
-        modelDis.setRowCount(16);
-        modelDis.setColumnCount(6);
+        modelDis.setRowCount(DisassemblyView.ROW_AMOUNT);
+        modelDis.setColumnCount(7);
         tabDis.setBackground(Colors.bg);
         tabDis.setForeground(Colors.fg);
         tabDis.setSelectionBackground(Colors.selectionBg);
@@ -103,7 +110,9 @@ public class DisassemblyView {
         tabDis.getColumnModel().getColumn(1).setPreferredWidth(60);
         tabDis.getColumnModel().getColumn(2).setPreferredWidth(80);
         tabDis.getColumnModel().getColumn(3).setPreferredWidth(60);
-        tabDis.getColumnModel().getColumn(4).setPreferredWidth(120);
+        tabDis.getColumnModel().getColumn(3).setMinWidth(0);
+        tabDis.getColumnModel().getColumn(4).setPreferredWidth(60);
+        tabDis.getColumnModel().getColumn(5).setPreferredWidth(120);
 //        tabDis.getColumnModel().getColumn(2).setCellRenderer(new TooltipRenderer());
 
         btnUp.addActionListener(new ActionListener() {
@@ -210,15 +219,25 @@ public class DisassemblyView {
         modelDis.setValueAt("", row, 3);
         modelDis.setValueAt("", row, 4);
         modelDis.setValueAt("", row, 5);
+        modelDis.setValueAt("", row, 6);
     }
 
     private void updateDisLine(int row, int addr, Command cmd) {
         updateBreakpoint(row, breakpoints.has(addr));
         modelDis.setValueAt(Conversion.addrToHex(addr), row, 1);
         modelDis.setValueAt(Conversion.bytesToHex(machine.memory.memory, addr, cmd.size()), row, 2);
-        modelDis.setValueAt(cmd.nameToString(), row, 3);
-        modelDis.setValueAt(cmd.operandToString(), row, 4);
-        modelDis.setValueAt(cmd.disassemblyExtra(addr), row, 5);
+        modelDis.setValueAt(toLabel(addr), row, 3);
+        modelDis.setValueAt(cmd.nameToString(), row, 4);
+        modelDis.setValueAt(cmd.operandToString(), row, 5);
+
+        // Try to resolve operand
+        Integer opAddress = cmd.resolveRelativeOperand(addr);
+        if (opAddress != null) {
+            String opText = toLabel(opAddress).equals("") ? Conversion.addrToHex(opAddress) : toLabel(opAddress);
+            modelDis.setValueAt("=" + opText, row, 6);
+        } else {
+            modelDis.setValueAt("", row, 6);
+        }
     }
 
     public void updateDis(boolean selectPC, boolean followPC) {
@@ -246,7 +265,7 @@ public class DisassemblyView {
         updateDis(selectPC, followPC);
     }
 
-    void disMove(int count) {
+    private void disMove(int count) {
         if (count > 0) disassembler.next(count);
         else disassembler.prev(-count);
         updateDis(false, false);
@@ -262,6 +281,21 @@ public class DisassemblyView {
     public int getSelectedAddress() {
         int row = tabDis.getSelectedRow();
         return SICXE.intToAddr(Conversion.hexToInt((String) tabDis.getValueAt(row, 1)));
+    }
+
+    public void setLabelMap(HashMap<Integer, Symbol> map) {
+        this.labelMap = map;
+        tabDis.getColumnModel().getColumn(3).setPreferredWidth(60);
+    }
+
+    public void clearLabelMap() {
+        this.labelMap = new HashMap<>();
+        tabDis.getColumnModel().getColumn(3).setPreferredWidth(0);
+    }
+
+    private String toLabel(int address) {
+        if (!this.labelMap.containsKey(address)) return "";
+        return this.labelMap.get(address).name;
     }
 
     /**

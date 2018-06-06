@@ -131,7 +131,7 @@ public abstract class Command extends Node {
     // -------------------
     // |   DISASSEMBLY   |
     // -------------------
-    public String disassemblyExtra(int address) {
-        return this.comment();
+    public Integer resolveRelativeOperand(int address) {
+        return null;
     }
 }
