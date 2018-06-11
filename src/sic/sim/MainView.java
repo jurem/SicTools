@@ -142,7 +142,7 @@ public class MainView {
                 if (file != null) loadObj(file);
             }
         });
-        GUI.addMenuItem(menu, "Link & load objs", KeyEvent.VK_M, new ActionListener() {
+        GUI.addMenuItem(menu, "Link & load objs", KeyEvent.VK_M, KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -213,14 +213,20 @@ public class MainView {
                 executor.step();
             }
         });
-        GUI.addMenuItem(menu, "Stop", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0), new ActionListener() {
+        GUI.addMenuItem(menu, "Stop", KeyEvent.VK_P, KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 executor.stop();
             }
         });
         menu.addSeparator();
-        GUI.addMenuItem(menu, "Run to next line", KeyEvent.VK_N, KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), new ActionListener() {
+        GUI.addMenuItem(menu, "Step out", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_F6, InputEvent.SHIFT_DOWN_MASK), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                executor.stepOut();
+            }
+        });
+        GUI.addMenuItem(menu, "Run to next line", KeyEvent.VK_N, KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 executor.runToAddress(disassembler.getNextPCLocation());
@@ -230,12 +236,6 @@ public class MainView {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 executor.runToAddress(disassemblyView.getSelectedAddress());
-            }
-        });
-        GUI.addMenuItem(menu, "Step out", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_F6, InputEvent.SHIFT_DOWN_MASK), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                executor.stepOut();
             }
         });
         menu.addSeparator();
