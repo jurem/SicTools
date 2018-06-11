@@ -72,7 +72,7 @@ public class MainView {
         mainPanel.add(westPanel, BorderLayout.WEST);
         mainPanel.add(eastPanel, BorderLayout.CENTER);
 
-        mainFrame = new JFrame();
+        mainFrame = new JFrame("SicTools");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setJMenuBar(createMenuBar());
         mainFrame.setContentPane(mainPanel);
@@ -296,6 +296,7 @@ public class MainView {
             Reader reader = new FileReader(file);
             Loader.loadSection(executor.machine, reader);
             lastLoadedFile = file;
+            mainFrame.setTitle(file.getName());
 			updateView();
         } catch (FileNotFoundException e1) {
             JOptionPane.showMessageDialog(mainFrame, "Error loading object file.");
@@ -317,6 +318,7 @@ public class MainView {
         Reader reader = new StringReader(writer.toString());
         Loader.loadSection(executor.machine, reader);
         lastLoadedFile = file;
+        mainFrame.setTitle(file.getName());
 
         disassemblyView.setLabelMap(program.getLabels());
         watchView.clearLabelMap();
