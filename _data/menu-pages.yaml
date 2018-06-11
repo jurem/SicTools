@@ -1,18 +1,26 @@
 'root':
-  - title: About
-    link: about
+  - title: Features
+    link: features
 
   - title: Documentation
     link: documentation
 
+  - title: Contact
+    link: contact
+
+
 'documentation':
   - title: Simulator
     link: documentation/simulator
+
   - title: Additions
     link: documentation/additions
+
   - title: Addressing
     link: documentation/addressing
+
   - title: Directives
     link: documentation/directives
+
   - title: Questions
     link: documentation/questions

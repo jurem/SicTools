@@ -11,14 +11,17 @@ SicTools simulator can be started either by simply launching sictools.jar or via
 If launching via command line, you can also supply the path to the asm / obj file you would like to load:
 
     java -jar sictools.jar examples/zogice.asm
+
     java -jar sictools.jar examples/zogice.obj
 
 ## Basic features
 The main simulator view is pretty easy to understand:
-* CPU: displays the values of registers, information about current instruction and controls for running step-by-step or starting / stopping the cpu. You can also hover the register values to see the data in different representations.
-* Disassembly: displays the disassembly of instructions and current position of PC. You can also _toggle breakpoints_.
-* Memory: shows the bytes in memory, where each byte is represented in hexadecimal.
-![Main simulator view](https://github.com/jurem/SicTools/raw/develop/doc/tutorials/img/simulator-view.png)
+* **CPU**: displays the values of registers, information about current instruction and controls for running step-by-step or starting / stopping the cpu. You can also hover the register values to see the data in different representations.
+* **Disassembly**: displays the disassembly of instructions and current position of PC. You can also _toggle breakpoints_.
+* **Watch**: displays symbols from the assembly file and their current value. You can also toggle _data breakpoints_ on their location.
+* **Memory**: shows the bytes in memory, where each byte is represented in hexadecimal.
+
+![Main simulator view](./../images/simulator-view.png)
 
 ## Input / Output
 SIC/XE supports up to 256 devices, which can be accessed via `RD`, `WD` and `TD` instructions.
