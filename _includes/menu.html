@@ -1,0 +1,7 @@
+<ul>
+    {% for item in site.data.menu-pages[include.variable-root] %}
+        <li>
+            <a href="{{ item.link | relative_url }}">{{ item.title }}</a>
+        </li>
+    {% endfor %}
+</ul>

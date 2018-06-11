@@ -1,0 +1,18 @@
+'root':
+  - title: About
+    link: about
+
+  - title: Documentation
+    link: documentation
+
+'documentation':
+  - title: Simulator
+    link: documentation/simulator
+  - title: Additions
+    link: documentation/additions
+  - title: Addressing
+    link: documentation/addressing
+  - title: Directives
+    link: documentation/directives
+  - title: Questions
+    link: documentation/questions

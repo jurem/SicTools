@@ -3,6 +3,8 @@
 # Edit theme's home layout instead if you wanna make some changes
 # See: https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 layout: default
+title: SicTools
+menu: root
 ---
 # SicTools
 Tools for SIC/XE hypothetical computer from the Leland Beck's book System Software. Includes:
@@ -44,7 +46,7 @@ Linker supports linking .obj files produced by the assembler into one. Each obje
   * and more
 
 
-See also http://jurem.github.io/SicTools/ for the main page as well as https://github.com/jurem/SicDemos for several examples.
+See also a companion project [SicDemos](https://github.com/jurem/SicDemos) for several example assembly programs. Available under BSD 2-Clause license.
 
 Installation
 ------------

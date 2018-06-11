@@ -1,0 +1,24 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+
+.mobile-menu {
+    font-size: 16px;
+    // Hide when not on mobile
+    @media only screen and (min-width: 767px) {
+        display: none;
+    }
+}
+
+.sidebar-menu {
+    font-size: 22px;
+    @media only screen and (max-width: 767px) {
+        display: none;
+    }
+}
+
+.menu {
+    font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
+}

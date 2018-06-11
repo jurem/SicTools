@@ -32,18 +32,29 @@
 
     <div id="content-wrapper">
       <div class="inner clearfix">
+        <aside class="mobile-menu menu">
+          {% include menu.html variable-root=page.menu %}
+        </aside>
+
         <section id="main-content">
           {{ content }}
         </section>
 
         <aside id="sidebar">
+          <div class="sidebar-menu menu">
+            {% include menu.html variable-root=page.menu %}
+          </div>
           {% if site.show_downloads %}
+            <a href="{{ site.github.releases_url }}" class="button">
+              <small>Download compiled</small>
+              .jar file
+            </a>
             <a href="{{ site.github.zip_url }}" class="button">
-              <small>Download</small>
+              <small>Download source</small>
               .zip file
             </a>
             <a href="{{ site.github.tar_url }}" class="button">
-              <small>Download</small>
+              <small>Download source</small>
               .tar.gz file
             </a>
           {% endif %}
