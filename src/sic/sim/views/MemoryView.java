@@ -146,8 +146,28 @@ public class MemoryView {
         btnDnDnDn.setText(">>>");
         panel1.add(btnDnDnDn);
         hex = new HexEdit();
-        hex.setFont(new Font("Lucida Console", hex.getFont().getStyle(), hex.getFont().getSize()));
+        Font hexFont = this.$$$getFont$$$("Lucida Console", -1, -1, hex.getFont());
+        if (hexFont != null) hex.setFont(hexFont);
         mainPanel.add(hex, BorderLayout.CENTER);
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
+        if (currentFont == null) return null;
+        String resultName;
+        if (fontName == null) {
+            resultName = currentFont.getName();
+        } else {
+            Font testFont = new Font(fontName, Font.PLAIN, 10);
+            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
+                resultName = fontName;
+            } else {
+                resultName = currentFont.getName();
+            }
+        }
+        return new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
     }
 
     /**

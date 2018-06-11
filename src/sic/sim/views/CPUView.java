@@ -368,7 +368,8 @@ public class CPUView {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel1.add(btnStep, gbc);
         lblInfo = new JLabel();
-        lblInfo.setFont(new Font("Courier", lblInfo.getFont().getStyle(), 12));
+        Font lblInfoFont = this.$$$getFont$$$("Courier", -1, 12, lblInfo.getFont());
+        if (lblInfoFont != null) lblInfo.setFont(lblInfoFont);
         lblInfo.setText("");
         lblInfo.setVerticalAlignment(1);
         lblInfo.setVerticalTextPosition(0);
@@ -389,6 +390,25 @@ public class CPUView {
         label7.setLabelFor(regSW);
         label8.setLabelFor(regF);
         label9.setLabelFor(regPC);
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
+        if (currentFont == null) return null;
+        String resultName;
+        if (fontName == null) {
+            resultName = currentFont.getName();
+        } else {
+            Font testFont = new Font(fontName, Font.PLAIN, 10);
+            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
+                resultName = fontName;
+            } else {
+                resultName = currentFont.getName();
+            }
+        }
+        return new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
     }
 
     /**
