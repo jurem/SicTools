@@ -1,4 +1,4 @@
-package sic.sim;
+package sic.sim.breakpoints;
 
 import java.util.ArrayList;
 import java.util.List;

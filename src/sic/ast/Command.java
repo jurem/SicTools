@@ -128,4 +128,10 @@ public abstract class Command extends Node {
         return hs + "<br>" + bs + "<br>" + opcode;
     }
 
+    // -------------------
+    // |   DISASSEMBLY   |
+    // -------------------
+    public Integer resolveRelativeOperand(int address) {
+        return null;
+    }
 }

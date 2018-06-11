@@ -4,6 +4,7 @@ import sic.asm.AsmError;
 import sic.asm.Location;
 import sic.ast.Program;
 import sic.ast.Symbol;
+import sic.common.Conversion;
 import sic.common.Flags;
 import sic.common.Mnemonic;
 import sic.common.SICXE;
@@ -73,4 +74,8 @@ public class InstructionF3m extends InstructionF34Base {
         data[loc + 2] = (byte)(resolvedValue & 0xFF);
     }
 
+    @Override
+    public Integer resolveRelativeOperand(int address) {
+        return flags.isPCRelative() ? address + size() + value : null ;
+    }
 }

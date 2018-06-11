@@ -24,7 +24,7 @@ public class Colors {
         fg = defaults.getColor("TextField.foreground");
         selectionBg = defaults.getColor("TextField.selectionBackground");
         selectionFg = defaults.getColor("TextField.selectionForeground");
-        selectionInactiveBg = defaults.getColor("TextComponent.selectionBackgroundInactive");
+        selectionInactiveBg = Color.decode("#DDDDDD"); // A bit lighter than COLOR.LIGHT_GRAY.
         selectionInactiveFg = Color.BLACK;  //defaults.getColor("TextField.inactiveForeground");
     }
 

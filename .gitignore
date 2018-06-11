@@ -2,6 +2,7 @@
 SicTools.iml
 out
 /.project
+*.class
 tests/linker/factorial/factdemo.obj
 tests/linker/factorial/linfac2_demo.obj
 tests/linker/factorial/linfac_demo.obj

@@ -406,84 +406,82 @@ public class LinkerTest {
         try {
             Section out = test.link();
 
-            testSection(out, "outfac", 0, 0xF3 + 0x103 + 0x123 + 0x27 + 0x3);
+            testSection(out, "outfac", 0, 0xF2 + 0x103 + 0x123 + 0x27 + 0x3);
 
             List<TRecord> tRecords = new ArrayList<>();
             List<MRecord> mRecords = new ArrayList<>();
 
             // main.obj
-            String end = String.format("%05X", 0xF3 + 0x103 + 0x123 + 0x27);
-            String fact = String.format("%05X", 0xF3);
-            String print = String.format("%05X", 0xF3 + 0x103);
-            String result = String.format("%05X", 0xF3 + 0x3A);
-            String stinit = String.format("%05X", 0xF3 + 0x103 + 0x123);
+            String fact = String.format("%05X", 0xF2);
+            String print = String.format("%05X", 0xF2 + 0x103);
+            String result = String.format("%05X", 0xF2 + 0x3A);
+            String stinit = String.format("%05X", 0xF2 + 0x103 + 0x123);
             tRecords.add(new TRecord(
-                    0, 0x1E,
-                    "011" + end + "4B1" + stinit + "0100010F1" + result + "03201E1900010F201829000A33200F"
+                    0, 0x1D,
+                    "01202F" + "4B1" + stinit + "0100010F1" + result + "03201E1900010F201829000A33200F"
             ));
 
             tRecords.add(new TRecord(
-                    0x1E, 0x15,
+                    0x1D, 0x15,
                     "4B1" + fact + "031" + result + "4B1" + print + "3F2FDB3F2FFD000000"
             ));
-            mRecords.add(new MRecord(0x1, 5, true, null));
-            mRecords.add(new MRecord(0x5, 5, true, null));
-            mRecords.add(new MRecord(0xC, 5, true, null));
-            mRecords.add(new MRecord(0x1F, 5, true, null));
-            mRecords.add(new MRecord(0x23, 5, true, null));
-            mRecords.add(new MRecord(0x27, 5, true, null));
+            mRecords.add(new MRecord(0x4, 5, true, null));
+            mRecords.add(new MRecord(0xB, 5, true, null));
+            mRecords.add(new MRecord(0x1E, 5, true, null));
+            mRecords.add(new MRecord(0x22, 5, true, null));
+            mRecords.add(new MRecord(0x26, 5, true, null));
 
             // fact.obj
-            String pop = String.format("%05X", 0xF3 + 0x103 + 0x123 + 0x15);
-            String push = String.format("%05X", 0xF3 + 0x103 + 0x123 + 0x6);
+            String pop = String.format("%05X", 0xF2 + 0x103 + 0x123 + 0x15);
+            String push = String.format("%05X", 0xF2 + 0x103 + 0x123 + 0x6);
             tRecords.add(new TRecord(
-                    0xF3, 0x1D,
+                    0xF2, 0x1D,
                     "2900013320310F20341720344B1" + push + "03202D4B1" + push + "0320231D0001"
             ));
             tRecords.add(new TRecord(
-                    0xF3 + 0x1D, 0x1D,
+                    0xF2 + 0x1D, 0x1D,
                     "4B2FE04B1" + pop + "0F20194B1" + pop + "23200C0F20090B200C4F00004F0000"
             ));
             tRecords.add(new TRecord(
-                    0xF3 + 0x3A, 0x3,
+                    0xF2 + 0x3A, 0x3,
                     "000001"
             ));
-            mRecords.add(new MRecord(0xF3 + 0xD, 5, true, null));
-            mRecords.add(new MRecord(0xF3 + 0x14, 5, true, null));
-            mRecords.add(new MRecord(0xF3 + 0x21, 5, true, null));
-            mRecords.add(new MRecord(0xF3 + 0x28, 5, true, null));
+            mRecords.add(new MRecord(0xF2 + 0xD, 5, true, null));
+            mRecords.add(new MRecord(0xF2 + 0x14, 5, true, null));
+            mRecords.add(new MRecord(0xF2 + 0x21, 5, true, null));
+            mRecords.add(new MRecord(0xF2 + 0x28, 5, true, null));
 
             // print.obj
             tRecords.add(new TRecord(
-                    0xF3 + 0x103, 0x1E,
+                    0xF2 + 0x103, 0x1E,
                     "0F205D03205A1F20512900003B200C03204821000A0F20423F2FE803203C"
             ));
             tRecords.add(new TRecord(
-                    0xF3 + 0x103 + 0x1E, 0x1E,
+                    0xF2 + 0x103 + 0x1E, 0x1E,
                     "25000A0F203629000033202103203327202A190030DD00011D003023201E"
             ));
             tRecords.add(new TRecord(
-                    0xF3 + 0x103 + 0x3C, 0x1E,
+                    0xF2 + 0x103 + 0x3C, 0x1E,
                     "0F201E03201E1F20180F20183F2FD00100010F200901000ADD00014F0000"
             ));
             tRecords.add(new TRecord(
-                    0xF3 + 0x103 + 0x5A, 0x3,
+                    0xF2 + 0x103 + 0x5A, 0x3,
                     "000001"
             ));
 
             //stack.obj
             tRecords.add(new TRecord(
-                    0xF3 + 0x103 + 0x123, 0x1E,
+                    0xF2 + 0x103 + 0x123, 0x1E,
                     "0F20214F00000E201B0320181900030F20124F000003200C1D00030F2006"
             ));
             tRecords.add(new TRecord(
-                    0xF3 + 0x103 + 0x123 + 0x1E, 0x6,
+                    0xF2 + 0x103 + 0x123 + 0x1E, 0x6,
                     "0220034F0000"
             ));
 
             // ending.obj
             tRecords.add(new TRecord(
-                    0xF3 + 0x103 + 0x123 + 0x27, 0x3,
+                    0xF2 + 0x103 + 0x123 + 0x27, 0x3,
                     "000011"
             ));
 

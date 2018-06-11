@@ -8,6 +8,8 @@ import sic.ast.Program;
 import sic.ast.Section;
 import sic.ast.directives.DirectiveEQU;
 import sic.ast.directives.DirectiveORG;
+import sic.ast.storage.StorageData;
+import sic.ast.storage.StorageRes;
 
 /**
  * TODO: write a short description
@@ -47,7 +49,7 @@ public class ResolveBlocks extends Visitor {
     }
 
     public void visit(Command c) throws AsmError {
-        program.section().symbols.defineLabel(c.label(), c.loc, program.locctr());
+        program.section().symbols.defineLabel(c.label(), c.loc, program.locctr(), c);
     }
 
     public void visit(DirectiveEQU d) {

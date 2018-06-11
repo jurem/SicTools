@@ -66,7 +66,7 @@ public class Disassembler {
     protected int fetch() {
         if (fetchAddr < 0) return 0;
         if (fetchAddr > SICXE.MAX_ADDR) return 0;
-        return machine.memory.getByte(fetchAddr++);
+        return machine.memory.getByteRaw(fetchAddr++);
     }
 
     public Instruction disassemble(int addr) {
@@ -114,10 +114,28 @@ public class Disassembler {
         Instruction instruction = disassemble(loc);
         if (instruction == null) {
             Data data = new DataHex(mnemonics.get("BYTE").opcode);
-            data.setData((byte)machine.memory.getByte(loc));
+            data.setData((byte)machine.memory.getByteRaw(loc));
             return new StorageData(new Location(-1,-1,-1), "", mnemonics.get("BYTE"), data);
         }
         return instruction;
+    }
+
+    /**
+     * Returns the location after given PC
+     * @param location (current) address
+     * @return next instruction address
+     */
+    public int getLocationAfter(int location) {
+        Command cmd = disassemble(location);
+        return location + (cmd == null ? 1 : cmd.size());
+    }
+
+    /**
+     * Get the next PC location, ignoring jumps / function calls.
+     * @return next instruction address
+     */
+    public int getNextPCLocation() {
+        return getLocationAfter(machine.registers.getPC());
     }
 
 }

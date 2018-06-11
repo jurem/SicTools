@@ -4,6 +4,7 @@ Tools for SIC/XE hypothetical computer from the Leland Beck's book System Softwa
   * Simulator
   * Linker
 
+## Assembler
 Assembler supports all instructions and directives described in the book. This includes load/store instructions, arithmetic instructions, jumps etc. And directives START, END, ORG, LTORG, BASE, NOBASE, CSECT, USE, EQU, RESB, RESW, EXTDEF, EXTREF. Some features:
   * immediate addressing, indirect addressing, simple addressing
   * PC-relative addressing, base addressing (BASE and NOBASE directive), indexed addressing
@@ -19,10 +20,12 @@ Assembler supports all instructions and directives described in the book. This i
   * generates log file showing code statistics, list of blocks, list of sections, list of symbols, list of literals, list of relocations
   * and more
 
+## Simulator
 Simulator is user-friendly GUI based application that loads asm or obj files. Features:
   * CPU view of registers and current instructions, shows changed registers in different color, supports changing registers values
-  * disassembly view and breakpoints
+  * disassembly view with breakpoints and data breakpoints
   * memory view with full edit support in hexadecimal and character mode
+  * watch view with symbols from assembly file
   * textual screen support
   * devices 0, 1, 2 are redirected to standard input, output and error
   * detected pseudo HALT instruction (jump on itself)
@@ -30,6 +33,7 @@ Simulator is user-friendly GUI based application that loads asm or obj files. Fe
   * keyboard input
   * and more
 
+## Linker
 Linker supports linking .obj files produced by the assembler into one. Each object file can have multiple control sections and needs to be relative. Other features include:
   * a graphical interface for selecting .obj files and choosing the linker settings
   * inspecting, editing and reordering control sections or symbols in a gui or textual interface
@@ -43,12 +47,18 @@ See also http://jurem.github.io/SicTools/ for the main page as well as https://g
 Installation
 ------------
 
-Download or clone source code and run make.
+SicTools may be downloaded as a JAR file or built from source.
+
+### JAR
+Download the latest stable version from [releases](https://github.com/jurem/SicTools/releases). You may need to change the file permissions to allow execution.
+
+### Building from source
+Download / clone source code and run make.
 
     git clone https://github.com/jurem/SicTools.git
     cd SicTools
     make jar
-
+    
 Usage
 -----
 
@@ -60,7 +70,7 @@ To run assembler
 
     java -cp out/make/sictools.jar sic.Asm source.asm
 
-where source.asm is the file to be compiled.
+where `source.asm` is the file to be compiled.
 
 To get assembler help
 
@@ -70,7 +80,7 @@ To run linker
 
     java -cp out/make/sictools.jar sic.Link -o out.obj in1.obj in2.obj ...
 
-where out.obj is the output file and in1, in2,... are .obj files to be linked.
+where `out.obj` is the output file and `in1.obj`, `in2.obj`,... are .obj files to be linked.
 
 To get linker help
 
