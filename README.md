@@ -23,8 +23,9 @@ Assembler supports all instructions and directives described in the book. This i
 ## Simulator
 Simulator is user-friendly GUI based application that loads asm or obj files. Features:
   * CPU view of registers and current instructions, shows changed registers in different color, supports changing registers values
-  * disassembly view and breakpoints
+  * disassembly view with breakpoints and data breakpoints
   * memory view with full edit support in hexadecimal and character mode
+  * watch view with symbols from assembly file
   * textual screen support
   * devices 0, 1, 2 are redirected to standard input, output and error
   * detected pseudo HALT instruction (jump on itself)
@@ -46,12 +47,18 @@ See also http://jurem.github.io/SicTools/ for the main page as well as https://g
 Installation
 ------------
 
-Download or clone source code and run make.
+SicTools may be downloaded as a JAR file or built from source.
+
+### JAR
+Download the latest stable version from [releases](https://github.com/jurem/SicTools/releases). You may need to change the file permissions to allow execution.
+
+### Building from source
+Download / clone source code and run make.
 
     git clone https://github.com/jurem/SicTools.git
     cd SicTools
     make jar
-
+    
 Usage
 -----
 
