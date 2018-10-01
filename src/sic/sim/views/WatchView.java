@@ -183,7 +183,7 @@ public class WatchView {
         if (existingBreakpoint == null) {
             // Create a new one
             int start = selectedSymbol.value();
-            int end = start + selectedSymbol.getElementCount() * selectedSymbol.getElementSize();
+            int end = start + selectedSymbol.getElementCount() * selectedSymbol.getElementSize() - 1;
             DataBreakpoint newBreakpoint = new DataBreakpoint(start, end, read, write);
             breakpoints.put(selectedSymbol, newBreakpoint);
             memory.dataBreakpoints.add(newBreakpoint);
