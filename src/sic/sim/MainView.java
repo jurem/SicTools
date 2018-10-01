@@ -187,7 +187,7 @@ public class MainView {
             }
         });
         menu.addSeparator();
-        GUI.addMenuItem(menu, "Clear & Reload", KeyEvent.VK_C, KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
+        GUI.addMenuItem(menu, "Clear & reload", KeyEvent.VK_C, KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 executor.getMachine().registers.reset();
@@ -374,11 +374,11 @@ public class MainView {
             JScrollPane scrollPane = new JScrollPane(textArea);
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);
-            scrollPane.setPreferredSize( new Dimension( 500, 500 ) );
+            scrollPane.setPreferredSize(new Dimension( 500, 500 ));
             JOptionPane.showMessageDialog(mainFrame, scrollPane, "License", JOptionPane.INFORMATION_MESSAGE);
         });
         Object[] options = { licenseButton, okButton };
-        JOptionPane.showOptionDialog(mainFrame, "SicTools: SIC/XE assembler and simulator 1.1\n\n(C) 2011-2015, Jurij Mihelič (jurij.mihelic@fri.uni-lj.si)\n\nContributors\nTomaž Dobravec (tomaz.dobravec@fri.uni-lj.si)", "About", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, okButton);
+        JOptionPane.showOptionDialog(mainFrame, "SicTools: SIC/XE assembler and simulator 2.0\n\n(C) 2011-2018, Jurij Mihelič (jurij.mihelic@fri.uni-lj.si)\n\nContributors\nTomaž Dobravec (tomaz.dobravec@fri.uni-lj.si)\nNejc Kišek\nJakob Erzar\nand others, listed on GitHub", "About", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, okButton);
     }
 
 }

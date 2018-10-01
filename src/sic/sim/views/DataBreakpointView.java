@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -136,12 +137,32 @@ public class DataBreakpointView {
             DataBreakpoint breakpoint = dataBreakpoints.at(row);
             Object data = tableModel.getValueAt(row, column1);
             switch (columnName) {
-                case "From":
-                    breakpoint.setRange(Conversion.hexToInt((String)data), breakpoint.getTo());
+                case "From": {
+                    int from = Conversion.hexToInt((String) data);
+                    int to = breakpoint.getTo();
+                    try {
+                        breakpoint.setRange(from, to);
+                    } catch (InvalidParameterException ex) {
+                        JOptionPane.showMessageDialog(view,
+                                String.format("Invalid range address - %s is not less than or equal to %s.", Conversion.addrToHex(from), Conversion.addrToHex(to)),
+                                "Invalid data breakpoint",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
                     break;
-                case "To":
-                    breakpoint.setRange(breakpoint.getFrom(), Conversion.hexToInt((String)data));
+                }
+                case "To": {
+                    int from = breakpoint.getFrom();
+                    int to = Conversion.hexToInt((String) data);
+                    try {
+                        breakpoint.setRange(from, to);
+                    } catch (InvalidParameterException ex) {
+                        JOptionPane.showMessageDialog(view,
+                                String.format("Invalid range address - %s is not less than or equal to %s.", Conversion.addrToHex(from), Conversion.addrToHex(to)),
+                                "Invalid data breakpoint",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
                     break;
+                }
                 case "Read":
                     breakpoint.setRead((Boolean) data);
                     break;
@@ -160,7 +181,16 @@ public class DataBreakpointView {
             boolean write = writeBox.isSelected();
             boolean enabled = enabledBox.isSelected();
 
-            DataBreakpoint breakpoint = new DataBreakpoint(from, to, read, write, enabled);
+            DataBreakpoint breakpoint;
+            try {
+                breakpoint = new DataBreakpoint(from, to, read, write, enabled);
+            } catch (InvalidParameterException ex) {
+                JOptionPane.showMessageDialog(view,
+                        String.format("Invalid range address - %s is not less than or equal to %s.", fromField.getText(), toField.getText()),
+                        "Invalid data breakpoint",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             dataBreakpoints.add(breakpoint);
             addBreakpoint(breakpoint);
         });
@@ -174,7 +204,15 @@ public class DataBreakpointView {
             DataBreakpoint selected = getSelectedBreakpoint();
 
             if (selected != null) {
-                selected.setRange(from, to);
+                try {
+                    selected.setRange(from, to);
+                } catch (InvalidParameterException ex) {
+                    JOptionPane.showMessageDialog(view,
+                            String.format("Invalid range address - %s is not less than or equal to %s.", fromField.getText(), toField.getText()),
+                            "Invalid data breakpoint",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 selected.setRead(read);
                 selected.setWrite(write);
                 selected.setEnabled(enabled);
