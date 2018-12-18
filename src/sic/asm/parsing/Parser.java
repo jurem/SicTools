@@ -34,15 +34,20 @@ public class Parser extends Lexer {
     }
 
     public void checkWhitespace(String fmt, Object... objs) throws AsmError {
-        if (Options.requireWhitespace && !Character.isWhitespace(prev))
-            throw new AsmError(loc(), fmt, objs);
+        if (Options.requireWhitespace) {
+            if (available() <= 0) throw new AsmError(loc(), true,"Empty label %s at the end", objs);
+            if (!Character.isWhitespace(prev)) throw new AsmError(loc(), fmt, objs);
+        }
     }
 
     public Command parseIfCommand() throws AsmError {
         Location loc = loc();
         String label = readIfLabel();
         skipWhitespace();
-        if (label != null) checkWhitespace("Missing whitespace after label '%s'", label);
+        if (label != null) {
+            skipLinesAndComments();
+            checkWhitespace("Missing whitespace after label '%s'", label);
+        }
         else loc = loc();
         String name = readIfMnemonic();
         if (name == null) {

@@ -42,8 +42,19 @@ public class ErrorCatcher {
     public void print() {
         for ( ; lastPrinted < errs.size(); lastPrinted++) {
             AsmError err = errs.get(lastPrinted);
-            System.err.println(err);
+            if (err.isBreaking()) {
+                System.err.println(err);
+            } else {
+                System.out.println(err);
+            }
         }
+    }
+
+    public boolean shouldEnd() {
+        for (AsmError err : errs) {
+            if (err.isBreaking()) return true;
+        }
+        return false;
     }
 
 }

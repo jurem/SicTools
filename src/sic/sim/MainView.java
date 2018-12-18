@@ -1,5 +1,6 @@
 package sic.sim;
 
+import sic.asm.AsmError;
 import sic.asm.Assembler;
 import sic.asm.ErrorCatcher;
 import sic.ast.Program;
@@ -310,7 +311,9 @@ public class MainView {
         Program program = assembler.assemble(Utils.readFile(file));
         if (errorCatcher.count() > 0) {
             errorCatcher.print();
-            return;
+            if (errorCatcher.shouldEnd()) {
+                return;
+            }
         }
 
         Writer writer = new StringWriter();
