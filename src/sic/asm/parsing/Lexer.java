@@ -36,10 +36,14 @@ public class Lexer extends Input {
 
     public String skipLinesAndComments() {
         StringBuilder comments = new StringBuilder();
-        while (isWhitespace() || isNewLine()) {
-            advance();
-            comments.append(readIfComment(true, true));
-            comments.append('\n');
+        while (isWhitespace() || isNewLine() || peek() == '.') {
+            String comment = readIfComment(true, true);
+            if (comment != null) {
+                comments.append(comment);
+                comments.append('\n');
+            } else {
+                advance();
+            }
         }
         return comments.length() > 0 ? comments.toString() : null;
     }
