@@ -42,11 +42,7 @@ public class ErrorCatcher {
     public void print() {
         for ( ; lastPrinted < errs.size(); lastPrinted++) {
             AsmError err = errs.get(lastPrinted);
-            if (err.isBreaking()) {
-                System.err.println(err);
-            } else {
-                System.out.println(err);
-            }
+            System.err.println(err);
         }
     }
 
