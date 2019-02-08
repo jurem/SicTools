@@ -47,10 +47,7 @@ public class ErrorCatcher {
     }
 
     public boolean shouldEnd() {
-        for (AsmError err : errs) {
-            if (err.isBreaking()) return true;
-        }
-        return false;
+        return errs.stream().anyMatch(AsmError::isBreaking);
     }
 
 }
