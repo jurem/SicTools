@@ -24,10 +24,28 @@ public class Lexer extends Input {
         return Character.isLetterOrDigit(peek()) || peek() == '_';
     }
 
+    public boolean isNewLine() {
+        return peek() == '\n';
+    }
+
     // ************ advance and read
 
     public void skipWhitespace() {
         while (isWhitespace()) advance();
+    }
+
+    public String skipLinesAndComments() {
+        StringBuilder comments = new StringBuilder();
+        while (isWhitespace() || isNewLine() || peek() == '.') {
+            String comment = readIfComment(true, true);
+            if (comment != null) {
+                comments.append(comment);
+                comments.append('\n');
+            } else {
+                advance();
+            }
+        }
+        return comments.length() > 0 ? comments.toString() : null;
     }
 
     public void skipAlphanumeric() {
