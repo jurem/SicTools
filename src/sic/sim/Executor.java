@@ -44,7 +44,7 @@ public class Executor {
 
     public void setSpeed(int Hz) {
         if (Hz > MaxSpeed) Hz = MaxSpeed;
-        timerRepeat = (Hz + 100) / 100;
+        timerRepeat = (Hz + 99) / 100;
         timerPeriod = 1000 * timerRepeat / Hz;
     }
 
