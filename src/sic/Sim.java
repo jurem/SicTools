@@ -17,6 +17,10 @@ import java.io.File;
  */
 public class Sim {
 
+    public static final int Version_Major = 2;
+    public static final int Version_Minor = 0;
+    public static final int Version_Patch = 1;
+
     // TODO: -freq 10
     // -registers
     // -memory start len
@@ -27,6 +31,13 @@ public class Sim {
 //        ToolTipManager.sharedInstance().setDismissDelay(15000);
 //        UIManager.put("ToolTip.font", new FontUIResource("Courier New", Font.PLAIN, 14));
         //
+        Args processedArgs = new Args(args);
+
+        if (processedArgs.isHelp()) {
+            printHelp();
+            return;
+        }
+
         Machine machine = new Machine();
         Executor executor = new Executor(machine);
         Disassembler disassembler = new Disassembler(new Mnemonics(), machine);

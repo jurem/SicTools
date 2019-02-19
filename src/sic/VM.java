@@ -15,12 +15,13 @@ import java.util.*;
  */
 public class VM {
 
-    public static final int Version_Major = 1;
+    public static final int Version_Major = 2;
     public static final int Version_Minor = 0;
+    public static final int Version_Patch = 1;
 
     static void printHelp() {
         System.out.print(
-            "Sic/XE Virtual Machine " + Version_Major + "." + Version_Minor + "\n" +
+            "Sic/XE Virtual Machine " + Version_Major + "." + Version_Minor + "." + Version_Patch + "\n" +
             "Usage: java sic.VM options parameters\n" +
             "Options:\n");
         Args.printArgs();

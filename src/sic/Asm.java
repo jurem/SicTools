@@ -19,8 +19,9 @@ import java.io.Writer;
  */
 public class Asm {
 
-    public static final int Version_Major = 1;
+    public static final int Version_Major = 2;
     public static final int Version_Minor = 0;
+    public static final int Version_Patch = 1;
 
     //
     private boolean stdin;
@@ -31,7 +32,7 @@ public class Asm {
 
     static void printHelp() {
         System.out.print(
-        "Sic/XE Assembler " + Version_Major + "." + Version_Minor + "\n" +
+        "Sic/XE Assembler " + Version_Major + "." + Version_Minor + "." + Version_Patch + "\n" +
         "Usage: java sic.Asm options parameters\n" +
         "Options:\n" +
         "    -help|-h       Print help.\n" +
