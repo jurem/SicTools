@@ -46,4 +46,8 @@ public class ErrorCatcher {
         }
     }
 
+    public boolean shouldEnd() {
+        return errs.stream().anyMatch(AsmError::isBreaking);
+    }
+
 }

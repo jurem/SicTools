@@ -141,7 +141,7 @@ public class OperandParser {
         if (Character.isDigit(parser.peek()) || parser.peek() == '-') {
             operand = parser.readInt(flags.minOperand(), flags.maxOperand());
             symbol = null;
-        } else if (Character.isLetter(parser.peek())) {
+        } else if (Character.isLetter(parser.peek()) || parser.peek() == '_') {
             operand = 0;
             symbol = parser.readSymbol();
         } else if (parser.peek() == '*') {
@@ -179,7 +179,7 @@ public class OperandParser {
         if (Character.isDigit(parser.peek()) || parser.peek() == '-') {
             operand = parser.readInt(flags.minOperand(), flags.maxOperand());
             symbol = null;
-        } else if (Character.isLetter(parser.peek())) {
+        } else if (Character.isLetter(parser.peek()) || parser.peek() == '_') {
             operand = 0;
             symbol = parser.readSymbol();
         } else if (parser.peek() == '*') {
