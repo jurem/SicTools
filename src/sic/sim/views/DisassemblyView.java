@@ -231,9 +231,9 @@ public class DisassemblyView {
         modelDis.setValueAt(cmd.operandToString(), row, 5);
 
         // Try to resolve operand
-        Integer opAddress = cmd.resolveRelativeOperand(addr);
+        Integer opAddress = cmd.resolveOperandAddress(addr);
         if (opAddress != null) {
-            String opText = toLabel(opAddress).equals("") ? Conversion.addrToHex(opAddress) : toLabel(opAddress);
+            String opText = toLabel(opAddress).equals("") ? "0x" + Conversion.addrToHex(opAddress) : toLabel(opAddress);
             modelDis.setValueAt("=" + opText, row, 6);
         } else {
             modelDis.setValueAt("", row, 6);

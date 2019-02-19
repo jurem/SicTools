@@ -131,7 +131,7 @@ public abstract class Command extends Node {
     // -------------------
     // |   DISASSEMBLY   |
     // -------------------
-    public Integer resolveRelativeOperand(int address) {
+    public Integer resolveOperandAddress(int addressPC) {
         return null;
     }
 }
