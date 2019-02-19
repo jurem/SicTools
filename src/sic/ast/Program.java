@@ -1,6 +1,7 @@
 package sic.ast;
 
 import sic.asm.AsmError;
+import sic.ast.instructions.Instruction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -181,5 +182,9 @@ public class Program extends Node {
         }
 
         return map;
+    }
+
+    public long countInstructions() {
+        return commands.stream().filter(x -> x instanceof Instruction).count();
     }
 }

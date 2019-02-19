@@ -35,6 +35,7 @@ import java.util.TimerTask;
 public class MainView {
     private final Executor executor;
     private final Disassembler disassembler;
+    private final Args arg;
 
     private JFrame mainFrame;
     // core views
@@ -51,9 +52,10 @@ public class MainView {
     private File lastLoadedFile;
 
 
-    public MainView(final Executor executor, Disassembler disassembler) {
+    public MainView(final Executor executor, Disassembler disassembler, Args arg) {
         this.executor = executor;
         this.disassembler = disassembler;
+        this.arg = arg;
 
         cpuView = new CPUView(executor, disassembler);
         disassemblyView = new DisassemblyView(executor, disassembler);
@@ -84,6 +86,15 @@ public class MainView {
         textScreen = new TextualScreen(executor);
         graphScreen = new GraphicalScreen(executor);
         keyboard = new Keyboard(executor);
+
+        if (arg.isTextScr()) {
+            textScreen.setSize(arg.getTextScrCols(), arg.getTextScrRows());
+            textScreen.toggleView();
+        }
+        if (arg.isGraphScr()) {
+            graphScreen.setSize(arg.getGraphScrCols(), arg.getGraphScrRows());
+            graphScreen.toggleView();
+        }
 
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
@@ -327,6 +338,10 @@ public class MainView {
         watchView.clearLabelMap();
         watchView.setLabelMap(program.getDataLabels());
 
+        if (arg.isStats()) {
+            System.out.printf("Instructions read: %d\n", program.countInstructions());
+        }
+
         updateView();
     }
 
@@ -381,7 +396,7 @@ public class MainView {
             JOptionPane.showMessageDialog(mainFrame, scrollPane, "License", JOptionPane.INFORMATION_MESSAGE);
         });
         Object[] options = { licenseButton, okButton };
-        JOptionPane.showOptionDialog(mainFrame, "SicTools: SIC/XE assembler and simulator 2.0\n\n(C) 2011-2018, Jurij Mihelič (jurij.mihelic@fri.uni-lj.si)\n\nContributors\nTomaž Dobravec (tomaz.dobravec@fri.uni-lj.si)\nNejc Kišek\nJakob Erzar\nand others, listed on GitHub", "About", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, okButton);
+        JOptionPane.showOptionDialog(mainFrame, "SicTools: SIC/XE assembler and simulator 2.0.1\n\n(C) 2011-2019, Jurij Mihelič (jurij.mihelic@fri.uni-lj.si)\n\nContributors\nTomaž Dobravec (tomaz.dobravec@fri.uni-lj.si)\nNejc Kišek\nJakob Erzar\nand others, listed on GitHub", "About", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, okButton);
     }
 
 }

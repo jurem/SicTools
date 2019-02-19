@@ -2,6 +2,7 @@ package sic;
 
 import sic.common.Mnemonics;
 import sic.disasm.Disassembler;
+import sic.sim.Args;
 import sic.sim.Executor;
 import sic.sim.MainView;
 import sic.sim.vm.Machine;
@@ -26,6 +27,14 @@ public class Sim {
     // -memory start len
     // -debug level
 
+    static void printHelp() {
+        System.out.print(
+                "Sic/XE Simulator " + Version_Major + "." + Version_Minor + "." + Version_Patch + "\n" +
+                        "Usage: java sic.Sim options parameters\n" +
+                        "Options:\n");
+        Args.printArgs();
+    }
+
 
     public static void main(String[] args) throws Exception {
 //        ToolTipManager.sharedInstance().setDismissDelay(15000);
@@ -39,14 +48,13 @@ public class Sim {
         }
 
         Machine machine = new Machine();
-        Executor executor = new Executor(machine);
+        Executor executor = new Executor(machine, processedArgs);
         Disassembler disassembler = new Disassembler(new Mnemonics(), machine);
 
-        final MainView mainView = new MainView(executor, disassembler);
+        final MainView mainView = new MainView(executor, disassembler, processedArgs);
 
-        if (args.length > 0) mainView.load(new File(args[0]));
+        if (processedArgs.hasFilename()) mainView.load(new File(processedArgs.getFilename()));
 
-//        executor.start();
         mainView.updateView();
 
         executor.onBreakpoint = new ActionListener() {
@@ -55,5 +63,9 @@ public class Sim {
                 mainView.updateView();
             }
         };
+
+        if (processedArgs.isStart()) {
+            executor.start();
+        }
     }
 }

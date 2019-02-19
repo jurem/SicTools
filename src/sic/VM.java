@@ -35,8 +35,8 @@ public class VM {
         }
 
         Machine machine = new Machine();
-        Executor executor = new Executor(machine);
-        if (arg.getFreq() > 0) executor.setSpeed(arg.getFreq());
+        Executor executor = new Executor(machine, arg);
+
         if (arg.hasFilename()) {
             String ext = arg.getFileext();
             if ("asm".equals(ext)) Loader.loadAsm(machine, arg.getFilename());
