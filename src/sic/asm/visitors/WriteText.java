@@ -26,14 +26,16 @@ public class WriteText extends WriteVisitor {
     // text-record builder
 
     private StringBuilder buf = new StringBuilder();
+    private int recordBytes = 0;
     private int textAddr;
 
     private void flushBuf() {
-        if (buf.length() == 0) return;
-        w("T%s%06X%s%02X", space, textAddr, space, buf.length() / 2);
+        if (recordBytes == 0) return;
+        w("T%s%06X%s%02X", space, textAddr, space, recordBytes);
         w(buf.toString());
         w("\n");
         buf = new StringBuilder();
+        recordBytes = 0;
     }
 
     // visitors
@@ -85,8 +87,12 @@ public class WriteText extends WriteVisitor {
 
     public void visit(Command c) throws AsmError {
         if (c.size() > 0) buf.append(space);
+
+        int bufLenBefore = buf.length();
         boolean flush = c.emitText(buf);
-        if (flush || buf.length() > 56) {
+        recordBytes += (buf.length() - bufLenBefore) / 2;
+
+        if (flush || recordBytes > 28) {
             flushBuf();
             textAddr = program.locctr() + c.size();
         }
