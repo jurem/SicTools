@@ -21,10 +21,13 @@ public class Executor {
     private Timer timer;
     private int timerPeriod;        // timer period in miliseconds
     private int timerRepeat;        // timer loop-repeat count
+
     public final Breakpoints breakpoints;
     private final DataBreakpoints dataBreakpoints;
     public ActionListener onBreakpoint;
     private boolean hasChanged;
+
+    private boolean printStats = false;
 
     public Executor(final Machine machine) {
         this.machine = machine;
@@ -32,6 +35,13 @@ public class Executor {
         this.dataBreakpoints = machine.memory.dataBreakpoints;
         this.dataBreakpoints.enable();
         setSpeed(100);
+    }
+
+    public Executor(final Machine machine, Args arg) {
+        this(machine);
+
+        this.printStats = arg.isStats();
+        if (arg.getFreq() > 0) setSpeed(arg.getFreq());
     }
 
     public Machine getMachine() {
@@ -44,7 +54,7 @@ public class Executor {
 
     public void setSpeed(int Hz) {
         if (Hz > MaxSpeed) Hz = MaxSpeed;
-        timerRepeat = (Hz + 100) / 100;
+        timerRepeat = (Hz + 99) / 100;
         timerPeriod = 1000 * timerRepeat / Hz;
     }
 
@@ -75,6 +85,9 @@ public class Executor {
             // check if the same instruction: halt J halt
             if (oldPC == machine.registers.getPC()) {
                 stop();
+                if (printStats) {
+                    System.out.printf("Instructions executed: %d\n", machine.getInstructionCount());
+                }
                 break;
             }
             // check breakpoints

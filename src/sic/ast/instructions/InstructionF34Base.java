@@ -76,4 +76,14 @@ public abstract class InstructionF34Base extends Instruction {
         return super.explain() + "<br>" + nixbpe;
     }
 
+    @Override
+    public Integer resolveOperandAddress(int addressPC) {
+        if (flags.isPCRelative()) {
+            return addressPC + size() + value;
+        } else if (!flags.isImmediate() && flags.isAbsolute() && !flags.isIndexed()) {
+            return value;
+        } else {
+            return null;
+        }
+    }
 }

@@ -41,6 +41,8 @@ public class Args extends  AbstractCmdLineArgs {
 
     private int freq;
     private int debug;
+    private boolean start;
+    private boolean stats;
 
     private boolean textScr;
     private int textScrCols;
@@ -78,6 +80,14 @@ public class Args extends  AbstractCmdLineArgs {
         return debug;
     }
 
+    public boolean isStart() {
+        return start;
+    }
+
+    public boolean isStats() {
+        return stats;
+    }
+
     public boolean isTextScr() {
         return textScr;
     }
@@ -104,10 +114,13 @@ public class Args extends  AbstractCmdLineArgs {
 
     public static void printArgs() {
         System.out.print(
-            "    -help|-h      Print help.\n" +
-            "    -freq hz      Set the machine frequency.\n" +
-            "    -debug level  Set the debug level.\n" +
-            "    -text rowsxcols\n");
+            "    -help|-h          Print help.\n" +
+            "    -freq hz          Set the machine frequency.\n" +
+          //"    -debug level      Set the debug level.\n" + // Don't display while not implemented (TODO)
+            "    -start            Start on load.\n" +
+            "    -stats            Print instruction statistics.\n" +
+            "    -text rowsxcols   Show and resize textual screen.\n" +
+            "    -graph rowsxcols  Show and resize graphical screen.\n");
     }
 
     int parseFreq(String s) {
@@ -135,6 +148,12 @@ public class Args extends  AbstractCmdLineArgs {
                 case "-help":
                 case "-h":
                     help = true;
+                    break;
+                case "-stats":
+                    stats = true;
+                    break;
+                case "-start":
+                    start = true;
                     break;
                 case "-freq":
                     freq = parseFreq(args[++last]);

@@ -73,9 +73,4 @@ public class InstructionF3m extends InstructionF34Base {
             (byte)(flags.get_xbpe() | (resolvedValue >> 8) & 0x0F);
         data[loc + 2] = (byte)(resolvedValue & 0xFF);
     }
-
-    @Override
-    public Integer resolveRelativeOperand(int address) {
-        return flags.isPCRelative() ? address + size() + value : null ;
-    }
 }
