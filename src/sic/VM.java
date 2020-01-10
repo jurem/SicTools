@@ -60,7 +60,6 @@ public class VM {
             TimerTask timerTask = new TimerTask() {
                 public void run() {
                     if (textScreen != null) textScreen.updateView();
-                    if (graphicalScreen != null) graphicalScreen.updateView();
                 }
             };
             timer.schedule(timerTask, 0, 50);

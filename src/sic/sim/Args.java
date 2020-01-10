@@ -52,6 +52,9 @@ public class Args extends  AbstractCmdLineArgs {
     private int graphScrCols;
     private int graphScrRows;
 
+    private boolean keyb;
+    private int keybAddress;
+
     public boolean isHelp() {
         return help;
     }
@@ -112,6 +115,14 @@ public class Args extends  AbstractCmdLineArgs {
         return graphScrRows;
     }
 
+    public boolean isKeyb(){
+        return keyb;
+    }
+
+    public int getKeybAddress(){
+        return keybAddress;
+    }
+
     public static void printArgs() {
         System.out.print(
             "    -help|-h          Print help.\n" +
@@ -120,7 +131,8 @@ public class Args extends  AbstractCmdLineArgs {
             "    -start            Start on load.\n" +
             "    -stats            Print instruction statistics.\n" +
             "    -text rowsxcols   Show and resize textual screen.\n" +
-            "    -graph rowsxcols  Show and resize graphical screen.\n");
+            "    -graph rowsxcols  Show and resize graphical screen.\n" +
+            "    -keyb address     Show and set keyboard address.\n");
     }
 
     int parseFreq(String s) {
@@ -137,6 +149,15 @@ public class Args extends  AbstractCmdLineArgs {
         int x = s.indexOf('x');
         graphScrCols = Integer.parseInt(s.substring(0, x));
         graphScrRows = Integer.parseInt(s.substring(x+1));
+    }
+
+    void parseKeyb(String s){
+        keybAddress = 0xC000;
+        if(s.startsWith("0x")){
+            keybAddress = Integer.parseInt(s.substring(2), 16);
+        } else {
+            keybAddress = Integer.parseInt(s, 10);
+        }
     }
 
     void processArgs(String[] args) {
@@ -168,6 +189,10 @@ public class Args extends  AbstractCmdLineArgs {
                 case "-graph":
                     graphScr = true;
                     parseGraphScreen(args[++last]);
+                    break;
+                case "-keyb":
+                    keyb = true;
+                    parseKeyb(args[++last]);
                     break;
             }
             if (!arg.startsWith("-") || arg.equals("--")) break;
