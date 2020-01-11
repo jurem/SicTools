@@ -27,6 +27,8 @@ import java.io.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import sic.common.SICXE;
+
 /**
  * TODO: write a short description
  *
@@ -95,6 +97,10 @@ public class MainView {
             graphScreen.setSize(arg.getGraphScrCols(), arg.getGraphScrRows());
             graphScreen.toggleView();
         }
+        if(arg.isKeyb()){
+            keyboard.setScreen(SICXE.intToAddr(arg.getKeybAddress()));
+            keyboard.toggleView();
+        }
 
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
@@ -103,7 +109,6 @@ public class MainView {
                     updateView();
                 }
                 textScreen.updateView();
-                graphScreen.updateView();
             }
         };
         timer.schedule(timerTask, 0, 50);
