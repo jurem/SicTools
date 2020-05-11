@@ -3,10 +3,7 @@ package sic.asm.parsing;
 import sic.asm.AsmError;
 import sic.asm.Location;
 import sic.ast.Command;
-import sic.ast.data.Data;
-import sic.ast.data.DataChr;
-import sic.ast.data.DataHex;
-import sic.ast.data.DataNum;
+import sic.ast.data.*;
 import sic.ast.directives.*;
 import sic.ast.expression.Expr;
 import sic.ast.instructions.*;
@@ -58,6 +55,7 @@ public class OperandParser {
         switch (parser.peek()) {
             case 'C': data = new DataChr(opcode); break;
             case 'X': data = new DataHex(opcode); break;
+            case 'F': data = new DataFloat(opcode); break;
             default: data = new DataNum(opcode); break;
         }
         data.parse(parser, allowList);
@@ -69,7 +67,7 @@ public class OperandParser {
         // WORD, FLOaT, or BYTE (default) literal
         if (parser.advanceIf("BYTE") || parser.advanceIf('B'))
             mnm = parser.mnemonics.get("BYTE");
-        else if (parser.advanceIf("FLOT") || parser.advanceIf('F'))
+        else if (parser.advanceIf("FLOT") || parser.peek() == 'F')
             mnm = parser.mnemonics.get("FLOT");
         else {
             mnm = parser.mnemonics.get("WORD");

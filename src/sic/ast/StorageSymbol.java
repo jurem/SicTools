@@ -63,7 +63,7 @@ public class StorageSymbol extends Symbol {
                 dataType = DataType.WORD;
                 elementSize = 3;
                 break;
-            case FLOAT:
+            case FLOT:
             case RESF:
                 dataType = DataType.FLOAT;
                 elementSize = 6;
