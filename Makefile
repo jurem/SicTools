@@ -1,7 +1,7 @@
 OUT=out/make
 
 
-all: outdir sim vm asm link
+all: outdir sim vm asm link manifest jar
 
 
 outdir:
@@ -9,20 +9,20 @@ outdir:
 
 
 sim:
-	cd src; javac -d "../$(OUT)" sic/Sim.java
+	cd src; javac -encoding UTF-8 -d "../$(OUT)" sic/Sim.java
 	cp -R img "$(OUT)"
 
 
 vm:
-	cd src; javac -d "../$(OUT)" sic/VM.java
+	cd src; javac -encoding UTF-8 -d "../$(OUT)" sic/VM.java
 
 
 asm:
-	cd src; javac -d "../$(OUT)" sic/Asm.java
+	cd src; javac -encoding UTF-8 -d "../$(OUT)" sic/Asm.java
 
 
 link:
-	cd src; javac -d "../$(OUT)" sic/Link.java
+	cd src; javac -encoding UTF-8 -d "../$(OUT)" sic/Link.java
 
 
 manifest:
