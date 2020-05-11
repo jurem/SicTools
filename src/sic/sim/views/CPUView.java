@@ -9,6 +9,7 @@ import sic.sim.vm.Machine;
 import sic.sim.vm.Registers;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -183,7 +184,7 @@ public class CPUView {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.setEnabled(true);
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLoweredBevelBorder(), "CPU"));
+        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLoweredBevelBorder(), "CPU", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridBagLayout());
         panel1.setAlignmentX(0.5f);
@@ -417,4 +418,5 @@ public class CPUView {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

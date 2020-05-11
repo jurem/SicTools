@@ -9,6 +9,7 @@ import sic.sim.views.components.treetable.TreeTableModel;
 import sic.sim.vm.Memory;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.*;
 import javax.swing.tree.TreePath;
 import java.awt.*;
@@ -210,7 +211,7 @@ public class WatchView {
         mainPanel.setMinimumSize(new Dimension(50, 200));
         mainPanel.setPreferredSize(new Dimension(100, 200));
         mainPanel.setRequestFocusEnabled(true);
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLoweredBevelBorder(), "Watch"));
+        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLoweredBevelBorder(), "Watch", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         final JScrollPane scrollPane1 = new JScrollPane();
         scrollPane1.setPreferredSize(new Dimension(98, 120));
         mainPanel.add(scrollPane1, BorderLayout.CENTER);
@@ -244,6 +245,7 @@ public class WatchView {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }
 
 class WatchTreeTableModel implements TreeTableModel {
