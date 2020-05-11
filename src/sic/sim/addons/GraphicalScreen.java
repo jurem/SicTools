@@ -15,15 +15,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.paint.Paint;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.canvas.Canvas;
-import javafx.animation.AnimationTimer;
-
 /**
  * TODO: write a short description
  *
@@ -43,41 +34,31 @@ public class GraphicalScreen {
     private int pixelSize;
     // gui
     private final JFrame view;
-    private JFXPanel fxPanel;
-    private GraphicsContext gc = null;
-
-    AnimationTimer animationTimer = new AnimationTimer(){
-        @Override
-        public void handle(long now){
-
-            //Start rendering set VSYNC to 0
-            memory.setByteRaw(address + rows*cols, 0);
-                    
-            //GraphicsContext not yet available
-            if(gc != null){
-        
-                for (int i = 0; i < rows; i++){
-                    for (int j = 0; j < cols; j++) {
-                        int color = memory.getByteRaw(address + i * cols + j);
-                        int amp = (((color >> 6) & 3) + 1) * 20;
-                        int red = ((color >> 4) & 3) * amp;
-                        int green = ((color >> 2) & 3) * amp;
-                        int blue = (color & 3) * amp;
-                        gc.setFill(javafx.scene.paint.Color.rgb(red, green, blue));
-                        gc.fillRect(j * pixelSize, i * pixelSize, pixelSize, pixelSize);
-                    }
-                }
-
-            }
-
-            //After rendering set VSync to 1
-            memory.setByteRaw(address + rows*cols, 1);
-                    
-        }
-    };
-
+    private JPanel pnlScreen;
 
     /////////////// screen view
+    void paintScreen(Graphics g) {
+        if (memory == null) return;
+
+        // Start rendering; set VSync to 0
+        memory.setByteRaw(address + rows * cols, 0);
+
+        // Render screen
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                int color = memory.getByteRaw(address + i * cols + j);
+                int amp = (((color >> 6) & 3) + 1) * 20;
+                int red = ((color >> 4) & 3) * amp;
+                int green = ((color >> 2) & 3) * amp;
+                int blue = (color & 3) * amp;
+                g.setColor(new Color(red, green, blue));
+                g.fillRect(j * pixelSize, i * pixelSize, pixelSize, pixelSize);
+            }
+        }
+
+        // After rendering; set VSync to 1
+        memory.setByteRaw(address + rows * cols, 1);
+    }
 
     public void clearScreen() {
         for (int i = 0; i < rows; i++)
@@ -89,9 +70,15 @@ public class GraphicalScreen {
         final JFrame frame = new JFrame("Graphical screen");
         frame.setResizable(false);
 
-        fxPanel = new JFXPanel();
-        fxPanel.setToolTipText("Double click to clear screen.");
-        fxPanel.addMouseListener(new MouseAdapter() {
+        pnlScreen = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                paintScreen(g);
+            }
+        };
+        pnlScreen.setToolTipText("Double click to clear screen.");
+        pnlScreen.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
@@ -109,7 +96,7 @@ public class GraphicalScreen {
         JPanel bevel = new JPanel();
         bevel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         bevel.setLayout(new BorderLayout());
-        bevel.add(fxPanel);
+        bevel.add(pnlScreen);
 
         JPanel panel = new JPanel();
         panel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -131,22 +118,7 @@ public class GraphicalScreen {
         this.rows = rows;
         this.cols = cols;
         this.pixelSize = pixelSize;
-        fxPanel.setPreferredSize(new Dimension(cols * pixelSize, rows * pixelSize));
-
-
-        SwingUtilities.invokeLater(new Runnable() {
-             @Override
-             public void run() {       
-
-                Group root = new Group();
-                Canvas canvas = new Canvas(cols*pixelSize, rows*pixelSize);
-                gc = canvas.getGraphicsContext2D();
-                
-                root.getChildren().add(canvas);
-                fxPanel.setScene(new Scene(root));
-
-             }
-         });
+        pnlScreen.setPreferredSize(new Dimension(cols * pixelSize, rows * pixelSize));
 
         updateView();
         view.pack();
@@ -158,15 +130,14 @@ public class GraphicalScreen {
     }
 
     public void updateView() {
-        // Screen is refreshed automatically
+        pnlScreen.repaint();
     }
 
 
     public GraphicalScreen(final Executor executor) {
         this.memory = executor.getMachine().memory;
         this.view = createView();
-        setScreen(ADDRESS, COLS, ROWS, PIXELSIZE); 
-        animationTimer.start();
+        setScreen(ADDRESS, COLS, ROWS, PIXELSIZE);
     }
 
     /////////////// settings

@@ -1,23 +1,19 @@
 package sic.sim;
 
-import sic.asm.AsmError;
 import sic.asm.Assembler;
 import sic.asm.ErrorCatcher;
 import sic.ast.Program;
 import sic.common.GUI;
+import sic.common.SICXE;
 import sic.common.Utils;
 import sic.disasm.Disassembler;
 import sic.link.ui.LinkListener;
 import sic.link.ui.LinkerGui;
 import sic.loader.Loader;
-import sic.sim.views.DataBreakpointView;
 import sic.sim.addons.GraphicalScreen;
 import sic.sim.addons.Keyboard;
 import sic.sim.addons.TextualScreen;
-import sic.sim.views.CPUView;
-import sic.sim.views.DisassemblyView;
-import sic.sim.views.MemoryView;
-import sic.sim.views.WatchView;
+import sic.sim.views.*;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -26,8 +22,6 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import sic.common.SICXE;
 
 /**
  * TODO: write a short description
@@ -112,6 +106,16 @@ public class MainView {
             }
         };
         timer.schedule(timerTask, 0, 50);
+
+        // Calculate graphical screen refresh rate
+        double specifiedMs = 1000.0 / (double) (arg.getGraphScrFreq() <= 0 ? 120 : arg.getGraphScrFreq());
+        long refreshMs = (long) Math.max(Math.floor(specifiedMs), 4); // Cap at 240 Hz
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                graphScreen.updateView();
+            }
+        }, 0, refreshMs);
     }
 
     public void updateView() {
