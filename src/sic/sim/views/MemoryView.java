@@ -5,6 +5,7 @@ import sic.common.SICXE;
 import sic.sim.Executor;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -109,7 +110,7 @@ public class MemoryView {
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLoweredBevelBorder(), "Memory"));
+        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLoweredBevelBorder(), "Memory", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         mainPanel.add(panel1, BorderLayout.SOUTH);
@@ -176,4 +177,5 @@ public class MemoryView {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

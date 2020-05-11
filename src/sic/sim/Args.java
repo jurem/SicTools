@@ -51,6 +51,7 @@ public class Args extends  AbstractCmdLineArgs {
     private boolean graphScr;
     private int graphScrCols;
     private int graphScrRows;
+    private int graphScrFreq;
 
     private boolean keyb;
     private int keybAddress;
@@ -123,16 +124,20 @@ public class Args extends  AbstractCmdLineArgs {
         return keybAddress;
     }
 
+    public int getGraphScrFreq() {
+        return graphScrFreq;
+    }
+
     public static void printArgs() {
         System.out.print(
-            "    -help|-h          Print help.\n" +
-            "    -freq hz          Set the machine frequency.\n" +
+            "    -help|-h              Print help.\n" +
+            "    -freq hz              Set the machine frequency.\n" +
           //"    -debug level      Set the debug level.\n" + // Don't display while not implemented (TODO)
-            "    -start            Start on load.\n" +
-            "    -stats            Print instruction statistics.\n" +
-            "    -text rowsxcols   Show and resize textual screen.\n" +
-            "    -graph rowsxcols  Show and resize graphical screen.\n" +
-            "    -keyb address     Show and set keyboard address.\n");
+            "    -start                Start on load.\n" +
+            "    -stats                Print instruction statistics.\n" +
+            "    -text rowsxcols       Show and resize textual screen.\n" +
+            "    -graph rowsxcols[@hz] Show and resize graphical screen.\n" +
+            "    -keyb address         Show and set keyboard address.\n");
     }
 
     int parseFreq(String s) {
@@ -147,8 +152,22 @@ public class Args extends  AbstractCmdLineArgs {
 
     void parseGraphScreen(String s) {
         int x = s.indexOf('x');
-        graphScrCols = Integer.parseInt(s.substring(0, x));
-        graphScrRows = Integer.parseInt(s.substring(x+1));
+        int at = s.indexOf('@');
+
+        String cols = s.substring(0, x);
+        String rows;
+        String hz;
+        if (at != -1) {
+            rows = s.substring(x + 1, at);
+            hz = s.substring(at + 1);
+        } else {
+            rows = s.substring(x + 1);
+            hz = "120";
+        }
+
+        graphScrCols = Integer.parseInt(cols);
+        graphScrRows = Integer.parseInt(rows);
+        graphScrFreq = Integer.parseInt(hz);
     }
 
     void parseKeyb(String s){
