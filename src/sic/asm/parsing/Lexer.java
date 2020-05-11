@@ -174,9 +174,48 @@ public class Lexer extends Input {
         return num;
     }
 
+    /**
+     * Parse a 48-bit double.
+     * If minus sign is present it must be immediately followed by the number.
+     * @return parsed double
+     * @throws sic.asm.AsmError
+     */
     public double readFloat() throws AsmError {
-        //TODO
-        return readInt(-10000, 10000);
+        // Check sign
+        boolean negative = advanceIf('-');
+
+        // Read numbers before dot
+        double num;
+        try {
+            num = Double.parseDouble(readDigits(10));
+        } catch (NumberFormatException e) {
+            throw new AsmError(loc(), "Invalid number");
+        }
+
+        // Check for dot
+        if (advanceIf('.')) {
+            try {
+                num += Double.parseDouble("0." + readDigits(10));
+            } catch (NumberFormatException e) {
+                throw new AsmError(loc(), "Invalid number");
+            }
+        }
+
+        // Number must not be followed by letter or digit
+        if (Character.isLetterOrDigit(peek()))
+            throw new AsmError(loc(), "invalid digit '%c'", peek());
+
+        // Apply sign
+        if (negative) num = -num;
+
+        // Check range
+        double sicDoubleLimit = Math.pow(2, 11 + 36) - 1;
+        double lo = -sicDoubleLimit;
+        double hi = sicDoubleLimit;
+        if (num < lo || num > hi)
+            throw new AsmError(loc(), "Number '%d' out of range [%d..%d]", num, lo, hi);
+
+        return num;
     }
 
 }
