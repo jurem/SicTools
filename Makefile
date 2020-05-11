@@ -1,7 +1,7 @@
 OUT=out/make
 
 
-all: outdir sim vm asm link manifest jar
+all: outdir sim vm asm link
 
 
 outdir:
