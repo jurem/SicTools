@@ -11,6 +11,7 @@ import sic.sim.Executor;
 import sic.sim.vm.Machine;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -309,7 +310,7 @@ public class DisassemblyView {
         createUIComponents();
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
-        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLoweredBevelBorder(), "Disassembly"));
+        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLoweredBevelBorder(), "Disassembly", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         mainPanel.add(panel1, BorderLayout.SOUTH);
@@ -335,4 +336,5 @@ public class DisassemblyView {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }
