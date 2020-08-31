@@ -71,6 +71,9 @@ It can be configured in _SicTools -> Settings -> Graphical screen_, but default 
     * ii represents intensity - 0, 1, 2, 3 = 20, 40, 60, 80
     * color: (R, G, B) * amp
 
+Table of all available colors (values 0-255 of a byte):
+![Color table explanation](./../images/color-table-expl.png)
+
 _More examples are available at [SicDemos/graph-screen](https://github.com/jurem/SicDemos/tree/master/graph-screen)._
 
 ## Keyboard input
