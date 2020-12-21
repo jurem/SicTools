@@ -3,54 +3,21 @@ layout: default
 title: Directives
 menu: documentation
 ---
-In the following:
-  * five is absolute symbol (e.g., five EQU 5)
-  * label is relative symbol (e.g., label FIX)
+Supported directives
 
-Immediate addressing
-  * precedence order: signed absolute, pc, base
-  * absolute (direct): signed 12-bit operand
-    * LDA #5
-    * LDA #-42
-    * LDA #five
-  * pc-relative: signed 12-bit displacement
-    * LDA #label
-  * base-relative: unsigned 12-bit displacement
-    * LDA #label
-  * absolute extended: unsigned 20-bit operand
-    * +LDA #5
-    * +LDA #five
-    * +LDA #label
+name    START   abs_expr
+        END     expr
 
-Indirect addressing
-  * precedence order: pc, base, absolute
-  * absolute (direct): unsigned 12-bit address
-    * LDA @5
-    * LDA @five
-  * pc-relative: signed 12-bit displacement
-    * LDA #label
-  * base-relative: unsigned 12-bit displacement
-    * LDA #label
-  * absolute extended: unsigned 20-bit address
-    * +LDA @5
-    * +LDA @five
-    * +LDA @label
+name    CSECT
+        USE     name
 
-Simple addressing
-  * precedence order: pc, base, absolute, sic absolute
-  * absolute (direct): unsigned 12-bit address
-    * LDA 5
-    * LDA five
-  * pc-relative: signed 12-bit displacement
-    * LDA #label
-  * base-relative: unsigned 12-bit displacement
-    * LDA #label
-  * sic absolute: unsigned 15 bit address
-    * LDA 5
-    * LDA five
-    * LDA label
-    * program becomes unrelocatable
-  * absolute extended: unsigned 20-bit address
-    * +LDA 5
-    * +LDA label
-  * all modes can be combined with indexed addressing
+        ORG     abs_expr
+        LTORG
+
+
+        BASE    expr
+        NOBASE
+
+name    EQU     expr
+
+        RESx    abs_expr
