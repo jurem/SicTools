@@ -49,7 +49,7 @@ public class Writer {
         writer.printf("%-6s", section.getName());
         writer.printf("%06X", section.getStart());
         writer.printf("%06X", section.getLength());
-        writer.println();
+        writer.print('\n');
 
         //text records
         if (section.getTRecords() != null)
@@ -58,7 +58,7 @@ public class Writer {
                 writer.printf("%06X", t.getStartAddr());
                 writer.printf("%02X", t.getLength());
                 writer.print(t.getText());
-                writer.println();
+                writer.print('\n');
             }
 
         //modification records
@@ -77,7 +77,7 @@ public class Writer {
 
                     writer.print(m.getSymbol());
                 }
-                writer.println();
+                writer.print('\n');
             }
 
         // in some cases we keep some references or definitions
@@ -90,25 +90,25 @@ public class Writer {
                 writer.print(" ");
                 count++;
                 if (count % 6 == 0 && count < section.getExtDefs().size()) {
-                    writer.println();
+                    writer.print('\n');
                     writer.print("D");
                 }
             }
-            writer.println();
+            writer.print('\n');
         }
 
         if (section.getExtRefs() != null)
             for (ExtRef r : section.getExtRefs()){
                 writer.print("R");
                 writer.printf("%-6s", r.getName());
-                writer.println();
+                writer.print('\n');
             }
 
 
         if (section.getERecord() != null) {
             writer.print("E");
             writer.printf("%06X", section.getERecord().getStartAddr());
-            writer.println();
+            writer.print('\n');
         }
 
         writer.flush();
