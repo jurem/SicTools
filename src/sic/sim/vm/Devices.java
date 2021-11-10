@@ -51,6 +51,12 @@ public class Devices {
         return devices[idx].test();
     }
 
+    public void reset() {
+        for (int i = SICXE.DEVICE_FREE; i < devices.length; i++) {
+            devices[i].reset();
+        }
+    }
+
     public Devices(int count) {
         assert count > 2;
         devices = new Device[count];

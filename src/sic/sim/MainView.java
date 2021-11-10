@@ -213,6 +213,7 @@ public class MainView {
             public void actionPerformed(ActionEvent actionEvent) {
                 executor.getMachine().registers.reset();
                 executor.getMachine().memory.reset();
+                executor.getMachine().devices.reset();
                 loadLastLoaded();
                 updateView();
             }

@@ -45,6 +45,16 @@ public class FileDevice extends Device {
         }
     }
 
+    @Override
+    public void reset() {
+        if (file == null) return;
+        try {
+            file.seek(0);
+        } catch (IOException e) {
+            Logger.fmterr("Cannot reset file '%s'", filename);
+        }
+    }
+
     public FileDevice(String filename) {
         this.filename = filename;
         // do not open/create file - lazy open
