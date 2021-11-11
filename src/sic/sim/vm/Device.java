@@ -18,4 +18,7 @@ public class Device {
     public void write(int value) {
     }
 
+    public void reset() {
+    }
+
 }
