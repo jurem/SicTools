@@ -7,6 +7,7 @@ import sic.sim.Executor;
 import sic.sim.MainView;
 import sic.sim.vm.Machine;
 
+import javax.swing.UIManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -37,6 +38,7 @@ public class Sim {
 
 
     public static void main(String[] args) throws Exception {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 //        ToolTipManager.sharedInstance().setDismissDelay(15000);
 //        UIManager.put("ToolTip.font", new FontUIResource("Courier New", Font.PLAIN, 14));
         //

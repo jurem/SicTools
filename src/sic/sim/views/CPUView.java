@@ -5,6 +5,7 @@ import sic.common.Conversion;
 import sic.common.SICXE;
 import sic.disasm.Disassembler;
 import sic.sim.Executor;
+import sic.sim.Colors;
 import sic.sim.vm.Machine;
 import sic.sim.vm.Registers;
 
@@ -20,7 +21,7 @@ import java.awt.event.ActionListener;
  * @author jure
  */
 public class CPUView {
-    private final Color colorNochange = Color.BLACK;
+    private final Color colorNochange = Colors.fg;
     private final Color colorChange = Color.BLUE;
 
     private final Executor executor;

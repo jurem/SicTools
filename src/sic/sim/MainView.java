@@ -130,16 +130,16 @@ public class MainView {
 
         // SicSim
         JMenu menu = new JMenu("SicTools");
-        GUI.addMenuItem(menu, "About", KeyEvent.VK_A, actionEvent -> showAboutMessage());
+        GUI.addMenuItem(menu, "About", KeyEvent.VK_A, KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK), actionEvent -> showAboutMessage());
         menu.addSeparator();
-        GUI.addMenuItem(menu, "Settings", KeyEvent.VK_S, new ActionListener() {
+        GUI.addMenuItem(menu, "Settings", KeyEvent.VK_S, KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 showSettingsView();
             }
         });
         menu.addSeparator();
-        GUI.addMenuItem(menu, "Quit", KeyEvent.VK_Q, new ActionListener() {
+        GUI.addMenuItem(menu, "Quit", KeyEvent.VK_Q, KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
@@ -271,19 +271,19 @@ public class MainView {
 
         // View
         menu = new JMenu("View");
-        GUI.addMenuItem(menu, "Textual screen", KeyEvent.VK_T, new ActionListener() {
+        GUI.addMenuItem(menu, "Textual screen", KeyEvent.VK_T, KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 textScreen.toggleView();
             }
         });
-        GUI.addMenuItem(menu, "Graphical screen", KeyEvent.VK_G, new ActionListener() {
+        GUI.addMenuItem(menu, "Graphical screen", KeyEvent.VK_G, KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 graphScreen.toggleView();
             }
         });
-        GUI.addMenuItem(menu, "Keyboard", KeyEvent.VK_K, new ActionListener() {
+        GUI.addMenuItem(menu, "Keyboard", KeyEvent.VK_K, KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 keyboard.toggleView();
