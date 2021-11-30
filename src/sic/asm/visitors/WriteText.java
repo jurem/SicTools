@@ -87,15 +87,16 @@ public class WriteText extends WriteVisitor {
 
     public void visit(Command c) throws AsmError {
         if (c.size() > 0) buf.append(space);
+        
+        if (recordBytes == 0)
+            textAddr = program.locctr();
 
         int bufLenBefore = buf.length();
         boolean flush = c.emitText(buf);
         recordBytes += (buf.length() - bufLenBefore) / 2;
 
-        if (flush || recordBytes > 28) {
+        if (flush || recordBytes > 28)
             flushBuf();
-            textAddr = program.locctr() + c.size();
-        }
     }
 
     public void visit(DirectiveORG d) {
