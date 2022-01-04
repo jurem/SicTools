@@ -33,11 +33,11 @@ public class DataNum extends Data {
     public void parse(Parser parser, boolean allowList) throws AsmError {
         switch (opcode) {
             case Opcode.BYTE:
-                numint = parser.readInt(-128, 255);
+                numint = parser.readInt(SICXE.MIN_SBYTE, SICXE.MAX_BYTE);
                 data = SICXE.intToDataByte(numint);
                 break;
             case Opcode.WORD:
-                numint = parser.readInt(-(2 << 23), (1 << 24) - 1);
+                numint = parser.readInt(SICXE.MIN_SWORD, SICXE.MAX_WORD);
                 data = SICXE.intToDataWord(numint);
                 break;
             case Opcode.FLOT:
