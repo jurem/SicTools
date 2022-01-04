@@ -145,6 +145,14 @@ public class SICXE {
         return Double.longBitsToDouble(bits << 16);
     }
 
+    // ************ byte: unsigned and signed
+
+    public static final int MIN_BYTE = 0;
+    public static final int MAX_BYTE = (1 << 8) - 1;
+
+    public static final int MIN_SBYTE = -(1 << 7);
+    public static final int MAX_SBYTE = (1 << 7) - 1;
+
     // ************ data (array of bytes) initializers
 
     public static byte[] intToDataByte(int val) {
