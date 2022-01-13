@@ -31,9 +31,16 @@ public class WriteText extends WriteVisitor {
 
     private void flushBuf() {
         if (recordBytes == 0) return;
-        w("T%s%06X%s%02X", space, textAddr, space, recordBytes);
-        w(buf.toString());
-        w("\n");
+        String codeString = buf.toString();
+        while (recordBytes > 0) {
+            int length = codeString.length() <= 58 ? codeString.length() / 2 : 29;
+            w("T%s%06X%s%02X", space, textAddr, space, length);
+            w(codeString.substring(0, length * 2));
+            codeString = codeString.substring(length * 2);
+            w("\n");
+            textAddr += length;
+            recordBytes -= length;
+        }
         buf = new StringBuilder();
         recordBytes = 0;
     }

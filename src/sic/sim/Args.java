@@ -146,7 +146,7 @@ public class Args extends  AbstractCmdLineArgs {
 
     void parseTextScreen(String s) {
         int x = s.indexOf('x');
-        textScrCols = Integer.parseInt(s.substring(0, x-1));
+        textScrCols = Integer.parseInt(s.substring(0, x));
         textScrRows = Integer.parseInt(s.substring(x+1));
     }
 
