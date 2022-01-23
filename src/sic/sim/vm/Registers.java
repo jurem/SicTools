@@ -33,7 +33,7 @@ public class Registers {
     }
 
     public void incPC() {
-        if (PC++ > Machine.MAX_ADDRESS) {
+        if (++PC > Machine.MAX_ADDRESS) {
             Logger.fmterr("PC register overflow.");
             PC = 0;
         }
