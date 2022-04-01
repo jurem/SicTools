@@ -33,7 +33,7 @@ public class WriteText extends WriteVisitor {
         if (recordBytes == 0) return;
         String codeString = buf.toString();
         while (recordBytes > 0) {
-            int length = codeString.length() <= 58 ? codeString.length() / 2 : 29;
+            int length = codeString.length() <= 60 ? codeString.length() / 2 : 30;
             w("T%s%06X%s%02X", space, textAddr, space, length);
             w(codeString.substring(0, length * 2));
             codeString = codeString.substring(length * 2);
@@ -102,7 +102,7 @@ public class WriteText extends WriteVisitor {
         boolean flush = c.emitText(buf);
         recordBytes += (buf.length() - bufLenBefore) / 2;
 
-        if (flush || recordBytes > 28)
+        if (flush)
             flushBuf();
     }
 
