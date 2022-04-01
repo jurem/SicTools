@@ -53,30 +53,46 @@ public class SecondPassVisitor extends SectionVisitor {
                 }
             }
 
-            long fixAddress = mRecord.getStart() + currSection.getStart();
+            long fixAddressStart = mRecord.getStart() + currSection.getStart();
+            long fixAddressEnd = fixAddressStart + mRecord.getLength() / 2;
 
             // find the Trecord that has to be fixed
             TRecord fixRecord = null;
+			TRecord fixRecordEnd = null;
+			int found = 0;
             if (currSection.getTRecords() != null) {
                 for (TRecord tRecord : currSection.getTRecords()) {
-                    if (tRecord.contains(fixAddress)) {
+                    if (tRecord.contains(fixAddressStart)) {
+						found++;
                         fixRecord = tRecord;
-                        break;
+						if (tRecord.contains(fixAddressEnd) || found == 2)
+							break;
+
+                    }
+                    if (tRecord.contains(fixAddressEnd)) {
+						found++;
+                        fixRecordEnd = tRecord;
+						if (found == 2)
+							break;
                     }
                 }
             }
 
             // throw an error if record was not found
             if (fixRecord == null)
-                throw new LinkerError(PHASE, "Address " + fixAddress + " is not present in any T Record", mRecord.getLocation());
+                throw new LinkerError(PHASE, "Address " + fixAddressStart + " is not present in any T Record", mRecord.getLocation());
 
             // each byte is 2 chars
-            int start = (int)(fixAddress - fixRecord.getStartAddr()) * 2; // start of the addressed word
+            int start = (int)(fixAddressStart - fixRecord.getStartAddr()) * 2; // start of the addressed word
 
             start = start + 6 - mRecord.getLength(); // last mRecord.getLength() halfbytes of the adressed word
             int end = start + mRecord.getLength();
 
             String text = fixRecord.getText();
+			int recordLength = text.length();
+			if (fixRecordEnd != null && fixRecord != fixRecordEnd) {
+				text += fixRecordEnd.getText();
+			}
 
             String fixBytes = text.substring(start, end);
 
@@ -90,8 +106,13 @@ public class SecondPassVisitor extends SectionVisitor {
                 corrected -= symbol.getAddress(); // rarely needed, example in Leland Beck's "System Software", Figure 2.15 line 190
 
             String correctedString = String.format("%0" + mRecord.getLength() + "X",corrected);
+
             text = text.substring(0,start) + correctedString + text.substring(end);
-            fixRecord.setText(text);
+            fixRecord.setText(text.substring(0,recordLength));
+			if (fixRecordEnd != null && fixRecord != fixRecordEnd) {
+				text = text.substring(recordLength);
+				fixRecordEnd.setText(text);
+			}
 
             if (options.isVerbose()) System.out.println("fixing " + mRecord.getLength() + " half-bytes from " + fixBytes + " to " + correctedString + "   symbol=" + symbol.getName());
 
