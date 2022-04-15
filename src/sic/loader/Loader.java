@@ -48,7 +48,8 @@ public class Loader {
             readString(r, 6);	// name is ignored
             int start = readWord(r);
             int length = readWord(r);
-            r.read();  // EOL
+            if (r.read() == '\r') // EOL
+                r.read();
 
             Memory mem = machine.memory;
             // text records
@@ -61,7 +62,8 @@ public class Loader {
                     byte val = (byte)readByte(r);
                     mem.setByteRaw(loc++, val);
                 }
-                r.read();  // EOL
+                if (r.read() == '\r') // EOL
+                    r.read();
                 ch = r.read();
             }
 
@@ -69,7 +71,8 @@ public class Loader {
             while (ch == 'M') {
                 readWord(r);	// addr
                 readByte(r);	// len
-                r.read();  // EOL
+                if (r.read() == '\r') // EOL
+                    r.read();
                 ch = r.read();
             }
 
