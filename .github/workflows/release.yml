@@ -1,0 +1,25 @@
+name: Build jar for release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: sudo apt install default-jdk
+
+    - name: Build
+      run: make jar
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: out/make/sictools.jar
