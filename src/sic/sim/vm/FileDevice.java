@@ -49,7 +49,8 @@ public class FileDevice extends Device {
     public void reset() {
         if (file == null) return;
         try {
-            file.seek(0);
+            file.close();
+            file = null;
         } catch (IOException e) {
             Logger.fmterr("Cannot reset file '%s'", filename);
         }
