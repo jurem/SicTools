@@ -11,9 +11,12 @@ import sic.sim.vm.Registers;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.plaf.FontUIResource;
+import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Locale;
 
 /**
  * TODO: write a short description
@@ -372,6 +375,7 @@ public class CPUView {
         lblInfo = new JLabel();
         Font lblInfoFont = this.$$$getFont$$$("Courier", -1, 12, lblInfo.getFont());
         if (lblInfoFont != null) lblInfo.setFont(lblInfoFont);
+        lblInfo.setPreferredSize(new Dimension(0, 120));
         lblInfo.setText("");
         lblInfo.setVerticalAlignment(1);
         lblInfo.setVerticalTextPosition(0);
@@ -380,9 +384,16 @@ public class CPUView {
         gbc.gridx = 3;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
-        gbc.gridheight = 2;
+        gbc.gridheight = 3;
         gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(8, 0, 0, 0);
         panel1.add(lblInfo, gbc);
+        final JPanel spacer1 = new JPanel();
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        panel1.add(spacer1, gbc);
         label1.setLabelFor(regX);
         label2.setLabelFor(regL);
         label3.setLabelFor(regS);
@@ -410,7 +421,10 @@ public class CPUView {
                 resultName = currentFont.getName();
             }
         }
-        return new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
+        Font font = new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
+        boolean isMac = System.getProperty("os.name", "").toLowerCase(Locale.ENGLISH).startsWith("mac");
+        Font fontWithFallback = isMac ? new Font(font.getFamily(), font.getStyle(), font.getSize()) : new StyleContext().getFont(font.getFamily(), font.getStyle(), font.getSize());
+        return fontWithFallback instanceof FontUIResource ? fontWithFallback : new FontUIResource(fontWithFallback);
     }
 
     /**
