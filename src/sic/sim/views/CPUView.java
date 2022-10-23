@@ -375,7 +375,7 @@ public class CPUView {
         lblInfo = new JLabel();
         Font lblInfoFont = this.$$$getFont$$$("Courier", -1, 12, lblInfo.getFont());
         if (lblInfoFont != null) lblInfo.setFont(lblInfoFont);
-        lblInfo.setPreferredSize(new Dimension(0, 120));
+        lblInfo.setPreferredSize(new Dimension(280, 120));
         lblInfo.setText("");
         lblInfo.setVerticalAlignment(1);
         lblInfo.setVerticalTextPosition(0);

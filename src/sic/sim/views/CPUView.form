@@ -239,7 +239,7 @@
             </constraints>
             <properties>
               <font name="Courier" size="12"/>
-              <preferredSize width="0" height="120"/>
+              <preferredSize width="280" height="120"/>
               <text value=""/>
               <verticalAlignment value="1"/>
               <verticalTextPosition value="0"/>
