@@ -71,7 +71,7 @@ public class MainView {
         mainPanel.add(westPanel, BorderLayout.WEST);
         mainPanel.add(eastPanel, BorderLayout.CENTER);
 
-        mainFrame = new JFrame("SicTools_Modified_By_HassanAli");
+        mainFrame = new JFrame("SicTools");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setJMenuBar(createMenuBar());
         mainFrame.setContentPane(mainPanel);
