@@ -30,7 +30,7 @@ public class InstructionF3m extends InstructionF34Base {
     public boolean resolveAddressing(Program program) throws AsmError {
         // if absolute symbol try absolute (direct) addressing
         if (resolvedSymbol == null || resolvedSymbol.isAbsolute()) {
-            if (flags.isImmediate() ? SICXE.isCdisp(value) : SICXE.isDisp(value))
+            if (flags.isImmediate() ? SICXE.isCdisp(resolvedValue) : SICXE.isDisp(resolvedValue))
                 return true;  // flags bp=0, and no relocation needed since sym is absolute
         }
         // try PC-relative addressing
