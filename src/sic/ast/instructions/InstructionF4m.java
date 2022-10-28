@@ -31,6 +31,8 @@ public class InstructionF4m extends InstructionF34Base {
                 program.section().addRelocation(program.locctr() + 1, 5, '+', symbol);
             else
                 program.section().addRelocation(program.locctr() + 1, 5);
+
+            return resolvedValue >= flags.minOperand() && resolvedValue <= flags.maxOperand();
         }
         return true;
     }
