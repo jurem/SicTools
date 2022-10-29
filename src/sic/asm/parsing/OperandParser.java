@@ -226,6 +226,11 @@ public class OperandParser {
 
     private Command parseDs_(Location loc, String label, Mnemonic mnemonic) throws AsmError {
         List<String> names = parseSymbols();
+        // .obj files only support symbols in 'R' section with at most 6 characters
+        for (String name : names) {
+            if (name.length() > 6)
+                throw new AsmError(loc, "Symbol name '%s' too long", name);
+        }
         switch (mnemonic.opcode) {
             case Opcode.EXTDEF: return new DirectiveEXTDEF(loc, label, mnemonic, names);
             case Opcode.EXTREF: return new DirectiveEXTREF(loc, label, mnemonic, names);
