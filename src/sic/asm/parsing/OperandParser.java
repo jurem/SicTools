@@ -35,11 +35,14 @@ public class OperandParser {
         parser.checkWhitespace("Missing whitespace after mnemonic '%s'", name);
     }
 
-    private List<String> parseSymbols() throws AsmError {
+    private List<String> parseSymbols(int maxLength) throws AsmError {
         List<String> syms = new ArrayList<String>();
-        do
-            syms.add(parser.readSymbol());
-        while (parser.skipIfComma());
+        do {
+            String sym = parser.readSymbol();
+            if (sym.length() > maxLength)
+                throw new AsmError(parser.loc(), "Symbol name '%s' too long", sym);
+            syms.add(sym);
+        } while (parser.skipIfComma());
         return syms;
     }
 
@@ -225,7 +228,7 @@ public class OperandParser {
     }
 
     private Command parseDs_(Location loc, String label, Mnemonic mnemonic) throws AsmError {
-        List<String> names = parseSymbols();
+        List<String> names = parseSymbols(6);
         switch (mnemonic.opcode) {
             case Opcode.EXTDEF: return new DirectiveEXTDEF(loc, label, mnemonic, names);
             case Opcode.EXTREF: return new DirectiveEXTREF(loc, label, mnemonic, names);
