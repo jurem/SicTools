@@ -120,6 +120,7 @@ public class MainView {
 
     public void updateView() {
         cpuView.updateView();
+        disassemblyView.clearLabelMap();
         disassemblyView.updateView(!executor.isRunning(), !executor.isRunning());
         memoryView.updateView();
         watchView.updateView();
