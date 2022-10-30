@@ -191,6 +191,7 @@ public class MainView {
                 executor.getMachine().registers.reset();
                 executor.getMachine().memory.reset();
                 disassemblyView.clearLabelMap();
+                watchView.clearLabelMap();
                 updateView();
             }
         });
@@ -206,6 +207,7 @@ public class MainView {
             public void actionPerformed(ActionEvent actionEvent) {
                 executor.getMachine().memory.reset();
                 disassemblyView.clearLabelMap();
+                watchView.clearLabelMap();
                 updateView();
             }
         });
