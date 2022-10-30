@@ -120,7 +120,6 @@ public class MainView {
 
     public void updateView() {
         cpuView.updateView();
-        disassemblyView.clearLabelMap();
         disassemblyView.updateView(!executor.isRunning(), !executor.isRunning());
         memoryView.updateView();
         watchView.updateView();
@@ -191,6 +190,7 @@ public class MainView {
             public void actionPerformed(ActionEvent actionEvent) {
                 executor.getMachine().registers.reset();
                 executor.getMachine().memory.reset();
+                disassemblyView.clearLabelMap();
                 updateView();
             }
         });
@@ -205,6 +205,7 @@ public class MainView {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 executor.getMachine().memory.reset();
+                disassemblyView.clearLabelMap();
                 updateView();
             }
         });
