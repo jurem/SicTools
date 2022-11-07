@@ -249,15 +249,20 @@ public class DisassemblyView {
     }
 
     public void updateDis(boolean selectPC, boolean followPC) {
+        if (tabDis.getRowCount() <= 0) followPC = false;
+
         int loc = disassembler.location();
         for (int row = 0; row < tabDis.getRowCount(); row++) {
             if (loc > SICXE.MAX_ADDR) clearDisLine(row);
             else {
                 if (selectPC && loc == machine.registers.getPC()) {
-                    if (getAddressAtRow(tabDis.getRowCount() - 2) == machine.registers.getPC()) {
+                    if (tabDis.getRowCount() > 1) {
+                        final var rowPadding = Math.min(tabDis.getRowCount() - 1, 2);
+                        if (getAddressAtRow(tabDis.getRowCount() - rowPadding) == machine.registers.getPC()) {
                         disMove(1);
                         updateDis(true, false);
                         return;
+                        }
                     }
                     tabDis.setRowSelectionInterval(row, row);
                     followPC = false;
@@ -302,6 +307,7 @@ public class DisassemblyView {
     }
 
     public int getAddressAtRow(int row) {
+        if (row < 0 || row >= tabDis.getRowCount()) return -1;
         return SICXE.intToAddr(Conversion.hexToInt((String) tabDis.getValueAt(row, 1)));
     }
 
