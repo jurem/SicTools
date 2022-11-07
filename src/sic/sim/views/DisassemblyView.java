@@ -160,6 +160,13 @@ public class DisassemblyView {
                 super.mouseClicked(evt);
             }
         });
+        tabDis.addMouseWheelListener(new MouseAdapter() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent evt){
+                disMove(evt.getWheelRotation());
+                super.mouseWheelMoved(evt);
+            }
+        });
         tabDis.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
         tabDis.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "down");
         tabDis.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "space");
@@ -267,9 +274,19 @@ public class DisassemblyView {
     }
 
     private void disMove(int count) {
+        final var wasAtBorder = isAtDissasemblyBorder();
         if (count > 0) disassembler.next(count);
         else disassembler.prev(-count);
         updateDis(false, false);
+
+        if (tabDis.getSelectedRow() != -1 && !(wasAtBorder && isAtDissasemblyBorder())) {
+            final var newSelectedRow = tabDis.getSelectedRow() - count;
+            if (newSelectedRow >= 0 && newSelectedRow < tabDis.getRowCount()) {
+                tabDis.setRowSelectionInterval(newSelectedRow, newSelectedRow);
+            } else {
+                tabDis.clearSelection();
+            }
+        }
     }
 
     public void toggleBreakpointAtSelectedRow() {
@@ -279,9 +296,18 @@ public class DisassemblyView {
         updateBreakpoint(row, breakpoints.has(addr));
     }
 
+    public int getAddressAtRow(int row) {
+        return SICXE.intToAddr(Conversion.hexToInt((String) tabDis.getValueAt(row, 1)));
+    }
+
     public int getSelectedAddress() {
         int row = tabDis.getSelectedRow();
-        return SICXE.intToAddr(Conversion.hexToInt((String) tabDis.getValueAt(row, 1)));
+        return getAddressAtRow(row);
+    }
+
+    public boolean isAtDissasemblyBorder() {
+        final var topAddress = getAddressAtRow(0);
+        return topAddress == 0 || topAddress == SICXE.MAX_ADDR;
     }
 
     public void setLabelMap(HashMap<Integer, Symbol> map) {
