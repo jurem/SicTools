@@ -7,8 +7,7 @@ import sic.sim.Executor;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 /**
  * TODO: write a short description
@@ -85,6 +84,14 @@ public class MemoryView {
                 updateView();
             }
         };
+        hex.addMouseWheelListener(new MouseAdapter() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent evt) {
+                hex.moveStartAddress(evt.getWheelRotation() > 0 ? 1 : -1);
+                hex.requestFocus();
+                updateView();
+            }
+        });
     }
 
     public void updateView() {
