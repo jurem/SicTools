@@ -254,6 +254,11 @@ public class DisassemblyView {
             if (loc > SICXE.MAX_ADDR) clearDisLine(row);
             else {
                 if (selectPC && loc == machine.registers.getPC()) {
+                    if (getAddressAtRow(tabDis.getRowCount() - 2) == machine.registers.getPC()) {
+                        disMove(1);
+                        updateDis(true, false);
+                        return;
+                    }
                     tabDis.setRowSelectionInterval(row, row);
                     followPC = false;
                 }
