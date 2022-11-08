@@ -70,6 +70,12 @@ public class Machine {
         lastExecWrite.set(startAddress, spanLength);
     }
 
+    public void clearLastExecReadWrite() {
+        lastExecWrite.clear();
+        lastExecRead.clear();
+        lastExecAddr.clear();
+    }
+
     // ********** Execution *********************
 
     private void notImplemented(String mnemonic) {

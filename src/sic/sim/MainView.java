@@ -190,6 +190,7 @@ public class MainView {
             public void actionPerformed(ActionEvent actionEvent) {
                 executor.getMachine().registers.reset();
                 executor.getMachine().memory.reset();
+                executor.getMachine().clearLastExecReadWrite();
                 disassemblyView.clearLabelMap();
                 watchView.clearLabelMap();
                 updateView();
@@ -206,6 +207,7 @@ public class MainView {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 executor.getMachine().memory.reset();
+                executor.getMachine().clearLastExecReadWrite();
                 disassemblyView.clearLabelMap();
                 watchView.clearLabelMap();
                 updateView();
@@ -218,6 +220,7 @@ public class MainView {
                 executor.getMachine().registers.reset();
                 executor.getMachine().memory.reset();
                 executor.getMachine().devices.reset();
+                executor.getMachine().clearLastExecReadWrite();
                 loadLastLoaded();
                 updateView();
             }
