@@ -17,6 +17,12 @@ public class Colors {
     public static final Color selectionBg;
     public static final Color selectionInactiveFg;
     public static final Color selectionInactiveBg;
+    public static final Color lastReadFg;
+    public static final Color lastReadBg;
+    public static final Color lastWriteFg;
+    public static final Color lastWriteBg;
+    public static final Color currentPcFg;
+    public static final Color currentPcBg;
 
     static {
         UIDefaults defaults = javax.swing.UIManager.getDefaults();
@@ -26,6 +32,12 @@ public class Colors {
         selectionFg = defaults.getColor("TextField.selectionForeground");
         selectionInactiveBg = Color.decode("#DDDDDD"); // A bit lighter than COLOR.LIGHT_GRAY.
         selectionInactiveFg = Color.BLACK;  //defaults.getColor("TextField.inactiveForeground");
+        lastReadFg = fg;
+        lastReadBg = Color.RED;
+        lastWriteFg = fg;
+        lastWriteBg = Color.BLUE;
+        currentPcBg = Color.LIGHT_GRAY;
+        currentPcFg = Color.BLACK;
     }
 
     public static Color fg(boolean selected, boolean active) {

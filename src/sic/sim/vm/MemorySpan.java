@@ -32,6 +32,9 @@ public class MemorySpan {
         this.startAddress = startAddress;
         this.spanLength = spanLength;
     }
+    public boolean addressWithinSpan(int address) {
+        return address >= startAddress && address < getEndAddress();
+    }
     public void clear() {
         startAddress = -1;
         spanLength = 0;
