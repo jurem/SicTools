@@ -24,6 +24,7 @@ public class Machine {
     // ************ Statistics
 
     private int instructionCount;
+    private MemorySpan lastExecAddr;
     private MemorySpan lastExecRead;
     private MemorySpan lastExecWrite;
 
@@ -38,12 +39,17 @@ public class Machine {
         this.devices = new Devices(MAX_DEVICE+1);
         this.lastExecRead = new MemorySpan();
         this.lastExecWrite = new MemorySpan();
+        this.lastExecAddr = new MemorySpan();
     }
 
     // ************ getters/setters
 
     public int getInstructionCount() {
         return instructionCount;
+    }
+
+    public MemorySpan getLastExecAddr() {
+        return lastExecAddr;
     }
 
     public MemorySpan getLastExecRead() {
@@ -232,27 +238,41 @@ public class Machine {
 
     public void execute() throws DataBreakpointException {
         instructionCount++;
+        lastExecRead.clear();
+        lastExecWrite.clear();
+        lastExecAddr.setStartAddress(registers.getPC());
+        lastExecAddr.setSpanLength(0);
         // fetch first byte
         int opcode = fetch();
         // try format 1
-        if (execF1(opcode)) return;
+        if (execF1(opcode)) {
+            lastExecAddr.setSpanLength(1);
+            return;
+        }
         // fetch one more byte
         int op = fetch();
         // try format 2
-        if (execF2(opcode, op)) return;
+        if (execF2(opcode, op)) {
+            lastExecAddr.setSpanLength(2);
+            return;
+        }
         // otherwise it is format SIC, F3 or F4
         Flags flags = new Flags(opcode, op);
+        int instructionSize = 0;
         // operand depends on instruction format
         int operand;
         // check if standard SIC
         if (flags.isSic()) {
             operand = flags.operandSic(op, fetch());
+            instructionSize = 3;
             // check if F4 (extended)
         } else if (flags.isExtended()) {
             operand = flags.operandF4(op, fetch(), fetch());
             if (flags.isRelative()) invalidAddressing();
+            instructionSize = 4;
             // otherwise it is F3
         } else {
+            instructionSize = 3;
             operand = flags.operandF3(op, fetch());
             if (flags.isPCRelative())
                 operand = flags.operandPCRelative(operand) + registers.getPC();
@@ -266,7 +286,10 @@ public class Machine {
             if (flags.isSimple()) operand += registers.getXs();
             else invalidAddressing();
         // try to execute
-        if (execSICF3F4(opcode & 0xFC, flags, operand)) return;
+        if (execSICF3F4(opcode & 0xFC, flags, operand)) {
+            lastExecAddr.setSpanLength(instructionSize);
+            return;
+        }
         invalidOpcode(opcode);
     }
 
