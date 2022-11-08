@@ -3,6 +3,7 @@ package sic.sim.vm;
 import sic.common.*;
 import sic.sim.breakpoints.DataBreakpointException;
 import sic.sim.breakpoints.ReadDataBreakpointException;
+import sic.sim.breakpoints.WriteDataBreakpointException;
 
 import java.util.Stack;
 
@@ -23,6 +24,9 @@ public class Machine {
     // ************ Statistics
 
     private int instructionCount;
+    private MemorySpan lastExecRead;
+    private MemorySpan lastExecWrite;
+
 
     private Stack<Integer> addressBelowJSUB = new Stack<>();
 
@@ -32,12 +36,32 @@ public class Machine {
         this.registers = new Registers();
         this.memory = new Memory(MAX_ADDRESS+1);
         this.devices = new Devices(MAX_DEVICE+1);
+        this.lastExecRead = new MemorySpan();
+        this.lastExecWrite = new MemorySpan();
     }
 
     // ************ getters/setters
 
     public int getInstructionCount() {
         return instructionCount;
+    }
+
+    public MemorySpan getLastExecRead() {
+        return lastExecRead;
+    }
+
+    private void setLastExecRead(int startAddress, int spanLength) {
+        lastExecWrite.clear();
+        lastExecRead.set(startAddress, spanLength);
+    }
+
+    public MemorySpan getLastExecWrite() {
+        return lastExecWrite;
+    }
+
+    private void setLastExecWrite(int startAddress, int spanLength) {
+        lastExecRead.clear();
+        lastExecWrite.set(startAddress, spanLength);
     }
 
     // ********** Execution *********************
@@ -92,28 +116,50 @@ public class Machine {
     }
 
     // load
+
+    
     private int loadWord(Flags flags, int operand) throws ReadDataBreakpointException {
         if (flags.isImmediate()) return operand;
-        operand = memory.getWord(operand);
-        if (flags.isIndirect()) operand = memory.getWord(operand);
-        return operand;
+        int addr = resolveAddr(flags, operand);
+        setLastExecRead(addr, 3);
+        return memory.getWord(addr);
     }
 
     private int loadByte(Flags flags, int operand) throws ReadDataBreakpointException {
         if (flags.isImmediate()) return operand;
-        if (flags.isIndirect()) return memory.getByte(memory.getWord(operand));
-        return memory.getByte(operand);
+        int addr = resolveAddr(flags, operand);
+        setLastExecRead(addr, 1);
+        return memory.getByte(addr);
     }
 
     private double loadFloat(Flags flags, int operand) throws ReadDataBreakpointException {
         if (flags.isImmediate()) return operand;
-        if (flags.isIndirect())  return memory.getFloat(memory.getWord(operand));
-        return memory.getFloat(operand);
+        int addr = resolveAddr(flags, operand);
+        setLastExecRead(addr, 3);
+        return memory.getFloat(addr);
     }
 
     // use of TA for store: addr / addr of addr
-    private int storeAddr(Flags flags, int addr) throws ReadDataBreakpointException {
-        return flags.isIndirect() ? memory.getWord(addr) : addr;
+    private int resolveAddr(Flags flags, int addr) {
+        return flags.isIndirect() ? memory.getWordRaw(addr) : addr;
+    }
+
+    private void storeWord(Flags flags, int operand, int word) throws WriteDataBreakpointException {
+        int addr = resolveAddr(flags, operand);
+        setLastExecWrite(addr, 3);
+        memory.setWord(addr, word);
+    }
+
+    private void storeByte(Flags flags, int operand, int _byte) throws WriteDataBreakpointException {
+        int addr = resolveAddr(flags, operand);
+        setLastExecWrite(addr, 1);
+        memory.setByte(addr, _byte);
+    }
+
+    private void storeFloat(Flags flags, int operand, double _float) throws WriteDataBreakpointException {
+        int addr = resolveAddr(flags, operand);
+        setLastExecWrite(addr, 3);
+        memory.setFloat(addr, _float);
     }
 
     private boolean execSICF3F4(int opcode, Flags flags, int operand) throws DataBreakpointException {
@@ -121,22 +167,22 @@ public class Machine {
         switch (opcode) {
             // ***** immediate addressing not possible *****
             // stores
-            case Opcode.STA:	memory.setWord(storeAddr(flags, operand), registers.getA()); break;
-            case Opcode.STX:	memory.setWord(storeAddr(flags, operand), registers.getX()); break;
-            case Opcode.STL:	memory.setWord(storeAddr(flags, operand), registers.getL()); break;
-            case Opcode.STCH:	memory.setByte(storeAddr(flags, operand), registers.getA()); break;
-            case Opcode.STB:	memory.setWord(storeAddr(flags, operand), registers.getB()); break;
-            case Opcode.STS:	memory.setWord(storeAddr(flags, operand), registers.getS());	break;
-            case Opcode.STF:	memory.setFloat(storeAddr(flags, operand), registers.getF()); break;
-            case Opcode.STT:	memory.setWord(storeAddr(flags, operand), registers.getT()); break;
-            case Opcode.STSW:	memory.setWord(storeAddr(flags, operand), registers.getSW()); break;
+            case Opcode.STA:	storeWord(flags, operand, registers.getA()); break;
+            case Opcode.STX:	storeWord(flags, operand, registers.getX()); break;
+            case Opcode.STL:	storeWord(flags, operand, registers.getL()); break;
+            case Opcode.STCH:	storeByte(flags, operand, registers.getA()); break;
+            case Opcode.STB:	storeWord(flags, operand, registers.getB()); break;
+            case Opcode.STS:	storeWord(flags, operand, registers.getS());	break;
+            case Opcode.STF:	storeFloat(flags, operand, registers.getF()); break;
+            case Opcode.STT:	storeWord(flags, operand, registers.getT()); break;
+            case Opcode.STSW:	storeWord(flags, operand, registers.getSW()); break;
             // jumps
-            case Opcode.JEQ:	if (registers.isEqual()) registers.setPC(storeAddr(flags, operand)); break;
-            case Opcode.JGT:	if (registers.isGreater()) registers.setPC(storeAddr(flags, operand)); break;
-            case Opcode.JLT:	if (registers.isLower()) registers.setPC(storeAddr(flags, operand)); break;
-            case Opcode.J:		registers.setPC(storeAddr(flags, operand)); break;
+            case Opcode.JEQ:	if (registers.isEqual()) registers.setPC(resolveAddr(flags, operand)); break;
+            case Opcode.JGT:	if (registers.isGreater()) registers.setPC(resolveAddr(flags, operand)); break;
+            case Opcode.JLT:	if (registers.isLower()) registers.setPC(resolveAddr(flags, operand)); break;
+            case Opcode.J:		registers.setPC(resolveAddr(flags, operand)); break;
             case Opcode.RSUB:	registers.setPC(registers.getL()); popJSUB(); break;
-            case Opcode.JSUB:	registers.setL(registers.getPC()); pushJSUB(); registers.setPC(storeAddr(flags, operand)); break;
+            case Opcode.JSUB:	registers.setL(registers.getPC()); pushJSUB(); registers.setPC(resolveAddr(flags, operand)); break;
             // ***** immediate addressing possible *****
             // loads
             case Opcode.LDA:	registers.setA(loadWord(flags, operand)); break;
