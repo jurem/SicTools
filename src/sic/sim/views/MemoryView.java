@@ -87,7 +87,7 @@ public class MemoryView {
         hex.addMouseWheelListener(new MouseAdapter() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent evt) {
-                hex.moveStartAddress(evt.getWheelRotation() > 0 ? 1 : -1);
+                hex.moveStartAddress(evt.getWheelRotation());
                 hex.requestFocus();
                 updateView();
             }
