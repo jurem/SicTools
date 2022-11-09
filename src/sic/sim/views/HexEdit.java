@@ -280,6 +280,9 @@ public class HexEdit extends JPanel implements FocusListener, MouseListener, Key
         super.paintComponent(g);
         int addr = startAddress;
         if (addr > SICXE.MAX_ADDR) return;
+        var readAddr = machine.getLastExecRead();
+        var writeAddr = machine.getLastExecWrite();
+        var pcAddr = machine.getLastExecAddr();
         int y = getInsets().top + lineHeight;
         int rows = (getHeight() - getInsets().top - getInsets().bottom) / lineHeight;
         for (int row = 0; row < rows; row++) {
@@ -291,26 +294,55 @@ public class HexEdit extends JPanel implements FocusListener, MouseListener, Key
             int x1 = getInsets().left + COL_HEX * charWidth;
             int x2 = getInsets().left + COL_CHR * charWidth;
             for (int col = 0; col < 16; col++) {
-                // cursor background
+                Color hexViewFg;
+                Color hexViewBg;
+                Color asciiViewFg;
+                Color asciiViewBg;
+                // Select color
                 if (addr == cursorAddress) {
-                    // hex part
-                    g.setColor(Colors.bg(true, focusOnHex && isFocusOwner()));
-                    g.fillRect(x1 - 2, y - lineHeight + 3, 2 * charWidth + 4, lineHeight);
-                    // chr part
-                    g.setColor(Colors.bg(true, !focusOnHex && isFocusOwner()));
-                    g.fillRect(x2 - 1, y - lineHeight + 3, charWidth + 2, lineHeight);
+                    hexViewBg = Colors.bg(true, focusOnHex && isFocusOwner());
+                    hexViewFg = Colors.fg(true, focusOnHex && isFocusOwner());
+                    asciiViewBg = Colors.bg(true, !focusOnHex && isFocusOwner());
+                    asciiViewFg = Colors.fg(true, !focusOnHex && isFocusOwner());
+                } else if (readAddr.addressWithinSpan(addr)) {
+                    hexViewBg = Colors.lastReadBg;
+                    hexViewFg = Colors.lastReadFg;
+                    asciiViewBg = Colors.lastReadBg;
+                    asciiViewFg = Colors.lastReadFg;
+                } else if (writeAddr.addressWithinSpan(addr)) {
+                    hexViewBg = Colors.lastWriteBg;
+                    hexViewFg = Colors.lastWriteFg;
+                    asciiViewBg = Colors.lastWriteBg;
+                    asciiViewFg = Colors.lastWriteFg;
+                } else if (pcAddr.addressWithinSpan(addr)) {
+                    hexViewBg = Colors.currentPcBg;
+                    hexViewFg = Colors.currentPcFg;
+                    asciiViewBg = Colors.currentPcBg;
+                    asciiViewFg = Colors.currentPcFg;
+                } else {
+                    hexViewBg = Colors.bg(false, focusOnHex && isFocusOwner());
+                    hexViewFg = Colors.fg(false, focusOnHex && isFocusOwner());
+                    asciiViewBg = Colors.bg(false, !focusOnHex && isFocusOwner());
+                    asciiViewFg = Colors.fg(false, !focusOnHex && isFocusOwner());
                 }
-                // contents
-                // hex part
-                g.setColor(Colors.fg(addr == cursorAddress, focusOnHex && isFocusOwner()));
+                
+                // Paint background
+                g.setColor(hexViewBg);
+                g.fillRect(x1 - 2, y - lineHeight + 3, 2 * charWidth + 4, lineHeight);
+                g.setColor(asciiViewBg);
+                g.fillRect(x2 - 1, y - lineHeight + 3, charWidth + 2, lineHeight);
+
+
+                // Paint foreground
+                g.setColor(hexViewFg);
                 int b = get(addr);
                 if (b < 0) return;
                 char[] ch = {'.'};
                 if (b >= 0x20 && b < 0x7E) ch[0] = (char)b;
                 g.drawString(Conversion.byteToHex(b), x1, y);
                 x1 += 3 * charWidth;
-                // chr part
-                g.setColor(Colors.fg(addr == cursorAddress, !focusOnHex && isFocusOwner()));
+
+                g.setColor(asciiViewFg);
                 g.drawChars(ch, 0, 1, x2, y);
                 x2 += charWidth;
                 if (++addr > SICXE.MAX_ADDR) return;

@@ -173,6 +173,13 @@ public class DisassemblyView {
             @Override
             public void componentHidden(ComponentEvent e) {}
         });
+        tabDis.addMouseWheelListener(new MouseAdapter() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent evt){
+                disMove(evt.getWheelRotation());
+                super.mouseWheelMoved(evt);
+            }
+        });
         tabDis.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
         tabDis.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "down");
         tabDis.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "space");
@@ -262,11 +269,21 @@ public class DisassemblyView {
     }
 
     public void updateDis(boolean selectPC, boolean followPC) {
+        if (tabDis.getRowCount() <= 0) followPC = false;
+
         int loc = disassembler.location();
         for (int row = 0; row < tabDis.getRowCount(); row++) {
             if (loc > SICXE.MAX_ADDR) clearDisLine(row);
             else {
                 if (selectPC && loc == machine.registers.getPC()) {
+                    if (tabDis.getRowCount() > 1) {
+                        final var rowPadding = Math.min(tabDis.getRowCount() - 1, 2);
+                        if (getAddressAtRow(tabDis.getRowCount() - rowPadding) == machine.registers.getPC()) {
+                        disMove(1);
+                        updateDis(true, false);
+                        return;
+                        }
+                    }
                     tabDis.setRowSelectionInterval(row, row);
                     followPC = false;
                 }
@@ -287,9 +304,19 @@ public class DisassemblyView {
     }
 
     private void disMove(int count) {
+        final var wasAtBorder = isAtDissasemblyBorder();
         if (count > 0) disassembler.next(count);
         else disassembler.prev(-count);
         updateDis(false, false);
+
+        if (tabDis.getSelectedRow() != -1 && !(wasAtBorder && isAtDissasemblyBorder())) {
+            final var newSelectedRow = tabDis.getSelectedRow() - count;
+            if (newSelectedRow >= 0 && newSelectedRow < tabDis.getRowCount()) {
+                tabDis.setRowSelectionInterval(newSelectedRow, newSelectedRow);
+            } else {
+                tabDis.clearSelection();
+            }
+        }
     }
 
     public void toggleBreakpointAtSelectedRow() {
@@ -299,9 +326,19 @@ public class DisassemblyView {
         updateBreakpoint(row, breakpoints.has(addr));
     }
 
+    public int getAddressAtRow(int row) {
+        if (row < 0 || row >= tabDis.getRowCount()) return -1;
+        return SICXE.intToAddr(Conversion.hexToInt((String) tabDis.getValueAt(row, 1)));
+    }
+
     public int getSelectedAddress() {
         int row = tabDis.getSelectedRow();
-        return SICXE.intToAddr(Conversion.hexToInt((String) tabDis.getValueAt(row, 1)));
+        return getAddressAtRow(row);
+    }
+
+    public boolean isAtDissasemblyBorder() {
+        final var topAddress = getAddressAtRow(0);
+        return topAddress == 0 || topAddress == SICXE.MAX_ADDR;
     }
 
     public void setLabelMap(HashMap<Integer, Symbol> map) {
