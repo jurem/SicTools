@@ -147,7 +147,7 @@ public class Machine {
     private double loadFloat(Flags flags, int operand) throws ReadDataBreakpointException {
         if (flags.isImmediate()) return operand;
         int addr = resolveAddr(flags, operand);
-        setLastExecRead(addr, 3);
+        setLastExecRead(addr, 6);
         return memory.getFloat(addr);
     }
 
@@ -170,7 +170,7 @@ public class Machine {
 
     private void storeFloat(Flags flags, int operand, double _float) throws WriteDataBreakpointException {
         int addr = resolveAddr(flags, operand);
-        setLastExecWrite(addr, 3);
+        setLastExecWrite(addr, 6);
         memory.setFloat(addr, _float);
     }
 
