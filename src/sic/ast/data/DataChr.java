@@ -32,10 +32,7 @@ public class DataChr extends Data {
             if (c == '\\') {
                 c = parser.advance();
                 switch (c) {
-                    case '\'':
-                        c = '\'';
-                        break;
-                    case '\\':
+                    case '\'', '\\':
                         break;
                     case 'n':
                         c = '\n';
