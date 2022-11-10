@@ -15,4 +15,5 @@ public class Options {
     // obj generator
     public static boolean addSpaceInObj = false;       // add space between fields in obj files
 
+    public static boolean indirectX = false;           // allow indirect indexed addressing
 }

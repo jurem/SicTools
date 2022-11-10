@@ -44,7 +44,8 @@ public class Asm {
         "    -space-require     Require whitespace after labels and mnemonics.\n" +
         "    -space-forgo\n" +
         "    -comment-dot-require  Require dots in comments.\n" +
-        "    -comment-dot-forgo.\n"
+        "    -comment-dot-forgo.\n" +
+        "    -indirect-x        Allow indirect indexed addressing.\n"
         );
     }
 
@@ -73,6 +74,7 @@ public class Asm {
             if ("-space-forgo".equals(arg)) Options.requireWhitespace = false;
             if ("-comment-dot-require".equals(arg)) Options.requireCommentDot = true;
             if ("-comment-dot-forgo".equals(arg)) Options.requireCommentDot = false;
+            if ("-indirect-x".equals(arg)) Options.indirectX = true;
             if (!arg.startsWith("-")) break;
             last++;
         }

@@ -2,6 +2,7 @@ package sic.asm.parsing;
 
 import sic.asm.AsmError;
 import sic.asm.Location;
+import sic.asm.Options;
 import sic.ast.Command;
 import sic.ast.data.*;
 import sic.ast.directives.*;
@@ -152,7 +153,7 @@ public class OperandParser {
             throw new AsmError(parser.loc(), "Invalid character '%c", parser.peek());
         // check for indexed addressing (only if simple)
         if (parser.skipIfIndexed()) {
-            if (flags.isSimple())
+            if (flags.isSimple() || flags.isIndirect() && Options.indirectX)
                 flags.setIndexed();
             else
                 throw new AsmError(parser.loc(), "Indexed addressing not supported here");
@@ -190,7 +191,7 @@ public class OperandParser {
             throw new AsmError(parser.loc(), "Invalid character '%c", parser.peek());
         // check for indexed addressing (only if simple)
         if (parser.skipIfIndexed()) {
-            if (flags.isSimple())
+            if (flags.isSimple() || flags.isIndirect() && Options.indirectX)
                 flags.setIndexed();
             else
                 throw new AsmError(parser.loc(), "Indexed addressing not supported here");
