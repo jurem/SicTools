@@ -218,4 +218,52 @@ public class Lexer extends Input {
         return num;
     }
 
+    public String readEscapedString(char terminator) throws AsmError {
+        StringBuilder buf = new StringBuilder();
+        for (char c = advance(); c != terminator; c = advance()) {
+            if (!ready() || c == '\n') {
+                throw new AsmError(loc(), "Unterminated byte string");
+            }
+            if (c == '\\') {
+                c = advance();
+                switch (c) {
+                    case '\"', '\\':
+                        break;
+                    case 'n':
+                        c = '\n';
+                        break;
+                    case 'r':
+                        c = '\r';
+                        break;
+                    case 't':
+                        c = '\t';
+                        break;
+                    case 'b':
+                        c = '\b';
+                        break;
+                    case 'f':
+                        c = '\f';
+                        break;
+                    case '0':
+                        c = '\0';
+                        break;
+                    case 'x':
+                        int mark = pos();
+                        advance(2);
+                        String str = extract(mark);
+                        try {
+                            c = (char) Integer.parseInt(str, 16);
+                        } catch (NumberFormatException e) {
+                            throw new AsmError(loc(), "Hexadecimal byte expected");
+                        }
+                        break;
+                    default:
+                        throw new AsmError(loc(), "Unknown escape sequence '\\%c'", c);
+                }
+            }
+            buf.append(c);
+        }
+        return buf.toString();
+    }
+
 }
