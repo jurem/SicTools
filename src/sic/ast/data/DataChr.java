@@ -29,6 +29,9 @@ public class DataChr extends Data {
         parser.advance('\'');
         StringBuilder buf = new StringBuilder();
         for (char c = parser.advance(); c != '\''; c = parser.advance()) {
+            if (!parser.ready() || c == '\n') {
+                throw new AsmError(parser.loc(), "Unterminated byte string");
+            }
             if (c == '\\') {
                 c = parser.advance();
                 switch (c) {
