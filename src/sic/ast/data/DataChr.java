@@ -26,8 +26,17 @@ public class DataChr extends Data {
     @Override
     public void parse(Parser parser, boolean allowList) throws AsmError {
         parser.advance('C');
-        parser.advance('\'');
-        data = parser.readUntil('\'').getBytes();
+        char quote = parser.advance();
+        switch (quote) {
+            case '\'':
+                data = parser.readUntil('\'').getBytes();
+                break;
+            case '"':
+                data = parser.readEscapedString('"').getBytes();
+                break;
+            default:
+                throw new AsmError(parser.loc(), "Expected quote");
+        }
         if (allowList) super.parse(parser, true);
     }
 
