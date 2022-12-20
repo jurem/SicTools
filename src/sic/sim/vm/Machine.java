@@ -31,6 +31,8 @@ public class Machine {
 
     private Stack<Integer> addressBelowJSUB = new Stack<>();
 
+    private boolean indirectX = false;
+
     // ************ Constructor
 
     public Machine() {
@@ -153,7 +155,12 @@ public class Machine {
 
     // use of TA for store: addr / addr of addr
     private int resolveAddr(Flags flags, int addr) {
-        return flags.isIndirect() ? memory.getWordRaw(addr) : addr;
+        if (flags.isIndirect()) {
+			addr = memory.getWordRaw(addr);
+			if (indirectX)
+				addr += registers.getXs();
+		}
+		return addr;
     }
 
     private void storeWord(Flags flags, int operand, int word) throws WriteDataBreakpointException {
@@ -243,6 +250,7 @@ public class Machine {
     }
 
     public void execute() throws DataBreakpointException {
+        indirectX = false;
         instructionCount++;
         lastExecRead.clear();
         lastExecWrite.clear();
@@ -290,6 +298,7 @@ public class Machine {
         // SIC, F3, F4 -- all support indexed addressing, but only when simple TA calculation used
         if (flags.isIndexed())
             if (flags.isSimple()) operand += registers.getXs();
+            else if(flags.isIndirect()) indirectX = true;
             else invalidAddressing();
         // try to execute
         if (execSICF3F4(opcode & 0xFC, flags, operand)) {
