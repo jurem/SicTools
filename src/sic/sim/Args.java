@@ -135,8 +135,8 @@ public class Args extends  AbstractCmdLineArgs {
           //"    -debug level      Set the debug level.\n" + // Don't display while not implemented (TODO)
             "    -start                Start on load.\n" +
             "    -stats                Print instruction statistics.\n" +
-            "    -text rowsxcols       Show and resize textual screen.\n" +
-            "    -graph rowsxcols[@hz] Show and resize graphical screen.\n" +
+            "    -text colsxrows       Show and resize textual screen.\n" +
+            "    -graph colsxrows[@hz] Show and resize graphical screen.\n" +
             "    -keyb address         Show and set keyboard address.\n");
     }
 
