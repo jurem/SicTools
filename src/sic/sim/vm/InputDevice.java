@@ -20,6 +20,15 @@ public class InputDevice extends Device {
         }
     }
 
+    @Override
+    public boolean test() {
+        try {
+            return input.available() >= 1;
+        } catch (IOException e1) {
+            return false;
+        }
+    }
+
     public InputDevice(InputStream input) {
         this.input = input;
     }
