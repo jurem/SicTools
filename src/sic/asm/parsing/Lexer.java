@@ -227,7 +227,8 @@ public class Lexer extends Input {
             if (c == '\\') {
                 c = advance();
                 switch (c) {
-                    case '\"', '\\':
+                    case '\"':
+                    case '\\':
                         break;
                     case 'n':
                         c = '\n';
