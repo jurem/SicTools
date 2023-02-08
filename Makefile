@@ -1,41 +1,29 @@
-OUT=out/make
+OUT = out/make
 
-
-all: outdir sim vm asm link
-
-
-outdir:
-	mkdir -p $(OUT)
-
+all: sim vm asm link
 
 sim:
-	cd src; javac -encoding UTF-8 -d "../$(OUT)" sic/Sim.java
+	@mkdir -p "$(OUT)"
 	cp -R img "$(OUT)"
-
+	javac -encoding UTF-8 -sourcepath src -classpath "$(OUT)" -d "$(OUT)" src/sic/Sim.java
 
 vm:
-	cd src; javac -encoding UTF-8 -d "../$(OUT)" sic/VM.java
-
+	@mkdir -p "$(OUT)"
+	javac -encoding UTF-8 -sourcepath src -classpath "$(OUT)" -d "$(OUT)" src/sic/VM.java
 
 asm:
-	cd src; javac -encoding UTF-8 -d "../$(OUT)" sic/Asm.java
-
+	@mkdir -p "$(OUT)"
+	javac -encoding UTF-8 -sourcepath src -classpath "$(OUT)" -d "$(OUT)" src/sic/Asm.java
 
 link:
-	cd src; javac -encoding UTF-8 -d "../$(OUT)" sic/Link.java
+	@mkdir -p "$(OUT)"
+	javac -encoding UTF-8 -sourcepath src -classpath "$(OUT)" -d "$(OUT)" src/sic/Link.java
 
-
-manifest:
-	printf "Manifest-Version: 1.0\nClass-Path: .\nMain-Class: sic.Sim\n"  >"$(OUT)/MANIFEST.MF"
-
-
-jar: all manifest
-	cd "$(OUT)"; jar cfm sictools.jar MANIFEST.MF *
-
+jar: all
+	jar --create --file "$(OUT)/sictools.jar" --manifest MANIFEST.MF -C "$(OUT)" .
 
 clean:
 	rm -rf "$(OUT)"
-
 
 upload:
 	scp "$(OUT)/sictools.jar" jure@lalg.fri.uni-lj.si:public_html/
