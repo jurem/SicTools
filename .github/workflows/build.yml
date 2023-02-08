@@ -1,6 +1,8 @@
-name: Build jar for release
+name: Build jar
 
 on:
+  pull_request:
+  push:
   release:
     types: [published]
 
