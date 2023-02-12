@@ -1,26 +1,28 @@
 OUT = out/make
 
-all: sim vm asm link
+all: outdir img
+	javac -encoding UTF-8 -sourcepath src -d "$(OUT)" src/sic/*.java
 
-sim:
-	@mkdir -p "$(OUT)"
-	cp -R img "$(OUT)"
-	javac -encoding UTF-8 -sourcepath src -classpath "$(OUT)" -d "$(OUT)" src/sic/Sim.java
+sim: outdir img
+	javac -encoding UTF-8 -sourcepath src -d "$(OUT)" src/sic/Sim.java
 
-vm:
-	@mkdir -p "$(OUT)"
-	javac -encoding UTF-8 -sourcepath src -classpath "$(OUT)" -d "$(OUT)" src/sic/VM.java
+vm: outdir
+	javac -encoding UTF-8 -sourcepath src -d "$(OUT)" src/sic/VM.java
 
-asm:
-	@mkdir -p "$(OUT)"
-	javac -encoding UTF-8 -sourcepath src -classpath "$(OUT)" -d "$(OUT)" src/sic/Asm.java
+asm: outdir
+	javac -encoding UTF-8 -sourcepath src -d "$(OUT)" src/sic/Asm.java
 
-link:
-	@mkdir -p "$(OUT)"
-	javac -encoding UTF-8 -sourcepath src -classpath "$(OUT)" -d "$(OUT)" src/sic/Link.java
+link: outdir
+	javac -encoding UTF-8 -sourcepath src -d "$(OUT)" src/sic/Link.java
 
 jar: all
 	jar --create --file "$(OUT)/sictools.jar" --manifest MANIFEST.MF -C "$(OUT)" .
+
+outdir:
+	@mkdir -p "$(OUT)"
+
+img: outdir
+	cp -R img "$(OUT)"
 
 clean:
 	rm -rf "$(OUT)"
