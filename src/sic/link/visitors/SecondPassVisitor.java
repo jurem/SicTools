@@ -85,7 +85,7 @@ public class SecondPassVisitor extends SectionVisitor {
             // each byte is 2 chars
             int start = (int)(fixAddressStart - fixRecord.getStartAddr()) * 2; // start of the addressed word
 
-            start = start + 6 - mRecord.getLength(); // last mRecord.getLength() halfbytes of the adressed word
+            start++;
             int end = start + mRecord.getLength();
 
             String text = fixRecord.getText();
