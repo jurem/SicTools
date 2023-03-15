@@ -114,7 +114,14 @@ public class Machine {
             case Opcode.ADDR:	registers.set(o2, registers.get(o2) + registers.get(o1)); break;
             case Opcode.SUBR:	registers.set(o2, registers.get(o2) - registers.get(o1)); break;
             case Opcode.MULR:	registers.set(o2, registers.get(o2) * registers.get(o1)); break;
-            case Opcode.DIVR:	registers.set(o2, registers.gets(o2) / registers.gets(o1)); break;
+            case Opcode.DIVR:
+                    int divisor = registers.get(o1);
+                    if (divisor == 0) {
+                            System.out.println("division by zero");
+                    } else {
+                            registers.set(o2, registers.gets(o2) / divisor);
+                    }
+                    break;
             case Opcode.COMPR:	registers.setSWAfterCompare(registers.gets(o1) - registers.gets(o2)); break;
             case Opcode.SHIFTL:	registers.set(o1, registers.get(o1) << (o2 + 1) | registers.get(o1) >> (24 - o2 - 1)); break;
             case Opcode.SHIFTR:	registers.set(o1, registers.gets(o1) >> (o2 + 1)); break;
@@ -216,7 +223,14 @@ public class Machine {
             case Opcode.ADD:	registers.setA(registers.getA() + loadWord(flags, operand)); break;
             case Opcode.SUB:	registers.setA(registers.getA() - loadWord(flags, operand)); break;
             case Opcode.MUL:	registers.setA(registers.getA() * loadWord(flags, operand)); break;
-            case Opcode.DIV:	registers.setA(registers.getAs() / SICXE.swordToInt(loadWord(flags, operand))); break;
+            case Opcode.DIV:
+                    int divisor = SICXE.swordToInt(loadWord(flags, operand));
+                    if (divisor == 0) {
+                            System.out.println("division by zero");
+                    } else {
+                            registers.setA(registers.getAs() / divisor);
+                    }
+                    break;
             case Opcode.AND:	registers.setA(registers.getA() & loadWord(flags, operand)); break;
             case Opcode.OR:		registers.setA(registers.getA() | loadWord(flags, operand)); break;
             case Opcode.COMP:	registers.setSWAfterCompare(registers.getAs() - SICXE.swordToInt(loadWord(flags, operand))); break;
