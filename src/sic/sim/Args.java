@@ -1,5 +1,7 @@
 package sic.sim;
 
+import java.util.Vector;
+
 import sic.common.Utils;
 
 /**
@@ -55,6 +57,8 @@ public class Args extends  AbstractCmdLineArgs {
 
     private boolean keyb;
     private int keybAddress;
+
+    private Vector<AddonArgs> addons = new Vector<AddonArgs>();
 
     public boolean isHelp() {
         return help;
@@ -128,6 +132,10 @@ public class Args extends  AbstractCmdLineArgs {
         return graphScrFreq;
     }
 
+    public Vector<AddonArgs> getAddons() {
+        return addons;
+    }
+
     public static void printArgs() {
         System.out.print(
             "    -help|-h              Print help.\n" +
@@ -137,7 +145,8 @@ public class Args extends  AbstractCmdLineArgs {
             "    -stats                Print instruction statistics.\n" +
             "    -text colsxrows       Show and resize textual screen.\n" +
             "    -graph colsxrows[@hz] Show and resize graphical screen.\n" +
-            "    -keyb address         Show and set keyboard address.\n");
+            "    -keyb address         Show and set keyboard address.\n" +
+            "    -a path[@params]      Load addon.\n");
     }
 
     int parseFreq(String s) {
@@ -179,6 +188,17 @@ public class Args extends  AbstractCmdLineArgs {
         }
     }
 
+    void parseAddon(String s) {
+        int i = s.indexOf('@');
+        String path = s;
+        String params = null;
+        if (i != -1) {
+            path = s.substring(0, i);
+            params = s.substring(i + 1);
+        }
+        addons.add(new AddonArgs(path, params));
+    }
+
     void processArgs(String[] args) {
         // options
         int last = 0;
@@ -213,6 +233,9 @@ public class Args extends  AbstractCmdLineArgs {
                     keyb = true;
                     parseKeyb(args[++last]);
                     break;
+                case "-a":
+                    parseAddon(args[++last]);
+                    break;
             }
             if (!arg.startsWith("-") || arg.equals("--")) break;
             last++;
@@ -229,4 +252,13 @@ public class Args extends  AbstractCmdLineArgs {
         processArgs(args);
     }
 
+    public class AddonArgs {
+        public String path;
+        public String pars;
+
+        public AddonArgs(String path, String pars) {
+            this.path = path;
+            this.pars = pars;
+        }
+    }
 }

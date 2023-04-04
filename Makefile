@@ -1,6 +1,6 @@
 OUT = out/make
 
-all: outdir img
+all: outdir img addons
 	javac -encoding UTF-8 -sourcepath src -d "$(OUT)" src/sic/*.java
 
 sim: outdir img
@@ -14,6 +14,9 @@ asm: outdir
 
 link: outdir
 	javac -encoding UTF-8 -sourcepath src -d "$(OUT)" src/sic/Link.java
+
+addons: outdir
+	javac -encoding UTF-8 -sourcepath src -d "$(OUT)" src/sic/sim/addons/*/*.java
 
 jar: all
 	jar --create --file "$(OUT)/sictools.jar" --manifest MANIFEST.MF -C "$(OUT)" .

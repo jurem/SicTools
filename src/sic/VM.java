@@ -6,8 +6,11 @@ import sic.sim.Args;
 import sic.sim.Executor;
 import sic.sim.addons.GraphicalScreen;
 import sic.sim.addons.TextualScreen;
+import sic.sim.addons.Addon;
+import sic.sim.addons.AddonLoader;
 import sic.sim.vm.Machine;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -34,8 +37,35 @@ public class VM {
             System.exit(0);
         }
 
+        Vector<Addon> addons = new Vector<Addon>();
+
+        for (Args.AddonArgs a : arg.getAddons()) {
+            try {
+                Addon p = AddonLoader.loadJar(a.path);
+                p.load(a.pars);
+                addons.add(p);
+            } catch (IOException e) {
+                System.out.printf("cannot open addon file %s%n", a.path);
+                System.out.println(e);
+                System.exit(1);
+            } catch (ClassCastException e) {
+                System.out.printf("main class of %s does not extend Addon class%n", a.path);
+                System.exit(1);
+            }
+        }
+
         Machine machine = new Machine();
         Executor executor = new Executor(machine, arg);
+
+        Vector<TimerTask> timerTasks = new Vector<TimerTask>();
+        for (Addon a : addons) {
+            a.init(executor);
+            machine.devices.setDevices(a.getDevices());
+            Vector<TimerTask> tasks = a.getTimerTasks();
+            if (tasks != null) {
+                timerTasks.addAll(tasks);
+            }
+        }
 
         if (arg.hasFilename()) {
             String ext = arg.getFileext();
@@ -57,6 +87,9 @@ public class VM {
                 graphicalScreen.toggleView();
             }
             java.util.Timer timer = new java.util.Timer();
+            for (TimerTask t : timerTasks) {
+                timer.schedule(t, 0, 50);
+            }
             TimerTask timerTask = new TimerTask() {
                 public void run() {
                     if (textScreen != null) textScreen.updateView();

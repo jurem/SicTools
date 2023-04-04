@@ -14,6 +14,7 @@ import sic.sim.addons.GraphicalScreen;
 import sic.sim.addons.Keyboard;
 import sic.sim.addons.TextualScreen;
 import sic.sim.views.*;
+import sic.sim.addons.Addon;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -22,6 +23,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 /**
  * TODO: write a short description
@@ -47,6 +49,11 @@ public class MainView {
 
     private File lastLoadedFile;
 
+    private Vector<Addon.MenuEntry> menuEntries = new Vector<Addon.MenuEntry>();
+    private Vector<Addon.SettingsPanel> settingsPanels = new Vector<Addon.SettingsPanel>();
+    private Vector<TimerTask> timerTasks = new Vector<TimerTask>();
+
+    private Timer timer;
 
     public MainView(final Executor executor, Disassembler disassembler, Args arg) {
         this.executor = executor;
@@ -96,7 +103,7 @@ public class MainView {
             keyboard.toggleView();
         }
 
-        Timer timer = new Timer();
+        timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             public void run() {
                 if (mainFrame.isVisible() && executor.hasChanged()) {
@@ -123,6 +130,47 @@ public class MainView {
         disassemblyView.updateView(!executor.isRunning(), !executor.isRunning());
         memoryView.updateView();
         watchView.updateView();
+    }
+
+    public void addMenuEntries(Vector<Addon.MenuEntry> entries) {
+        if (entries == null) {
+            return;
+        }
+        menuEntries.addAll(entries);
+    }
+
+    public void addSettingsPanels(Vector<Addon.SettingsPanel> panels) {
+        if (panels == null) {
+            return;
+        }
+        settingsPanels.addAll(panels);
+    }
+
+    public void addAddonMenu() {
+        if (menuEntries.size() <= 0) {
+            return;
+        }
+        JMenuBar mb = mainFrame.getJMenuBar();
+        JMenu menu = new JMenu("Addons");
+
+        for (Addon.MenuEntry e : menuEntries) {
+            GUI.addMenuItem(menu, e.name, e.keyEvent, e.keyStroke, e.actionListener);
+        }
+        mb.add(menu);
+    }
+
+    public void addTimerTasks(Vector<TimerTask> tasks) {
+        if (tasks == null) {
+            return;
+        }
+        timerTasks.addAll(tasks);
+    }
+
+    public void updateTimerTasks() {
+        for (TimerTask t : timerTasks) {
+            System.out.println("scheduling a task");
+            timer.schedule(t, 0, 50);
+        }
     }
 
     private JMenuBar createMenuBar() {
@@ -326,7 +374,7 @@ public class MainView {
             Loader.loadSection(executor.machine, reader);
             lastLoadedFile = file;
             mainFrame.setTitle(file.getName());
-			updateView();
+            updateView();
         } catch (FileNotFoundException e1) {
             JOptionPane.showMessageDialog(mainFrame, "Error loading object file.");
             updateView();
@@ -392,6 +440,9 @@ public class MainView {
         tabs.addTab("Textual screen", null, textScreen.createSettingsPane(), null);
         tabs.addTab("Graphical screen", null, graphScreen.createSettingsPane(), null);
         tabs.addTab("Keyboard", null, keyboard.createSettingsPane(), null);
+        for (Addon.SettingsPanel panel : settingsPanels) {
+            tabs.addTab(panel.title, null, panel.panel, null);
+        }
         GUI.showInJFrame("Settings", tabs, 0, 0);
     }
 
