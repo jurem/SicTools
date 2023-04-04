@@ -5,7 +5,6 @@ import sic.loader.Loader;
 import sic.sim.Args;
 import sic.sim.Executor;
 import sic.sim.addons.GraphicalScreen;
-import sic.sim.addons.TextualScreen;
 import sic.sim.addons.Addon;
 import sic.sim.addons.AddonLoader;
 import sic.sim.vm.Machine;
@@ -40,7 +39,9 @@ public class VM {
         Vector<Addon> addons = new Vector<Addon>();
         addons.add(AddonLoader.loadInternal("sic.sim.addons.stdio.Main"));
         if (arg.isTextScr()) {
-            addons.add(AddonLoader.loadInternal("sic.sim.addons.text.Main"));
+            Addon a = AddonLoader.loadInternal("sic.sim.addons.text.TextualScreen");
+            a.load(arg.getTextScrPars());
+            addons.add(a);
         }
 
         for (Args.AddonArgs a : arg.getAddons()) {
@@ -78,14 +79,9 @@ public class VM {
             else Logger.fmterr("Invalid filename extension '%s'", ext);
         }
 
-        final TextualScreen textScreen = arg.isTextScr() ? new TextualScreen(executor) : null;
         final GraphicalScreen graphicalScreen = arg.isGraphScr() ? new GraphicalScreen(executor) : null;
 
         if (arg.isGraphScr() || arg.isTextScr()) {
-            if (textScreen != null) {
-                textScreen.setSize(arg.getTextScrCols(), arg.getTextScrRows());
-                textScreen.toggleView();
-            }
             if (graphicalScreen != null) {
                 graphicalScreen.setSize(arg.getGraphScrCols(), arg.getGraphScrRows());
                 graphicalScreen.toggleView();
@@ -94,12 +90,6 @@ public class VM {
             for (TimerTask t : timerTasks) {
                 timer.schedule(t, 0, 50);
             }
-            TimerTask timerTask = new TimerTask() {
-                public void run() {
-                    if (textScreen != null) textScreen.updateView();
-                }
-            };
-            timer.schedule(timerTask, 0, 50);
         }
 
         executor.start();

@@ -56,7 +56,9 @@ public class Sim {
         Vector<Addon> addons = new Vector<Addon>();
         addons.add(AddonLoader.loadInternal("sic.sim.addons.stdio.Main"));
         if (processedArgs.isTextScr()) {
-            addons.add(AddonLoader.loadInternal("sic.sim.addons.text.Main"));
+            Addon a = AddonLoader.loadInternal("sic.sim.addons.text.TextualScreen");
+            a.load(processedArgs.getTextScrPars());
+            addons.add(a);
         }
 
         for (Args.AddonArgs a : processedArgs.getAddons()) {

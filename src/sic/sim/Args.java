@@ -47,8 +47,7 @@ public class Args extends  AbstractCmdLineArgs {
     private boolean stats;
 
     private boolean textScr;
-    private int textScrCols;
-    private int textScrRows;
+    private String textScrPars;
 
     private boolean graphScr;
     private int graphScrCols;
@@ -100,12 +99,8 @@ public class Args extends  AbstractCmdLineArgs {
         return textScr;
     }
 
-    public int getTextScrCols() {
-        return textScrCols;
-    }
-
-    public int getTextScrRows() {
-        return textScrRows;
+    public String getTextScrPars() {
+        return textScrPars;
     }
 
     public boolean isGraphScr() {
@@ -151,12 +146,6 @@ public class Args extends  AbstractCmdLineArgs {
 
     int parseFreq(String s) {
         return Integer.parseInt(s);
-    }
-
-    void parseTextScreen(String s) {
-        int x = s.indexOf('x');
-        textScrCols = Integer.parseInt(s.substring(0, x));
-        textScrRows = Integer.parseInt(s.substring(x+1));
     }
 
     void parseGraphScreen(String s) {
@@ -223,7 +212,7 @@ public class Args extends  AbstractCmdLineArgs {
                     break;
                 case "-text":
                     textScr = true;
-                    parseTextScreen(args[++last]);
+                    textScrPars = args[++last];
                     break;
                 case "-graph":
                     graphScr = true;

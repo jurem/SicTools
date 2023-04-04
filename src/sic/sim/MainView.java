@@ -12,7 +12,6 @@ import sic.link.ui.LinkerGui;
 import sic.loader.Loader;
 import sic.sim.addons.GraphicalScreen;
 import sic.sim.addons.Keyboard;
-import sic.sim.addons.TextualScreen;
 import sic.sim.views.*;
 import sic.sim.addons.Addon;
 
@@ -42,7 +41,6 @@ public class MainView {
     private MemoryView memoryView;
     private WatchView watchView;
     // addon views
-    private TextualScreen textScreen;
     private GraphicalScreen graphScreen;
     private Keyboard keyboard;
     private DataBreakpointView dataBreakpointView;
@@ -86,14 +84,9 @@ public class MainView {
         mainFrame.setLocation(0, 0);
         mainFrame.setVisible(true);
 
-        textScreen = new TextualScreen(executor);
         graphScreen = new GraphicalScreen(executor);
         keyboard = new Keyboard(executor);
 
-        if (arg.isTextScr()) {
-            textScreen.setSize(arg.getTextScrCols(), arg.getTextScrRows());
-            textScreen.toggleView();
-        }
         if (arg.isGraphScr()) {
             graphScreen.setSize(arg.getGraphScrCols(), arg.getGraphScrRows());
             graphScreen.toggleView();
@@ -109,7 +102,6 @@ public class MainView {
                 if (mainFrame.isVisible() && executor.hasChanged()) {
                     updateView();
                 }
-                textScreen.updateView();
             }
         };
         timer.schedule(timerTask, 0, 50);
@@ -124,6 +116,7 @@ public class MainView {
             }
         }, 0, refreshMs);
     }
+
 
     public void updateView() {
         cpuView.updateView();
@@ -326,12 +319,6 @@ public class MainView {
 
         // View
         menu = new JMenu("View");
-        GUI.addMenuItem(menu, "Textual screen", KeyEvent.VK_T, KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                textScreen.toggleView();
-            }
-        });
         GUI.addMenuItem(menu, "Graphical screen", KeyEvent.VK_G, KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -437,7 +424,6 @@ public class MainView {
     private void showSettingsView() {
         JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
         tabs.addTab("General", null, createSettingsGeneralPane(), null);
-        tabs.addTab("Textual screen", null, textScreen.createSettingsPane(), null);
         tabs.addTab("Graphical screen", null, graphScreen.createSettingsPane(), null);
         tabs.addTab("Keyboard", null, keyboard.createSettingsPane(), null);
         for (Addon.SettingsPanel panel : settingsPanels) {
