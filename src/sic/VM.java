@@ -47,7 +47,7 @@ public class VM {
         final TextualScreen textScreen = arg.isTextScr() ? new TextualScreen(executor) : null;
         final GraphicalScreen graphicalScreen = arg.isGraphScr() ? new GraphicalScreen(executor) : null;
 
-        if (arg.isGraphScr() || arg.isGraphScr()) {
+        if (arg.isGraphScr() || arg.isTextScr()) {
             if (textScreen != null) {
                 textScreen.setSize(arg.getTextScrCols(), arg.getTextScrRows());
                 textScreen.toggleView();
