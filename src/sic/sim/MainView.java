@@ -338,7 +338,14 @@ public class MainView {
         ErrorCatcher errorCatcher = assembler.errorCatcher;
         Program program = assembler.assemble(Utils.readFile(file));
         if (errorCatcher.count() > 0) {
-            errorCatcher.print();
+            String allErrs = errorCatcher.print();
+	    JTextArea errArea = new JTextArea(allErrs);
+            JScrollPane scrollPane = new JScrollPane(errArea);
+            errArea.setLineWrap(true);
+            errArea.setWrapStyleWord(true);
+            scrollPane.setPreferredSize(new Dimension( 250, 250 ));
+            JOptionPane.showMessageDialog(mainFrame, scrollPane, "Error", JOptionPane.INFORMATION_MESSAGE);
+            updateView();
             if (errorCatcher.shouldEnd()) {
                 return;
             }
