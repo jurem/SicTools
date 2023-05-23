@@ -60,6 +60,11 @@ public class Sim {
             a.load(processedArgs.getTextScrPars());
             addons.add(a);
         }
+        if (processedArgs.isKeyb()) {
+            Addon a = AddonLoader.loadInternal("sic.sim.addons.keyboard.Keyboard");
+            a.load(processedArgs.getKeybPars());
+            addons.add(a);
+        }
 
         for (Args.AddonArgs a : processedArgs.getAddons()) {
             try {

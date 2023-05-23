@@ -43,6 +43,11 @@ public class VM {
             a.load(arg.getTextScrPars());
             addons.add(a);
         }
+        if (arg.isKeyb()) {
+            Addon a = AddonLoader.loadInternal("sic.sim.addons.keyboard.Keyboard");
+            a.load(arg.getKeybPars());
+            addons.add(a);
+        }
 
         for (Args.AddonArgs a : arg.getAddons()) {
             try {

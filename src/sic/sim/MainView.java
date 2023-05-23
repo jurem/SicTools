@@ -11,7 +11,6 @@ import sic.link.ui.LinkListener;
 import sic.link.ui.LinkerGui;
 import sic.loader.Loader;
 import sic.sim.addons.GraphicalScreen;
-import sic.sim.addons.Keyboard;
 import sic.sim.views.*;
 import sic.sim.addons.Addon;
 
@@ -42,7 +41,6 @@ public class MainView {
     private WatchView watchView;
     // addon views
     private GraphicalScreen graphScreen;
-    private Keyboard keyboard;
     private DataBreakpointView dataBreakpointView;
 
     private File lastLoadedFile;
@@ -85,15 +83,10 @@ public class MainView {
         mainFrame.setVisible(true);
 
         graphScreen = new GraphicalScreen(executor);
-        keyboard = new Keyboard(executor);
 
         if (arg.isGraphScr()) {
             graphScreen.setSize(arg.getGraphScrCols(), arg.getGraphScrRows());
             graphScreen.toggleView();
-        }
-        if(arg.isKeyb()){
-            keyboard.setScreen(SICXE.intToAddr(arg.getKeybAddress()));
-            keyboard.toggleView();
         }
 
         timer = new Timer();
@@ -325,12 +318,6 @@ public class MainView {
                 graphScreen.toggleView();
             }
         });
-        GUI.addMenuItem(menu, "Keyboard", KeyEvent.VK_K, KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                keyboard.toggleView();
-            }
-        });
         menu.addSeparator();
         GUI.addMenuItem(menu, "Data breakpoints", KeyEvent.VK_D, KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
             @Override
@@ -425,7 +412,6 @@ public class MainView {
         JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
         tabs.addTab("General", null, createSettingsGeneralPane(), null);
         tabs.addTab("Graphical screen", null, graphScreen.createSettingsPane(), null);
-        tabs.addTab("Keyboard", null, keyboard.createSettingsPane(), null);
         for (Addon.SettingsPanel panel : settingsPanels) {
             tabs.addTab(panel.title, null, panel.panel, null);
         }

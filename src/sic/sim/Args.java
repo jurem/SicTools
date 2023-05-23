@@ -55,7 +55,7 @@ public class Args extends  AbstractCmdLineArgs {
     private int graphScrFreq;
 
     private boolean keyb;
-    private int keybAddress;
+    private String keybPars;
 
     private Vector<AddonArgs> addons = new Vector<AddonArgs>();
 
@@ -119,8 +119,8 @@ public class Args extends  AbstractCmdLineArgs {
         return keyb;
     }
 
-    public int getKeybAddress(){
-        return keybAddress;
+    public String getKeybPars(){
+        return keybPars;
     }
 
     public int getGraphScrFreq() {
@@ -168,15 +168,6 @@ public class Args extends  AbstractCmdLineArgs {
         graphScrFreq = Integer.parseInt(hz);
     }
 
-    void parseKeyb(String s){
-        keybAddress = 0xC000;
-        if(s.startsWith("0x")){
-            keybAddress = Integer.parseInt(s.substring(2), 16);
-        } else {
-            keybAddress = Integer.parseInt(s, 10);
-        }
-    }
-
     void parseAddon(String s) {
         int i = s.indexOf('@');
         String path = s;
@@ -220,7 +211,7 @@ public class Args extends  AbstractCmdLineArgs {
                     break;
                 case "-keyb":
                     keyb = true;
-                    parseKeyb(args[++last]);
+                    keybPars = args[++last];
                     break;
                 case "-a":
                     parseAddon(args[++last]);
