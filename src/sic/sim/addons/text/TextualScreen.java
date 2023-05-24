@@ -58,14 +58,14 @@ public class TextualScreen extends Addon {
     }
 
     @Override
-    public Vector<TimerTask> getTimerTasks() {
-        Vector<TimerTask> tts = new Vector<TimerTask>();
-        tts.add(new TimerTask() {
+    public Vector<Timer> getTimers() {
+        Vector<Timer> ts = new Vector<Timer>();
+        ts.add(new Timer(new TimerTask() {
             public void run() {
                 updateView();
             }
-        });
-        return tts;
+        }, 50));
+        return ts;
     }
 
     @Override

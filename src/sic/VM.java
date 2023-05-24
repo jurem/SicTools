@@ -67,13 +67,13 @@ public class VM {
         Machine machine = new Machine();
         Executor executor = new Executor(machine, arg);
 
-        Vector<TimerTask> timerTasks = new Vector<TimerTask>();
+        Vector<Addon.Timer> timers = new Vector<Addon.Timer>();
         for (Addon a : addons) {
             a.init(executor);
             machine.devices.setDevices(a.getDevices());
-            Vector<TimerTask> tasks = a.getTimerTasks();
+            Vector<Addon.Timer> tasks = a.getTimers();
             if (tasks != null) {
-                timerTasks.addAll(tasks);
+                timers.addAll(tasks);
             }
         }
 
@@ -84,16 +84,10 @@ public class VM {
             else Logger.fmterr("Invalid filename extension '%s'", ext);
         }
 
-        final GraphicalScreen graphicalScreen = arg.isGraphScr() ? new GraphicalScreen(executor) : null;
-
-        if (arg.isGraphScr() || arg.isTextScr()) {
-            if (graphicalScreen != null) {
-                graphicalScreen.setSize(arg.getGraphScrCols(), arg.getGraphScrRows());
-                graphicalScreen.toggleView();
-            }
+        if (timers.size() > 0) {
             java.util.Timer timer = new java.util.Timer();
-            for (TimerTask t : timerTasks) {
-                timer.schedule(t, 0, 50);
+            for (Addon.Timer t : timers) {
+                timer.schedule(t.task, 0, t.refreshMs);
             }
         }
 

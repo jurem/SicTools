@@ -91,11 +91,11 @@ public class Sim {
             a.init(executor);
             machine.devices.setDevices(a.getDevices());
             mainView.addMenuEntries(a.getMenuEntries());
-            mainView.addTimerTasks(a.getTimerTasks());
+            mainView.addTimers(a.getTimers());
             mainView.addSettingsPanels(a.getSettingsPanels());
         }
         mainView.addAddonMenu();
-        mainView.updateTimerTasks();
+        mainView.updateTimers();
 
         if (processedArgs.hasFilename()) mainView.load(new File(processedArgs.getFilename()));
 

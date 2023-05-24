@@ -36,10 +36,18 @@ public abstract class Addon {
         }
     }
 
-    // TimerTasks are executed at constant rate, when the graphical
-    // simulator is refreshed.
-    public Vector<TimerTask> getTimerTasks() {
+    // Timers execute their tasks at constant rate.
+    public Vector<Timer> getTimers() {
         return null;
+    }
+
+    public static class Timer {
+        public TimerTask task;
+        public long refreshMs;
+        public Timer(TimerTask task, long refreshMs) {
+            this.task = task;
+            this.refreshMs = refreshMs;
+        }
     }
 
     // MenuEntries are added to the "Addons" menu in the menu bar.
