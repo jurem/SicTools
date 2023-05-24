@@ -1,9 +1,10 @@
-package sic.sim.addons;
+package sic.sim.addons.graph;
 
 import sic.common.Conversion;
 import sic.common.GUI;
 import sic.common.SICXE;
 import sic.sim.Executor;
+import sic.sim.addons.Addon;
 import sic.sim.vm.Memory;
 
 import javax.swing.*;
@@ -12,29 +13,100 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.TimerTask;
+import java.util.Vector;
 
 /**
  * TODO: write a short description
  *
  * @author jure
  */
-public class GraphicalScreen {
+public class GraphicalScreen extends Addon {
     public final int ADDRESS = 0xA000;
     public final int COLS = 64;
     public final int ROWS = 64;
     public final int PIXELSIZE = 4;
 
-    private final Memory memory;
+    private Memory memory;
     // settings
-    private int address;
-    private int rows;
-    private int cols;
-    private int pixelSize;
+    private int address = ADDRESS;
+    private int rows = COLS;
+    private int cols = ROWS;
+    private int pixelSize = PIXELSIZE;
+    private int freq = 120;
     // gui
-    private final JFrame view;
+    private JFrame view;
     private JPanel pnlScreen;
+
+    @Override
+    public void load(String pars) {
+        if (pars != null) {
+            int x = pars.indexOf('x');
+            int at = pars.indexOf('@');
+
+            String sCols = pars.substring(0, x);
+            String sRows;
+            String hz;
+            if (at != -1) {
+                sRows = pars.substring(x + 1, at);
+                hz = pars.substring(at + 1);
+            } else {
+                sRows = pars.substring(x + 1);
+                hz = "120";
+            }
+
+            cols = Integer.parseInt(sCols);
+            rows = Integer.parseInt(sRows);
+            freq = Integer.parseInt(hz);
+        }
+    }
+
+    @Override
+    public void init(Executor executor) {
+        this.memory = executor.getMachine().memory;
+        this.view = createView();
+        setScreen(address, cols, rows, pixelSize);
+        //setSize(arg.getGraphScrCols(), arg.getGraphScrRows());
+        toggleView();
+    }
+
+    @Override
+    public Vector<Timer> getTimers() {
+        Vector<Timer> ts = new Vector<Timer>();
+        // Calculate graphical screen refresh rate
+        double specifiedMs = 1000.0 / (double) (freq <= 0 ? 120 : freq);
+        long refreshMs = (long) Math.max(Math.floor(specifiedMs), 4); // Cap at 240 Hz
+        ts.add(new Timer(new TimerTask() {
+            @Override
+            public void run() {
+                updateView();
+            }
+        }, refreshMs));
+        return ts;
+    }
+
+    @Override
+    public Vector<MenuEntry> getMenuEntries() {
+        Vector<MenuEntry> es = new Vector<MenuEntry>();
+        es.add(new MenuEntry("Toggle graphical screen", KeyEvent.VK_G, KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                toggleView();
+            }
+        }));
+        return es;
+    }
+
+    @Override
+    public Vector<SettingsPanel> getSettingsPanels() {
+        Vector<SettingsPanel> panels = new Vector<SettingsPanel>();
+        panels.add(new SettingsPanel("Graphical screen", createSettingsPane()));
+        return panels;
+    }
 
     /////////////// screen view
     void paintScreen(Graphics g) {
@@ -122,7 +194,7 @@ public class GraphicalScreen {
 
         updateView();
         view.pack();
-        
+
     }
 
     public void toggleView() {
@@ -134,11 +206,6 @@ public class GraphicalScreen {
     }
 
 
-    public GraphicalScreen(final Executor executor) {
-        this.memory = executor.getMachine().memory;
-        this.view = createView();
-        setScreen(ADDRESS, COLS, ROWS, PIXELSIZE);
-    }
 
     /////////////// settings
 

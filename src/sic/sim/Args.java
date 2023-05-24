@@ -50,9 +50,7 @@ public class Args extends  AbstractCmdLineArgs {
     private String textScrPars;
 
     private boolean graphScr;
-    private int graphScrCols;
-    private int graphScrRows;
-    private int graphScrFreq;
+    private String graphScrPars;
 
     private boolean keyb;
     private String keybPars;
@@ -107,12 +105,8 @@ public class Args extends  AbstractCmdLineArgs {
         return graphScr;
     }
 
-    public int getGraphScrCols() {
-        return graphScrCols;
-    }
-
-    public int getGraphScrRows() {
-        return graphScrRows;
+    public String getGraphScrPars() {
+        return graphScrPars;
     }
 
     public boolean isKeyb(){
@@ -123,9 +117,6 @@ public class Args extends  AbstractCmdLineArgs {
         return keybPars;
     }
 
-    public int getGraphScrFreq() {
-        return graphScrFreq;
-    }
 
     public Vector<AddonArgs> getAddons() {
         return addons;
@@ -148,25 +139,6 @@ public class Args extends  AbstractCmdLineArgs {
         return Integer.parseInt(s);
     }
 
-    void parseGraphScreen(String s) {
-        int x = s.indexOf('x');
-        int at = s.indexOf('@');
-
-        String cols = s.substring(0, x);
-        String rows;
-        String hz;
-        if (at != -1) {
-            rows = s.substring(x + 1, at);
-            hz = s.substring(at + 1);
-        } else {
-            rows = s.substring(x + 1);
-            hz = "120";
-        }
-
-        graphScrCols = Integer.parseInt(cols);
-        graphScrRows = Integer.parseInt(rows);
-        graphScrFreq = Integer.parseInt(hz);
-    }
 
     void parseAddon(String s) {
         int i = s.indexOf('@');
@@ -207,7 +179,7 @@ public class Args extends  AbstractCmdLineArgs {
                     break;
                 case "-graph":
                     graphScr = true;
-                    parseGraphScreen(args[++last]);
+                    graphScrPars = args[++last];
                     break;
                 case "-keyb":
                     keyb = true;

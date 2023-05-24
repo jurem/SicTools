@@ -4,7 +4,6 @@ import sic.common.Logger;
 import sic.loader.Loader;
 import sic.sim.Args;
 import sic.sim.Executor;
-import sic.sim.addons.GraphicalScreen;
 import sic.sim.addons.Addon;
 import sic.sim.addons.AddonLoader;
 import sic.sim.vm.Machine;
@@ -46,6 +45,11 @@ public class VM {
         if (arg.isKeyb()) {
             Addon a = AddonLoader.loadInternal("sic.sim.addons.keyboard.Keyboard");
             a.load(arg.getKeybPars());
+            addons.add(a);
+        }
+        if (arg.isGraphScr()) {
+            Addon a = AddonLoader.loadInternal("sic.sim.addons.graph.GraphicalScreen");
+            a.load(arg.getGraphScrPars());
             addons.add(a);
         }
 

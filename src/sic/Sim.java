@@ -65,6 +65,11 @@ public class Sim {
             a.load(processedArgs.getKeybPars());
             addons.add(a);
         }
+        if (processedArgs.isGraphScr()) {
+            Addon a = AddonLoader.loadInternal("sic.sim.addons.graph.GraphicalScreen");
+            a.load(processedArgs.getGraphScrPars());
+            addons.add(a);
+        }
 
         for (Args.AddonArgs a : processedArgs.getAddons()) {
             try {

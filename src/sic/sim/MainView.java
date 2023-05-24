@@ -10,7 +10,6 @@ import sic.disasm.Disassembler;
 import sic.link.ui.LinkListener;
 import sic.link.ui.LinkerGui;
 import sic.loader.Loader;
-import sic.sim.addons.GraphicalScreen;
 import sic.sim.views.*;
 import sic.sim.addons.Addon;
 
@@ -40,14 +39,13 @@ public class MainView {
     private MemoryView memoryView;
     private WatchView watchView;
     // addon views
-    private GraphicalScreen graphScreen;
     private DataBreakpointView dataBreakpointView;
 
     private File lastLoadedFile;
 
     private Vector<Addon.MenuEntry> menuEntries = new Vector<Addon.MenuEntry>();
     private Vector<Addon.SettingsPanel> settingsPanels = new Vector<Addon.SettingsPanel>();
-    private Vector<TimerTask> timerTasks = new Vector<TimerTask>();
+    private Vector<Addon.Timer> timers = new Vector<Addon.Timer>();
 
     private Timer timer;
 
@@ -82,13 +80,6 @@ public class MainView {
         mainFrame.setLocation(0, 0);
         mainFrame.setVisible(true);
 
-        graphScreen = new GraphicalScreen(executor);
-
-        if (arg.isGraphScr()) {
-            graphScreen.setSize(arg.getGraphScrCols(), arg.getGraphScrRows());
-            graphScreen.toggleView();
-        }
-
         timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             public void run() {
@@ -98,16 +89,6 @@ public class MainView {
             }
         };
         timer.schedule(timerTask, 0, 50);
-
-        // Calculate graphical screen refresh rate
-        double specifiedMs = 1000.0 / (double) (arg.getGraphScrFreq() <= 0 ? 120 : arg.getGraphScrFreq());
-        long refreshMs = (long) Math.max(Math.floor(specifiedMs), 4); // Cap at 240 Hz
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                graphScreen.updateView();
-            }
-        }, 0, refreshMs);
     }
 
 
@@ -145,17 +126,16 @@ public class MainView {
         mb.add(menu);
     }
 
-    public void addTimerTasks(Vector<TimerTask> tasks) {
+    public void addTimers(Vector<Addon.Timer> tasks) {
         if (tasks == null) {
             return;
         }
-        timerTasks.addAll(tasks);
+        timers.addAll(tasks);
     }
 
-    public void updateTimerTasks() {
-        for (TimerTask t : timerTasks) {
-            System.out.println("scheduling a task");
-            timer.schedule(t, 0, 50);
+    public void updateTimers() {
+        for (Addon.Timer t : timers) {
+            timer.schedule(t.task, 0, t.refreshMs);
         }
     }
 
@@ -312,13 +292,6 @@ public class MainView {
 
         // View
         menu = new JMenu("View");
-        GUI.addMenuItem(menu, "Graphical screen", KeyEvent.VK_G, KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                graphScreen.toggleView();
-            }
-        });
-        menu.addSeparator();
         GUI.addMenuItem(menu, "Data breakpoints", KeyEvent.VK_D, KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -411,7 +384,6 @@ public class MainView {
     private void showSettingsView() {
         JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
         tabs.addTab("General", null, createSettingsGeneralPane(), null);
-        tabs.addTab("Graphical screen", null, graphScreen.createSettingsPane(), null);
         for (Addon.SettingsPanel panel : settingsPanels) {
             tabs.addTab(panel.title, null, panel.panel, null);
         }
