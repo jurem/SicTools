@@ -13,8 +13,12 @@ import sic.sim.MainView;
 
 public abstract class Addon {
     // Mehtod load is called immediately after the addon has been loaded.
+    // When params are not specified (user ommited '@' when loading the addon),
+    // the argument 'param' is null.
     public void load(String params) {
-        System.out.println("loading addon with parametres: " + params);
+        if (params != null) {
+            System.out.println("loading addon with parametres: " + params);
+        }
     }
 
     // Method init is called after the executor and graphical simulator
@@ -28,7 +32,7 @@ public abstract class Addon {
     public static class AddonDevice {
         public int name;
         public Device dev;
-        public boolean force;
+        public boolean force; // currently unused
         public AddonDevice(int name, Device dev, boolean force) {
             this.name = name;
             this.dev = dev;
