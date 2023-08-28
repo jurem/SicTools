@@ -39,6 +39,7 @@ public class GraphicalScreen extends Addon {
     private int pixelSize = PIXELSIZE;
     private int freq = 120;
     // gui
+    private boolean visible = false; // only used at loading time
     private JFrame view;
     private JPanel pnlScreen;
 
@@ -62,6 +63,7 @@ public class GraphicalScreen extends Addon {
             cols = Integer.parseInt(sCols);
             rows = Integer.parseInt(sRows);
             freq = Integer.parseInt(hz);
+            visible = true;
         }
     }
 
@@ -71,7 +73,9 @@ public class GraphicalScreen extends Addon {
         this.view = createView();
         setScreen(address, cols, rows, pixelSize);
         //setSize(arg.getGraphScrCols(), arg.getGraphScrRows());
-        toggleView();
+        if (visible) {
+            toggleView();
+        }
     }
 
     @Override

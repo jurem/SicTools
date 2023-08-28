@@ -27,8 +27,8 @@ import java.util.Vector;
  */
 public class TextualScreen extends Addon {
     public final int ADDRESS = 0xB800;
-    public final int COLS = 80;
-    public final int ROWS = 25;
+    public final int COLS = 25;
+    public final int ROWS = 80;
     public final int FONTSIZE = 12;
 
     private Memory memory;
@@ -37,6 +37,7 @@ public class TextualScreen extends Addon {
     private int rows = COLS;
     private int cols = ROWS;
     // gui
+    private boolean visible = false; // only used at loading time
     private JFrame view;
     private JTextArea txtScreen;
 
@@ -46,6 +47,7 @@ public class TextualScreen extends Addon {
             int x = pars.indexOf('x');
             cols = Integer.parseInt(pars.substring(0, x));
             rows = Integer.parseInt(pars.substring(x+1));
+            visible = true;
         }
     }
 
@@ -54,7 +56,9 @@ public class TextualScreen extends Addon {
         this.memory = executor.getMachine().memory;
         this.view = createView();
         setScreen(address, cols, rows, FONTSIZE);
-        toggleView();
+        if (visible) {
+            toggleView();
+        }
     }
 
     @Override

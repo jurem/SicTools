@@ -31,16 +31,18 @@ public class Keyboard extends Addon {
     public final int ADDRESS = 0xC000;
 
     private Memory memory;
-    // gui
-    private JFrame view;
     // settings
     private int address = ADDRESS;
+    // gui
+    private boolean visible = false; // only used at loading time
+    private JFrame view;
     private JTextArea inputArea;
 
     @Override
     public void load(String args) {
         if (args != null) {
             address = Integer.decode(args);
+            visible = true;
         }
     }
 
@@ -49,7 +51,9 @@ public class Keyboard extends Addon {
         this.memory = executor.getMachine().memory;
         this.view = createView();
         setScreen(address);
-        toggleView();
+        if (visible) {
+            toggleView();
+        }
     }
 
     @Override
@@ -115,8 +119,7 @@ public class Keyboard extends Addon {
         panel.add(bevel);
 
         JFrame frame = new JFrame("Keyboard");
-//        frame.setResizable(false);
-//        frame.setBounds(620, 370, 500, 300);
+        frame.setResizable(false);
         frame.setContentPane(panel);
 
         return frame;

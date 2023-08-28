@@ -54,22 +54,7 @@ public class Sim {
         }
 
         Vector<Addon> addons = new Vector<Addon>();
-        addons.add(AddonLoader.loadInternal("sic.sim.addons.stdio.Main"));
-        if (processedArgs.isTextScr()) {
-            Addon a = AddonLoader.loadInternal("sic.sim.addons.text.TextualScreen");
-            a.load(processedArgs.getTextScrPars());
-            addons.add(a);
-        }
-        if (processedArgs.isKeyb()) {
-            Addon a = AddonLoader.loadInternal("sic.sim.addons.keyboard.Keyboard");
-            a.load(processedArgs.getKeybPars());
-            addons.add(a);
-        }
-        if (processedArgs.isGraphScr()) {
-            Addon a = AddonLoader.loadInternal("sic.sim.addons.graph.GraphicalScreen");
-            a.load(processedArgs.getGraphScrPars());
-            addons.add(a);
-        }
+        loadInternalAddons(addons, processedArgs);
 
         for (Args.AddonArgs a : processedArgs.getAddons()) {
             try {
@@ -100,7 +85,6 @@ public class Sim {
             mainView.addSettingsPanels(a.getSettingsPanels());
         }
         mainView.addAddonMenu();
-        mainView.updateTimers();
 
         if (processedArgs.hasFilename()) mainView.load(new File(processedArgs.getFilename()));
 
@@ -116,5 +100,34 @@ public class Sim {
         if (processedArgs.isStart()) {
             executor.start();
         }
+    }
+
+    public static void loadInternalAddons(Vector<Addon> addons, Args args) {
+        addons.add(AddonLoader.loadInternal("sic.sim.addons.stdio.Main"));
+        Addon a = AddonLoader.loadInternal("sic.sim.addons.text.TextualScreen");
+        String pars = null;
+        if (args.isTextScr()) {
+            pars = args.getTextScrPars();
+        }
+        a.load(pars);
+        addons.add(a);
+
+        a = AddonLoader.loadInternal("sic.sim.addons.keyboard.Keyboard");
+        if (args.isKeyb()) {
+            pars = args.getKeybPars();
+        } else {
+            pars = null;
+        }
+        a.load(pars);
+        addons.add(a);
+
+        a = AddonLoader.loadInternal("sic.sim.addons.graph.GraphicalScreen");
+        if (args.isGraphScr()) {
+            pars = args.getGraphScrPars();
+        } else {
+            pars = null;
+        }
+        a.load(pars);
+        addons.add(a);
     }
 }

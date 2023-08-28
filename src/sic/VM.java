@@ -2,6 +2,7 @@ package sic;
 
 import sic.common.Logger;
 import sic.loader.Loader;
+import sic.Sim;
 import sic.sim.Args;
 import sic.sim.Executor;
 import sic.sim.addons.Addon;
@@ -36,22 +37,7 @@ public class VM {
         }
 
         Vector<Addon> addons = new Vector<Addon>();
-        addons.add(AddonLoader.loadInternal("sic.sim.addons.stdio.Main"));
-        if (arg.isTextScr()) {
-            Addon a = AddonLoader.loadInternal("sic.sim.addons.text.TextualScreen");
-            a.load(arg.getTextScrPars());
-            addons.add(a);
-        }
-        if (arg.isKeyb()) {
-            Addon a = AddonLoader.loadInternal("sic.sim.addons.keyboard.Keyboard");
-            a.load(arg.getKeybPars());
-            addons.add(a);
-        }
-        if (arg.isGraphScr()) {
-            Addon a = AddonLoader.loadInternal("sic.sim.addons.graph.GraphicalScreen");
-            a.load(arg.getGraphScrPars());
-            addons.add(a);
-        }
+        Sim.loadInternalAddons(addons, arg);
 
         for (Args.AddonArgs a : arg.getAddons()) {
             try {
