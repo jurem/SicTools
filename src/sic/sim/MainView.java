@@ -45,7 +45,6 @@ public class MainView {
 
     private Vector<Addon.MenuEntry> menuEntries = new Vector<Addon.MenuEntry>();
     private Vector<Addon.SettingsPanel> settingsPanels = new Vector<Addon.SettingsPanel>();
-    private Vector<Addon.Timer> timers = new Vector<Addon.Timer>();
 
     private Timer timer;
 
@@ -100,16 +99,10 @@ public class MainView {
     }
 
     public void addMenuEntries(Vector<Addon.MenuEntry> entries) {
-        if (entries == null) {
-            return;
-        }
         menuEntries.addAll(entries);
     }
 
     public void addSettingsPanels(Vector<Addon.SettingsPanel> panels) {
-        if (panels == null) {
-            return;
-        }
         settingsPanels.addAll(panels);
     }
 
@@ -124,17 +117,11 @@ public class MainView {
             GUI.addMenuItem(menu, e.name, e.keyEvent, e.keyStroke, e.actionListener);
         }
         mb.add(menu);
+        mb.validate();
     }
 
     public void addTimers(Vector<Addon.Timer> tasks) {
-        if (tasks == null) {
-            return;
-        }
-        timers.addAll(tasks);
-    }
-
-    public void updateTimers() {
-        for (Addon.Timer t : timers) {
+        for (Addon.Timer t : tasks) {
             timer.schedule(t.task, 0, t.refreshMs);
         }
     }

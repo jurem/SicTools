@@ -26,7 +26,7 @@ public abstract class Addon {
     public void init(Executor executor) {}
 
     public Vector<AddonDevice> getDevices() {
-        return null;
+        return new Vector<AddonDevice>();
     }
 
     public static class AddonDevice {
@@ -42,7 +42,7 @@ public abstract class Addon {
 
     // Timers execute their tasks at constant rate.
     public Vector<Timer> getTimers() {
-        return null;
+        return new Vector<Timer>();
     }
 
     public static class Timer {
@@ -56,7 +56,7 @@ public abstract class Addon {
 
     // MenuEntries are added to the "Addons" menu in the menu bar.
     public Vector<MenuEntry> getMenuEntries() {
-        return null;
+        return new Vector<MenuEntry>();
     }
 
     public static class MenuEntry {
@@ -74,7 +74,7 @@ public abstract class Addon {
 
     // SettingsPanels are added as tabs to the settings window.
     public Vector<SettingsPanel> getSettingsPanels() {
-        return null;
+        return new Vector<SettingsPanel>();
     }
 
     public static class SettingsPanel {
