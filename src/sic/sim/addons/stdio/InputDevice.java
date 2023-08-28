@@ -1,7 +1,9 @@
-package sic.sim.vm;
+package sic.sim.addons.stdio;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import sic.sim.vm.Device;
 
 /**
  * Device which supports reading from InputStream, e.g. System.in

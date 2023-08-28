@@ -1,6 +1,7 @@
 .idea
 SicTools.iml
 out
+addons/out
 /.project
 *.class
 tests/linker/factorial/factdemo.obj

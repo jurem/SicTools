@@ -10,10 +10,8 @@ import sic.disasm.Disassembler;
 import sic.link.ui.LinkListener;
 import sic.link.ui.LinkerGui;
 import sic.loader.Loader;
-import sic.sim.addons.GraphicalScreen;
-import sic.sim.addons.Keyboard;
-import sic.sim.addons.TextualScreen;
 import sic.sim.views.*;
+import sic.sim.addons.Addon;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -22,6 +20,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 /**
  * TODO: write a short description
@@ -40,13 +39,14 @@ public class MainView {
     private MemoryView memoryView;
     private WatchView watchView;
     // addon views
-    private TextualScreen textScreen;
-    private GraphicalScreen graphScreen;
-    private Keyboard keyboard;
     private DataBreakpointView dataBreakpointView;
 
     private File lastLoadedFile;
 
+    private Vector<Addon.MenuEntry> menuEntries = new Vector<Addon.MenuEntry>();
+    private Vector<Addon.SettingsPanel> settingsPanels = new Vector<Addon.SettingsPanel>();
+
+    private Timer timer;
 
     public MainView(final Executor executor, Disassembler disassembler, Args arg) {
         this.executor = executor;
@@ -79,50 +79,51 @@ public class MainView {
         mainFrame.setLocation(0, 0);
         mainFrame.setVisible(true);
 
-        textScreen = new TextualScreen(executor);
-        graphScreen = new GraphicalScreen(executor);
-        keyboard = new Keyboard(executor);
-
-        if (arg.isTextScr()) {
-            textScreen.setSize(arg.getTextScrCols(), arg.getTextScrRows());
-            textScreen.toggleView();
-        }
-        if (arg.isGraphScr()) {
-            graphScreen.setSize(arg.getGraphScrCols(), arg.getGraphScrRows());
-            graphScreen.toggleView();
-        }
-        if(arg.isKeyb()){
-            keyboard.setScreen(SICXE.intToAddr(arg.getKeybAddress()));
-            keyboard.toggleView();
-        }
-
-        Timer timer = new Timer();
+        timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             public void run() {
                 if (mainFrame.isVisible() && executor.hasChanged()) {
                     updateView();
                 }
-                textScreen.updateView();
             }
         };
         timer.schedule(timerTask, 0, 50);
-
-        // Calculate graphical screen refresh rate
-        double specifiedMs = 1000.0 / (double) (arg.getGraphScrFreq() <= 0 ? 120 : arg.getGraphScrFreq());
-        long refreshMs = (long) Math.max(Math.floor(specifiedMs), 4); // Cap at 240 Hz
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                graphScreen.updateView();
-            }
-        }, 0, refreshMs);
     }
+
 
     public void updateView() {
         cpuView.updateView();
         disassemblyView.updateView(!executor.isRunning(), !executor.isRunning());
         memoryView.updateView();
         watchView.updateView();
+    }
+
+    public void addMenuEntries(Vector<Addon.MenuEntry> entries) {
+        menuEntries.addAll(entries);
+    }
+
+    public void addSettingsPanels(Vector<Addon.SettingsPanel> panels) {
+        settingsPanels.addAll(panels);
+    }
+
+    public void addAddonMenu() {
+        if (menuEntries.size() <= 0) {
+            return;
+        }
+        JMenuBar mb = mainFrame.getJMenuBar();
+        JMenu menu = new JMenu("Addons");
+
+        for (Addon.MenuEntry e : menuEntries) {
+            GUI.addMenuItem(menu, e.name, e.keyEvent, e.keyStroke, e.actionListener);
+        }
+        mb.add(menu);
+        mb.validate();
+    }
+
+    public void addTimers(Vector<Addon.Timer> tasks) {
+        for (Addon.Timer t : tasks) {
+            timer.schedule(t.task, 0, t.refreshMs);
+        }
     }
 
     private JMenuBar createMenuBar() {
@@ -278,25 +279,6 @@ public class MainView {
 
         // View
         menu = new JMenu("View");
-        GUI.addMenuItem(menu, "Textual screen", KeyEvent.VK_T, KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                textScreen.toggleView();
-            }
-        });
-        GUI.addMenuItem(menu, "Graphical screen", KeyEvent.VK_G, KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                graphScreen.toggleView();
-            }
-        });
-        GUI.addMenuItem(menu, "Keyboard", KeyEvent.VK_K, KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                keyboard.toggleView();
-            }
-        });
-        menu.addSeparator();
         GUI.addMenuItem(menu, "Data breakpoints", KeyEvent.VK_D, KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -326,7 +308,7 @@ public class MainView {
             Loader.loadSection(executor.machine, reader);
             lastLoadedFile = file;
             mainFrame.setTitle(file.getName());
-			updateView();
+            updateView();
         } catch (FileNotFoundException e1) {
             JOptionPane.showMessageDialog(mainFrame, "Error loading object file.");
             updateView();
@@ -389,9 +371,9 @@ public class MainView {
     private void showSettingsView() {
         JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
         tabs.addTab("General", null, createSettingsGeneralPane(), null);
-        tabs.addTab("Textual screen", null, textScreen.createSettingsPane(), null);
-        tabs.addTab("Graphical screen", null, graphScreen.createSettingsPane(), null);
-        tabs.addTab("Keyboard", null, keyboard.createSettingsPane(), null);
+        for (Addon.SettingsPanel panel : settingsPanels) {
+            tabs.addTab(panel.title, null, panel.panel, null);
+        }
         GUI.showInJFrame("Settings", tabs, 0, 0);
     }
 

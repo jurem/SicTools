@@ -1,10 +1,11 @@
-package sic.sim.addons;
+package sic.sim.addons.text;
 
 import sic.common.Conversion;
 import sic.common.GUI;
 import sic.common.SICXE;
 import sic.sim.Executor;
 import sic.sim.vm.Memory;
+import sic.sim.addons.Addon;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -12,34 +13,84 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.TimerTask;
+import java.util.Vector;
 
 /**
  * TODO: write a short description
  *
  * @author jure
  */
-public class TextualScreen {
+public class TextualScreen extends Addon {
     public final int ADDRESS = 0xB800;
-    public final int COLS = 80;
-    public final int ROWS = 25;
+    public final int COLS = 25;
+    public final int ROWS = 80;
     public final int FONTSIZE = 12;
 
-    private final Memory memory;
+    private Memory memory;
     // settings
-    private int address;
-    private int rows;
-    private int cols;
+    private int address = ADDRESS;
+    private int rows = COLS;
+    private int cols = ROWS;
     // gui
-    private final JFrame view;
+    private boolean visible = false; // only used at loading time
+    private JFrame view;
     private JTextArea txtScreen;
 
-    public TextualScreen(final Executor executor) {
+    @Override
+    public void load(String pars) {
+        if (pars != null) {
+            int x = pars.indexOf('x');
+            cols = Integer.parseInt(pars.substring(0, x));
+            rows = Integer.parseInt(pars.substring(x+1));
+            visible = true;
+        }
+    }
+
+    @Override
+    public void init(Executor executor) {
         this.memory = executor.getMachine().memory;
         this.view = createView();
-        setScreen(ADDRESS, COLS, ROWS, FONTSIZE);
+        setScreen(address, cols, rows, FONTSIZE);
+        if (visible) {
+            toggleView();
+        }
     }
+
+    @Override
+    public Vector<Timer> getTimers() {
+        Vector<Timer> ts = new Vector<Timer>();
+        ts.add(new Timer(new TimerTask() {
+            public void run() {
+                updateView();
+            }
+        }, 50));
+        return ts;
+    }
+
+    @Override
+    public Vector<MenuEntry> getMenuEntries() {
+        Vector<MenuEntry> es = new Vector<MenuEntry>();
+        es.add(new MenuEntry("Toggle textual screen", KeyEvent.VK_T, KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                toggleView();
+            }
+        }));
+        return es;
+    }
+
+    @Override
+    public Vector<SettingsPanel> getSettingsPanels() {
+        Vector<SettingsPanel> panels = new Vector<SettingsPanel>();
+        panels.add(new SettingsPanel("Textual screen", createSettingsPane()));
+        return panels;
+    }
+
 
     public void clearScreen() {
         for (int i = 0; i < rows; i++)
@@ -59,7 +110,6 @@ public class TextualScreen {
         this.cols = cols;
         txtScreen.setRows(rows);
         txtScreen.setColumns(cols);
-//        txtScreen.setFont(new java.awt.Font("Courier New", java.awt.Font.BOLD, fontSize));
         txtScreen.setFont(new Font("monospaced", Font.BOLD, fontSize));
         updateView();
         view.pack();
@@ -91,7 +141,7 @@ public class TextualScreen {
 
         JFrame frame = new JFrame("Screen");
         frame.setResizable(false);
-//        frame.setBounds(620, 370, 500, 300);
+        //        frame.setBounds(620, 370, 500, 300);
         frame.setContentPane(panel);
 
         return frame;

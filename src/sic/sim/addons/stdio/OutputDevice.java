@@ -1,7 +1,9 @@
-package sic.sim.vm;
+package sic.sim.addons.stdio;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
+import sic.sim.vm.Device;
 
 /**
  * Device supporting writing to OutputStream, e.g. System.out.

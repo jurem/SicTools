@@ -1,5 +1,7 @@
 package sic.sim;
 
+import java.util.Vector;
+
 import sic.common.Utils;
 
 /**
@@ -45,16 +47,15 @@ public class Args extends  AbstractCmdLineArgs {
     private boolean stats;
 
     private boolean textScr;
-    private int textScrCols;
-    private int textScrRows;
+    private String textScrPars;
 
     private boolean graphScr;
-    private int graphScrCols;
-    private int graphScrRows;
-    private int graphScrFreq;
+    private String graphScrPars;
 
     private boolean keyb;
-    private int keybAddress;
+    private String keybPars;
+
+    private Vector<AddonArgs> addons = new Vector<AddonArgs>();
 
     public boolean isHelp() {
         return help;
@@ -96,36 +97,29 @@ public class Args extends  AbstractCmdLineArgs {
         return textScr;
     }
 
-    public int getTextScrCols() {
-        return textScrCols;
-    }
-
-    public int getTextScrRows() {
-        return textScrRows;
+    public String getTextScrPars() {
+        return textScrPars;
     }
 
     public boolean isGraphScr() {
         return graphScr;
     }
 
-    public int getGraphScrCols() {
-        return graphScrCols;
-    }
-
-    public int getGraphScrRows() {
-        return graphScrRows;
+    public String getGraphScrPars() {
+        return graphScrPars;
     }
 
     public boolean isKeyb(){
         return keyb;
     }
 
-    public int getKeybAddress(){
-        return keybAddress;
+    public String getKeybPars(){
+        return keybPars;
     }
 
-    public int getGraphScrFreq() {
-        return graphScrFreq;
+
+    public Vector<AddonArgs> getAddons() {
+        return addons;
     }
 
     public static void printArgs() {
@@ -137,46 +131,24 @@ public class Args extends  AbstractCmdLineArgs {
             "    -stats                Print instruction statistics.\n" +
             "    -text colsxrows       Show and resize textual screen.\n" +
             "    -graph colsxrows[@hz] Show and resize graphical screen.\n" +
-            "    -keyb address         Show and set keyboard address.\n");
+            "    -keyb address         Show and set keyboard address.\n" +
+            "    -a path[@params]      Load addon.\n");
     }
 
     int parseFreq(String s) {
         return Integer.parseInt(s);
     }
 
-    void parseTextScreen(String s) {
-        int x = s.indexOf('x');
-        textScrCols = Integer.parseInt(s.substring(0, x));
-        textScrRows = Integer.parseInt(s.substring(x+1));
-    }
 
-    void parseGraphScreen(String s) {
-        int x = s.indexOf('x');
-        int at = s.indexOf('@');
-
-        String cols = s.substring(0, x);
-        String rows;
-        String hz;
-        if (at != -1) {
-            rows = s.substring(x + 1, at);
-            hz = s.substring(at + 1);
-        } else {
-            rows = s.substring(x + 1);
-            hz = "120";
+    void parseAddon(String s) {
+        int i = s.indexOf('@');
+        String path = s;
+        String params = null;
+        if (i != -1) {
+            path = s.substring(0, i);
+            params = s.substring(i + 1);
         }
-
-        graphScrCols = Integer.parseInt(cols);
-        graphScrRows = Integer.parseInt(rows);
-        graphScrFreq = Integer.parseInt(hz);
-    }
-
-    void parseKeyb(String s){
-        keybAddress = 0xC000;
-        if(s.startsWith("0x")){
-            keybAddress = Integer.parseInt(s.substring(2), 16);
-        } else {
-            keybAddress = Integer.parseInt(s, 10);
-        }
+        addons.add(new AddonArgs(path, params));
     }
 
     void processArgs(String[] args) {
@@ -203,15 +175,18 @@ public class Args extends  AbstractCmdLineArgs {
                     break;
                 case "-text":
                     textScr = true;
-                    parseTextScreen(args[++last]);
+                    textScrPars = args[++last];
                     break;
                 case "-graph":
                     graphScr = true;
-                    parseGraphScreen(args[++last]);
+                    graphScrPars = args[++last];
                     break;
                 case "-keyb":
                     keyb = true;
-                    parseKeyb(args[++last]);
+                    keybPars = args[++last];
+                    break;
+                case "-a":
+                    parseAddon(args[++last]);
                     break;
             }
             if (!arg.startsWith("-") || arg.equals("--")) break;
@@ -229,4 +204,13 @@ public class Args extends  AbstractCmdLineArgs {
         processArgs(args);
     }
 
+    public class AddonArgs {
+        public String path;
+        public String pars;
+
+        public AddonArgs(String path, String pars) {
+            this.path = path;
+            this.pars = pars;
+        }
+    }
 }

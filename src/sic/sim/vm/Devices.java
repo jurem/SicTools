@@ -1,8 +1,11 @@
 package sic.sim.vm;
 
+import java.util.Vector;
+
 import sic.common.Conversion;
 import sic.common.Logger;
 import sic.common.SICXE;
+import sic.sim.addons.Addon;
 
 /**
  * @author jure
@@ -57,13 +60,19 @@ public class Devices {
         }
     }
 
+    public void setDevices(Vector<Addon.AddonDevice> devices) {
+        if (devices == null) {
+            return;
+        }
+        for (Addon.AddonDevice d : devices) {
+            setDevice(d.name, d.dev);
+        }
+    }
+
     public Devices(int count) {
         assert count > 2;
         devices = new Device[count];
-        setDevice(SICXE.DEVICE_STDIN, new InputDevice(System.in));
-        setDevice(SICXE.DEVICE_STDOUT, new OutputDevice(System.out));
-        setDevice(SICXE.DEVICE_STDERR, new OutputDevice(System.err));
-        for (int i = SICXE.DEVICE_FREE; i < count; i++)
+        for (int i = 0; i < count; i++)
             setDevice(i, new FileDevice(Conversion.byteToHex(i) + ".dev"));
     }
 

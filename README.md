@@ -4,6 +4,8 @@ Tools for SIC/XE hypothetical computer from the Leland Beck's book System Softwa
   * Simulator
   * Linker
 
+See also http://jurem.github.io/SicTools/ for the main page as well as https://github.com/jurem/SicDemos for several examples.
+
 ## Assembler
 Assembler supports all instructions and directives described in the book. This includes load/store instructions, arithmetic instructions, jumps etc. And directives START, END, ORG, LTORG, BASE, NOBASE, CSECT, USE, EQU, RESB, RESW, EXTDEF, EXTREF. Some features:
   * immediate addressing, indirect addressing, simple addressing
@@ -41,8 +43,43 @@ Linker supports linking .obj files produced by the assembler into one. Each obje
   * option to keep symbols in the output file to allow further linking
   * and more
 
+## Addons
+Simulator can be extended with external addons.
+They can provide additional devices, different ways of how the virtual processor can communicate with the host computer and much more.
 
-See also http://jurem.github.io/SicTools/ for the main page as well as https://github.com/jurem/SicDemos for several examples.
+### Usage
+Currently, addons can be loaded only via the cli with `-a path[@params]` argument.
+You can use as many `-a` arguments as there are addons you want to load.
+If the addon uses parametres, you can specify them after the addons path, separated by a `@` character.
+
+You can run the example addon (see [#examples](Examples) for building instructions) with the command
+    `java -cp out/make/sictools.jar sic.Sim -a addons/out/make/rand.jar@5`
+Loaded program can use the device `5` to read random bytes instead of file `05.dev`.
+
+### Writing an addon
+Addon is a jar file whose main class extends `sic.sim.addons.Addon` class.
+It can override any of the methods defined there according to its requirements.
+
+One of the most important methods is `init(sic.sim.Executor)`,
+with which the addon can obtain the simulator's executor object.
+The executor contains virtual machine, which can be used to access memory and registers.
+
+For more explanation, please read the code of the `Addon` class and see examples
+in `addons` and `src/sic/sim/addons` directories.
+
+#### Examples
+Directory `addons` contains an example of a standalone addon (intended use of addons),
+which can be build out of the source tree.
+You can build it with `name=rand make` command.
+
+When building your own addon, replace `rand` with the name of your addon.
+Also, don't forget to change `SICPATH` in Makefile according to location of your addon.
+
+Directory `src/sic/sim/addons` contains some other addons, which are built differently
+than a regular addon.
+They are included in the SicTools jar and loaded automatically,
+but can serve as more complex example of addons.
+
 
 Installation
 ------------

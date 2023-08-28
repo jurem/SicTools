@@ -2,12 +2,14 @@ package sic;
 
 import sic.common.Logger;
 import sic.loader.Loader;
+import sic.Sim;
 import sic.sim.Args;
 import sic.sim.Executor;
-import sic.sim.addons.GraphicalScreen;
-import sic.sim.addons.TextualScreen;
+import sic.sim.addons.Addon;
+import sic.sim.addons.AddonLoader;
 import sic.sim.vm.Machine;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -34,8 +36,36 @@ public class VM {
             System.exit(0);
         }
 
+        Vector<Addon> addons = new Vector<Addon>();
+        Sim.loadInternalAddons(addons, arg);
+
+        for (Args.AddonArgs a : arg.getAddons()) {
+            try {
+                Addon p = AddonLoader.loadJar(a.path);
+                p.load(a.pars);
+                addons.add(p);
+            } catch (IOException e) {
+                System.out.printf("cannot open addon file %s%n", a.path);
+                System.out.println(e);
+                System.exit(1);
+            } catch (ClassCastException e) {
+                System.out.printf("main class of %s does not extend Addon class%n", a.path);
+                System.exit(1);
+            }
+        }
+
         Machine machine = new Machine();
         Executor executor = new Executor(machine, arg);
+
+        Vector<Addon.Timer> timers = new Vector<Addon.Timer>();
+        for (Addon a : addons) {
+            a.init(executor);
+            machine.devices.setDevices(a.getDevices());
+            Vector<Addon.Timer> tasks = a.getTimers();
+            if (tasks != null) {
+                timers.addAll(tasks);
+            }
+        }
 
         if (arg.hasFilename()) {
             String ext = arg.getFileext();
@@ -44,25 +74,11 @@ public class VM {
             else Logger.fmterr("Invalid filename extension '%s'", ext);
         }
 
-        final TextualScreen textScreen = arg.isTextScr() ? new TextualScreen(executor) : null;
-        final GraphicalScreen graphicalScreen = arg.isGraphScr() ? new GraphicalScreen(executor) : null;
-
-        if (arg.isGraphScr() || arg.isTextScr()) {
-            if (textScreen != null) {
-                textScreen.setSize(arg.getTextScrCols(), arg.getTextScrRows());
-                textScreen.toggleView();
-            }
-            if (graphicalScreen != null) {
-                graphicalScreen.setSize(arg.getGraphScrCols(), arg.getGraphScrRows());
-                graphicalScreen.toggleView();
-            }
+        if (timers.size() > 0) {
             java.util.Timer timer = new java.util.Timer();
-            TimerTask timerTask = new TimerTask() {
-                public void run() {
-                    if (textScreen != null) textScreen.updateView();
-                }
-            };
-            timer.schedule(timerTask, 0, 50);
+            for (Addon.Timer t : timers) {
+                timer.schedule(t.task, 0, t.refreshMs);
+            }
         }
 
         executor.start();
