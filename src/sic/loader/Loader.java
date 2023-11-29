@@ -14,25 +14,35 @@ import java.io.*;
  * @author: jure
  */
 public class Loader {
+    private static boolean isWhitespace(char c) {
+        return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+    }
 
-    public static void skipWhitespace(Reader r) throws IOException {
-//TODO:        while (Character.isWhitespace((char)r.read()));
+    public static int skipWhitespace(Reader r) throws IOException {
+        int c;
+        do
+        {
+            c = r.read();
+        }
+        while (isWhitespace((char)c));
+
+        return c;
     }
 
     public static String readString(Reader r, int len) throws IOException {
-        skipWhitespace(r);
+        //skipWhitespace(r);
         StringBuilder buf = new StringBuilder();
         while (len-- > 0) buf.append((char)r.read());
         return buf.toString();
     }
 
     public static int readByte(Reader r) throws IOException {
-        skipWhitespace(r);
+        //skipWhitespace(r);
         return Integer.parseInt(readString(r, 2), 16);
     }
 
     public static int readWord(Reader r) throws IOException {
-        skipWhitespace(r);
+        //skipWhitespace(r);
         return Integer.parseInt(readString(r, 6), 16);
     }
 
@@ -48,12 +58,10 @@ public class Loader {
             readString(r, 6);	// name is ignored
             int start = readWord(r);
             int length = readWord(r);
-            if (r.read() == '\r') // EOL
-                r.read();
 
             Memory mem = machine.memory;
             // text records
-            int ch = r.read();
+            int ch = skipWhitespace(r);
             while (ch == 'T') {
                 int loc = readWord(r);
                 int len = readByte(r);
@@ -62,18 +70,14 @@ public class Loader {
                     byte val = (byte)readByte(r);
                     mem.setByteRaw(loc++, val);
                 }
-                if (r.read() == '\r') // EOL
-                    r.read();
-                ch = r.read();
+                ch = skipWhitespace(r);
             }
 
             // modification records
             while (ch == 'M') {
                 readWord(r);	// addr
                 readByte(r);	// len
-                if (r.read() == '\r') // EOL
-                    r.read();
-                ch = r.read();
+                ch = skipWhitespace(r);
             }
 
             // load end record
