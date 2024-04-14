@@ -39,11 +39,14 @@ public class ErrorCatcher {
                 System.err.println(err);
     }
 
-    public void print() {
+    public String print() {
+	String allErrs="";
         for ( ; lastPrinted < errs.size(); lastPrinted++) {
             AsmError err = errs.get(lastPrinted);
             System.err.println(err);
+	    allErrs+=(err+"\n");
         }
+	return allErrs;
     }
 
     public boolean shouldEnd() {
