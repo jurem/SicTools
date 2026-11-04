@@ -120,8 +120,14 @@ public class JTreeTable extends JTable {
      */
     @Override
     public int getEditingRow() {
-        return (getColumnClass(editingColumn) == TreeTableModel.class) ? -1 :
-                editingRow;
+        int column = getEditingColumn();
+        if (column < 0 || column >= getColumnCount()) {
+            return -1;
+        }
+        
+        return getColumnClass(column) == TreeTableModel.class
+            ? -1 
+            : super.getEditingRow();
     }
 
     /**
