@@ -68,7 +68,6 @@ class BreakpointIconCellRenderer extends CellRenderer {
 public class DisassemblyView {
 
     public static final int MOVE_SMALL = 1;
-    private static final int ROW_AMOUNT = 19;
 
     private Executor executor;
     private Machine machine;
@@ -96,7 +95,7 @@ public class DisassemblyView {
         $$$setupUI$$$();
         // disassembly table
         modelDis = (DefaultTableModel) tabDis.getModel();
-        modelDis.setRowCount(DisassemblyView.ROW_AMOUNT);
+        fitRowCountToCurrentHeight();
         modelDis.setColumnCount(7);
         tabDis.setBackground(Colors.bg);
         tabDis.setForeground(Colors.fg);
@@ -160,6 +159,20 @@ public class DisassemblyView {
                 super.mouseClicked(evt);
             }
         });
+        tabDis.addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent evt) {
+                fitRowCountToCurrentHeight();
+                updateDis(false, false);
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {}
+            @Override
+            public void componentShown(ComponentEvent e) {}
+            @Override
+            public void componentHidden(ComponentEvent e) {}
+        });
         tabDis.addMouseWheelListener(new MouseAdapter() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent evt){
@@ -215,6 +228,13 @@ public class DisassemblyView {
                 return false;
             }
         };
+    }
+
+    private void fitRowCountToCurrentHeight() {
+        final var inset = tabDis.getInsets();
+        final var totalHeight = tabDis.getHeight() - inset.top - inset.bottom;
+        final int rowCount = totalHeight / tabDis.getRowHeight();
+        modelDis.setRowCount(rowCount);
     }
 
     private void updateBreakpoint(int row, boolean active) {

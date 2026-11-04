@@ -63,13 +63,13 @@ public class MainView {
         westPanel.add(cpuView.mainPanel, BorderLayout.NORTH);
         westPanel.add(disassemblyView.mainPanel, BorderLayout.CENTER);
 
-        JPanel eastPanel = new JPanel(new BorderLayout());
-        eastPanel.add(watchView.mainPanel, BorderLayout.NORTH);
-        eastPanel.add(memoryView.mainPanel, BorderLayout.CENTER);
+        JSplitPane eastPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        eastPanel.setTopComponent(watchView.mainPanel);
+        eastPanel.setBottomComponent(memoryView.mainPanel);
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(westPanel, BorderLayout.WEST);
-        mainPanel.add(eastPanel, BorderLayout.CENTER);
+        JSplitPane mainPanel = new JSplitPane();
+        mainPanel.setLeftComponent(westPanel);
+        mainPanel.setRightComponent(eastPanel);
 
         mainFrame = new JFrame("SicTools");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
