@@ -17,8 +17,25 @@ public class Registers {
     private int S, T, B;
     // SIC/XE 48-bit float register
     private double F;
-    // condition code of status word register
-    private int CC;     // TODO: full status word support
+
+    private int timer = 0;
+
+    private class StatusWord {
+        // 0 = user, 1 = supervisor
+        public int MODE = 1;
+        // 0 = running, 1 = idle
+        public int IDLE = 0;
+        // process identifier
+        public int ID = 0;
+        // condition code
+        public int CC = 0;
+        // interrupt mask
+        public int MASK = 0;
+        // interrupt code
+        public int INT_CODE = 0;
+    }
+
+    private StatusWord SW = new StatusWord();
 
     // ***** getters/setters ********************
     // get   ... unsigned
@@ -34,6 +51,7 @@ public class Registers {
 
     public void incPC() {
         if (++PC > Machine.MAX_ADDRESS) {
+            // TODO: interrupt?
             Logger.fmterr("PC register overflow.");
             PC = 0;
         }
@@ -128,31 +146,105 @@ public class Registers {
     }
 
     public int getSW() {
-        if (CC == 0) return 0;
-        else if (CC < 0) return 0x40;
-        else return 0x80;
+        int value = 0;
+        value |= SW.MODE;
+        value |= SW.IDLE<<1;
+        value |= SW.ID<<2;
+        int cc = 0;
+        if (SW.CC > 0) {
+            cc = 0x1;
+        } else if (SW.CC < 0) {
+            cc = 0x2;
+        }
+        value |= cc<<6;
+        value |= SW.MASK<<8;
+        value |= SW.INT_CODE<<16;
+        return value;
     }
 
-    public boolean isLower() {
-        return CC < 0;
+    public boolean ccIsLower() {
+        return SW.CC < 0;
     }
 
-    public boolean isEqual() {
-        return CC == 0;
+    public boolean ccIsEqual() {
+        return SW.CC == 0;
     }
 
-    public boolean isGreater() {
-        return CC > 0;
+    public boolean ccIsGreater() {
+        return SW.CC > 0;
+    }
+
+    public boolean isSupervisor() {
+        return SW.MODE == 1;
+    }
+
+    public boolean isIdle() {
+        return SW.IDLE == 1;
+    }
+
+    public int processID() {
+        return SW.ID;
+    }
+
+    public void setIntCode(int value) {
+        SW.INT_CODE = value & 0xff;
     }
 
     public void setSW(int value) {
-        if ((value & 0x40) == 0x40) CC = -1;
-        else if ((value & 0x80) == 0x80) CC = 1;
-        else CC = 0;
+        SW.MODE = value&0x1;
+        SW.IDLE = (value>>1)&0x1;
+        SW.ID = (value>>2)&0xf;
+        int cc = (value>>6)&0x3;
+        if (cc == 0x1) {
+            SW.CC = -1;
+        } else if (cc == 0x2) {
+            SW.CC = 1;
+        } else {
+            SW.CC = 0;
+        }
+        SW.MASK = (value>>8)&0xf;
+        SW.INT_CODE = (value>>16)&0xff;
     }
 
-    public void setSWAfterCompare(int compare) {
-        CC = compare;
+    public String explainSW() {
+        int cc = 0;
+        if (SW.CC > 0) {
+            cc = 0x1;
+        } else if (SW.CC < 0) {
+            cc = 0x2;
+        }
+        // I hate java
+        String mask = String.format("%s%s%s%s",
+                intEnabled(Interrupt.IntClass.SVC)     ? "S" : "-",
+                intEnabled(Interrupt.IntClass.PROGRAM) ? "P" : "-",
+                intEnabled(Interrupt.IntClass.TIMER)   ? "T" : "-",
+                intEnabled(Interrupt.IntClass.IO)      ? "I" : "-");
+
+        return String.format("<b>ICODE:</b> 0x%02x <b>MASK:</b> %s <b>CC:</b> %d<br>"
+                + "<b>ID:</b> %d <b>IDLE:</b> %s <b>MODE:</b> <span style='%s'>%s</span>",
+                SW.INT_CODE, mask, cc,
+                SW.ID, SW.IDLE == 0 ? "R" : "I", SW.MODE == 1 ? "color: red;" : "",
+                SW.MODE == 1 ? "S" : "U");
+    }
+
+    public void setCC(int compare) {
+        SW.CC = compare;
+    }
+
+    public boolean intEnabled(Interrupt.IntClass c) {
+        return (SW.MASK & c.value) > 0;
+    }
+
+    public int getTimer() {
+        return timer;
+    }
+
+    public void setTimer(int timer) {
+        this.timer = timer;
+    }
+
+    public void tickTimer() {
+        timer--;
     }
 
     // ***** getter/setter by register index ****
@@ -223,7 +315,8 @@ public class Registers {
         A = X = L = 0;
         B = S = T = 0;
         F = 0;
-        CC = 0;
+        timer = 0;
+        SW = new StatusWord();
     }
 
     public Registers() {

@@ -4,6 +4,7 @@ import sic.sim.breakpoints.Breakpoints;
 import sic.sim.breakpoints.DataBreakpointException;
 import sic.sim.breakpoints.DataBreakpoints;
 import sic.sim.vm.Machine;
+import sic.sim.vm.Interrupt;
 
 import java.awt.event.ActionListener;
 import java.util.Timer;
@@ -67,7 +68,7 @@ public class Executor {
             int oldPC = machine.registers.getPC();
 
             try {
-                machine.execute();
+                machine.step();
 
                 if (!dataBreakpoints.isEnabled()) {
                     // Enable data breakpoints in case they got disabled because they were triggered.
@@ -83,7 +84,9 @@ public class Executor {
 
             hasChanged = true;
             // check if the same instruction: halt J halt
-            if (oldPC == machine.registers.getPC()) {
+            if (oldPC == machine.registers.getPC()
+                && !machine.registers.intEnabled(Interrupt.IntClass.TIMER)
+                && !machine.registers.intEnabled(Interrupt.IntClass.IO)) {
                 stop();
                 if (printStats) {
                     System.out.printf("Instructions executed: %d\n", machine.getInstructionCount());
@@ -137,7 +140,7 @@ public class Executor {
             dataBreakpoints.disable();
 
             try {
-                machine.execute();
+                machine.step();
             } catch (DataBreakpointException ex) {
                 // Shouldn't be triggered when breakpoints are disabled
             }
@@ -170,7 +173,7 @@ public class Executor {
      * Step out of the current sub procedure
      */
     public void stepOut() {
-        Integer addressAfterLastJSUB = machine.getAddressBelowLastJSUB();
+        Integer addressAfterLastJSUB = machine.getReturnAddress();
         if (addressAfterLastJSUB == null) return;
         runUntil(machine -> machine.registers.getPC() == addressAfterLastJSUB);
     }

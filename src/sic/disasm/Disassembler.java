@@ -63,7 +63,7 @@ public class Disassembler {
     }
 
     private int fetchAddr;
-    protected int fetch() {
+    protected int fetchByte() {
         if (fetchAddr < 0) return 0;
         if (fetchAddr > SICXE.MAX_ADDR) return 0;
         return machine.memory.getByteRaw(fetchAddr++);
@@ -71,7 +71,7 @@ public class Disassembler {
 
     public Instruction disassemble(int addr) {
         this.fetchAddr = addr;
-        int opcode = fetch();
+        int opcode = fetchByte();
         String name = Opcode.getName(opcode & 0xFC);
         if (name == null) return null;
         Mnemonic mnemonic = mnemonics.get(name);
@@ -81,24 +81,24 @@ public class Disassembler {
             case F1:
                 return new InstructionF1(loc, "", mnemonic);
             case F2n:
-                return new InstructionF2n(loc, "", mnemonic, fetch() >> 4);
+                return new InstructionF2n(loc, "", mnemonic, fetchByte() >> 4);
             case F2r:
-                return new InstructionF2r(loc, "", mnemonic, fetch() >> 4);
+                return new InstructionF2r(loc, "", mnemonic, fetchByte() >> 4);
             case F2rn:
-                b1 = fetch();
+                b1 = fetchByte();
                 return new InstructionF2rn(loc, "", mnemonic, (b1 & 0xF0) >> 4, (b1 & 0x0F) + 1);
             case F2rr:
-                b1 = fetch();
+                b1 = fetchByte();
                 return new InstructionF2rr(loc, "", mnemonic, (b1 & 0xF0) >> 4, b1 & 0x0F);
             case F3:
-                fetch(); fetch(); // should be zero?
+                fetchByte(); fetchByte(); // should be zero?
                 return new InstructionF3(loc, "", mnemonic);
             case F3m:
             case F4m:
-                b1 = fetch(); b2 = fetch();
+                b1 = fetchByte(); b2 = fetchByte();
                 Flags flags = new Flags(opcode, b1);
                 if (flags.isExtended()) {
-                    int operand = flags.operandF4(b1, b2, fetch());
+                    int operand = flags.operandF4(b1, b2, fetchByte());
                     mnemonic = mnemonics.get("+" + name);
                     return new InstructionF4m(loc, "", mnemonic, flags, operand, null);
                 }

@@ -97,7 +97,7 @@ public class OperandParser {
     }
 
     private Command parseF2n(Location loc, String label, Mnemonic mnemonic) throws AsmError {
-        int n = parser.readInt(0, 15);
+        int n = parser.readInt(0, 255);
         return new InstructionF2n(loc, label, mnemonic, n);
     }
 
